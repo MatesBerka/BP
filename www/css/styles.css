@@ -1,0 +1,151 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    vertical-align: baseline;
+    box-sizing: border-box;
+}
+a, a:hover, a:focus {
+    color: white;
+    text-decoration: none;
+}
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+body {
+    line-height: 1;
+    background-color: #ededed;
+}
+ol, ul {
+    list-style: none;
+}
+blockquote, q {
+    quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+#navigation {
+    z-index: 999;
+    width: 100%;
+    color: white;
+    font-size: 16px;
+    line-height: 24px;
+    height: 50px;
+    background-color: #d2eba5;
+    border-bottom: 1px solid #333333;
+    margin-bottom: 5px;
+}
+#logo{
+    background-color: #333;
+    color: #ededed;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+}
+#logo, li.menu-item {
+    height: 50px;
+    padding: 10px;
+    line-height: 30px;
+    float: left;
+    position: relative;
+}
+li.menu-item,
+li.menu-item a {
+    color: #333333;
+}
+ul.nested-items {
+    width: 170px;
+    position: absolute;
+    background: #d2eba5;
+    left: -1px;
+    border: 1px solid #333333;
+    top: 49px;
+    display: none;
+    z-index: 99;
+    cursor: pointer;
+}
+ul.nested-nested-items {
+    top: -1px;
+    left: 168px;
+}
+ul.nested-items li:first-child {
+    height: 39px;
+}
+ul.nested-items > li {
+    width: 100%;
+    height: 40px;
+    line-height: 20px;
+    border-top: 1px solid #333333;
+}
+ul.nested-items > li:first-child {
+    border-top: none;
+}
+ul#top-items > li {
+    border-left: 1px solid #333333;
+}
+#tables-section, #views-section {
+    width: 100%;
+    overflow: auto;
+    padding: 10px 15px 0px 15px;
+}
+#tables-section > div, #views-section > div {
+    float: left;
+}
+#tables-section .table, #views-section .view {
+    float: left;
+    margin-right: 10px;
+    background-color: white;
+    border: 1px solid #B9B9B9;
+    padding: 7px;
+    cursor: pointer;
+}
+#tables-section .add-new-table, #views-section .add-new-view {
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 30px;
+    cursor: pointer;
+}
+#canvas-wrapper {
+    max-width: 100%;
+    margin: 15px;
+    background-color: white;
+    border: 1px solid #dddddd;
+    height: 400px;
+}
+.view-wrapper {
+    position: relative;
+}
+.table-wrapper, .view-wrapper, .view-wrapper > canvas {
+    width: 100%;
+    height: 100%;
+}
+
+.view-wrapper .mouse-coordinates {
+    position: absolute;
+    padding: 10px;
+    background-color: #ededed;
+    bottom: 10px;
+    border: 1px solid #dddddd;
+    right: 10px;
+    font-size: 12px;
+}

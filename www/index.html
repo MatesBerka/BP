@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>The HTML5 Herald</title>
+        <meta name="description" content="Simulátor difraktivní optiky v paprskovém modelu světla">
+        <meta name="author" content="Matěj Berka">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/styles.css">
+        <!--&lt;!&ndash;[if lt IE 9]>-->
+        <!--<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>-->
+        <!--<![endif]&ndash;&gt;-->
+        <script type="text/javascript" src="js-closure/closure/goog/base.js"></script>
+        <script type="text/javascript" src="js/app-deps.js"></script>
+        <script type="text/javascript">goog.require('app.start');</script>
+        <script type="text/javascript" src="js/translation/locales.js"></script>
+    </head>
+    <body>
+        <nav id="navigation">
+            <div id="logo" class="menu-item"><span id="logo-msg">Diffractive optics simulator</span></div>
+            <div id="items">
+                <ul id="top-items">
+                    <li class="menu-item">
+                        <span id="simulation-menu-msg">Simulation</span>
+                        <ul class="nested-items">
+                            <li class="menu-item"><span id="settings-menu-msg">Settings</span>
+                                <ul class="nested-items nested-nested-items">
+                                    <li class="menu-item"><span id="light-menu-msg">Počet odrazů</span></li>
+                                </ul>
+                            </li>
+                            <li class="menu-item"><span id="save-menu-msg">Save simulation</span></li>
+                            <!--<li class="menu-item"><span id="export-menu-msg">Export simulation</span></li>-->
+                            <li class="menu-item"><span id="reset-menu-msg">Reset</span></li>
+                        </ul>
+                    </li>
+                    <li class="menu-item"><span id="components-menu-msg">Components</span>
+                        <ul class="nested-items">
+                            <li class="menu-item"><span id="mirror-menu-msg">mirror</span></li>
+                            <li class="menu-item"><span id="lens-menu-msg">lens</span></li>
+                            <li class="menu-item"><span id="holo-menu-msg">holographic plate</span></li>
+                            <li class="menu-item"><span id="wall-menu-msg">wall</span></li>
+                            <li class="menu-item"><span id="light-menu-msg">light</span></li>
+                        </ul>
+                    </li>
+                    <li class="menu-item"><span id="tables-menu-msg">Tables</span>
+                        <ul class="nested-items">
+                            <li class="menu-item"><span id="add-table-menu-msg">add new table</span></li>
+                            <li class="menu-item"><span id="add-view-menu-msg">add new view</span></li>
+                        </ul>
+                    </li>
+                    <li class="menu-item">
+                        <span id="help-menu-msg">Help</span>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <section id="scene">
+            <section id="tables-section">
+                <div class="tables">
+                    <div class="table" style="background-color: #ededed">Table 1</div>
+                    <div class="table">Table 2</div>
+                </div>
+                <div class="add-new-table">+</div>
+            </section>
+            <section id="views-section">
+                <div class="views">
+                    <div class="view">View 1</div>
+                    <div class="view">View 2</div>
+                </div>
+                <div class="add-new-view">+</div>
+            </section>
+            <div id="canvas-wrapper">
+
+            </div>
+        </section>
+
+        <script type="text/javascript">
+//            app.loadTranslationFile();
+            app.start();
+        </script>
+    </body>
+</html>
