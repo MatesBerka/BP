@@ -1,49 +1,84 @@
 goog.provide('app.ViewController');
 
+goog.require('app.model.HolographicPlate');
+goog.require('app.model.Lens');
+goog.require('app.model.Light');
+goog.require('app.model.Mirror');
+goog.require('app.model.Splitter');
+goog.require('app.model.Wall');
+
 app.ViewController = function() {
+    this.reflectionsCount = 4;
+
+    this.isAddNewComponent = false;
+
+    this.newComponentType = null;
+
+    this.componentMoveAction = false;
+
+    this.canvasMoveActive = false;
 };
 
-app.ViewController.prototype.isAddNewComponent = false;
-
-app.ViewController.prototype.newComponentType = null;
-
-app.ViewController.prototype.componentMoveActive = false;
-
-app.ViewController.prototype.canvasMoveActive = false;
-
 app.ViewController.prototype.addListeners = function(view) {
-    var thisScope = this;
+    var classThis = this;
 
     // coordinates update
-    goog.events.listen(view, goog.events.EventType.MOUSEMOVE, thisScope.updateCoordinates);
+    goog.events.listen(view, goog.events.EventType.MOUSEMOVE, classThis.updateCoordinates);
 
     // components movement
     goog.events.listen(view, goog.events.EventType.MOUSEDOWN, function(e) {
         // muze byt posun platna
         // vyber komponenty
         // pridani nove
-        if(app.ViewController.isAddNewComponent) {
-            console.log(app.ViewController.newComponentType);
-                var pieces = view.id.split('-');
-                var tableIndex = parseInt(pieces[1]);
-                // get table
-                // create comp
-                // add comp
-                // update views
-        } else if(thisScope.isIntersection(e)) {
+        if(classThis.isAddNewComponent) {
+            var pieces = view.id.split('-');
+            classThis.addComponent(parseInt(pieces[1]), parseInt(pieces[2]));
+        } else if(classThis.isIntersection(e)) {
             app.ViewController.componentMoveActive = true;
         } else {
             app.ViewController.canvasMoveActive = true;
         }
-
-        goog.events.listen(view, goog.events.EventType.MOUSEMOVE, thisScope.viewMouseMove);
+        goog.events.listen(view, goog.events.EventType.MOUSEMOVE, classThis.viewMouseMove);
     });
+
+
+
     goog.events.listen(view, goog.events.EventType.MOUSEUP, function(e) {
         app.ViewController.isAddNewComponent = false;
         app.ViewController.componentMoveActive = false;
         app.ViewController.canvasMoveActive = false;
-        goog.events.unlisten(view, goog.events.EventType.MOUSEMOVE, thisScope.viewMouseMove);
+        goog.events.unlisten(view, goog.events.EventType.MOUSEMOVE, classThis.viewMouseMove);
+        app.sceneController.hideCross();
     });
+};
+
+app.ViewController.prototype.addComponent = function(tableID, viewID, coordX, coordY) {
+    var view = app.sceneController.getView(tableID, view);
+    switch(this.newComponentType) {
+        case 'MIRROR':
+            view.addComponent(new app.Mirror(coordX, coordY));
+            break;
+        case 'LENS':
+            view.addComponent(new app.Lens(coordX, coordY));
+            break;
+        case 'HOLO-PLATE':
+            view.addComponent(new app.HoloPlate(coordX, coordY));
+            break;
+        case 'WALL':
+            view.addComponent(new app.Wall(coordX, coordY));
+            break;
+        case 'LIGHT':
+            view.addComponent(new app.Light(coordX, coordY));
+            break;
+    }
+};
+
+app.ViewController.prototype.setAddNewComponent = function(value) {
+    this.isAddNewComponent = value;
+};
+
+app.ViewController.prototype.setComponentType = function(type) {
+    this.newComponentType = type;
 };
 
 app.ViewController.prototype.removeListeners = function(view) {
@@ -51,7 +86,7 @@ app.ViewController.prototype.removeListeners = function(view) {
     goog.events.unlisten(view, goog.events.EventType.MOUSEMOVE, this.updateCoordinates);
 };
 
-app.ViewController.prototype.updateCoordinates = function(e, view) {
+app.ViewController.prototype.updateCoordinates = function(e) {
     var coordinates = e.currentTarget.childNodes[1];
     // todo lepsi prevod cm
     var xCm = e.offsetX / 37.795276;

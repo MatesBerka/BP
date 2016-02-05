@@ -8,18 +8,18 @@ goog.require('goog.log');
 goog.require('app.SceneController');
 goog.require('app.MenuController');
 
-app.LOCALE = 'cs_CZ';
+app.LOCALE = 'en_US';
 /**
  * Make {@code app.start} accessible after {@code ADVANCED_OPTIMIZATIONS}.
  * @param {Object} config
- * @export
- */
+* @export
+    */
 app.start = function() {
 
     app.setCanvasWrapperHeight();
     app.translate();
 
-    if(true) {
+    if(true) { // TODO check url
         // if url empty init default settings
         app.init();
     } else {
@@ -60,11 +60,13 @@ app.init = function() {
 app.loadSimulation = function() {};
 
 app.translate = function() {
-    var i = 0,
-    locale = app.TRANSLATION[app.LOCALE];
+    app.translation = app.TRANSLATION[app.LOCALE];
 
-    for(i; i < locale.length; i++) {
-        goog.dom.setTextContent(goog.dom.getElement(locale[i][0]), locale[i][1]);
+    for (var key in app.translation) {
+        var el = goog.dom.getElement(key);
+        if(el !== null) {
+            goog.dom.setTextContent(goog.dom.getElement(key), app.translation[key]);
+        }
     }
 };
 

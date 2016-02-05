@@ -3,13 +3,16 @@ goog.provide('app.model.View');
 /**
  * @constructor
  */
-app.model.View = function(tableID, viewID, offsetX, offsetY) {
+app.model.View = function(tableID, viewID, viewName, offsetX, offsetY) {
 
-    this.tableID = tableID;
+    this.tableID_ = tableID;
 
-    this.viewID = viewID;
+    this.viewID_ = viewID;
 
-    this.offsetX = offsetX;
+    this.viewName_ = viewName;
 
-    this.offsetY = offsetY;
+    this.offsetX_ = offsetX;
+
+    this.offsetY_ = offsetY;
+
 };
