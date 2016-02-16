@@ -7,6 +7,7 @@
         <meta name="author" content="Matěj Berka">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="css/styles.css">
+        <!--TODO lower then IE 9  nepodporujeme-->
         <!--[if lt IE 9]>
         <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
@@ -41,6 +42,7 @@
                     <li class="menu-item"><span id="components-menu-msg">Components</span>
                         <ul class="nested-items">
                             <li class="menu-item" id="add-mirror"><span id="mirror-menu-msg">Add mirror</span></li>
+                            <li class="menu-item" id="add-splitter"><span id="splitter-menu-msg">Add splitter</span></li>
                             <li class="menu-item" id="add-lens"><span id="lens-menu-msg">Add lens</span></li>
                             <li class="menu-item" id="add-holo-plate"><span id="holo-menu-msg">Add holographic plate</span></li>
                             <li class="menu-item" id="add-wall"><span id="wall-menu-msg">Add wall</span></li>
@@ -66,9 +68,17 @@
                 <div id="add-new-view">+</div>
             </section>
             <div id="canvas-wrapper">
-
+                <div id="component-configuration-panel">
+                    <h3 id="com-conf-header">Component configuration</h3>
+                    <div id="component-configuration"></div>
+                    <div id="component-buttons">
+                        <button id="com-copy-btn">copy</button>
+                        <button id="com-save-btn">Close</button>
+                    </div>
+                </div>
             </div>
         </section>
+        <div id="cm-box"></div>
         <script type="text/javascript">
             app.start();
         </script>

@@ -14,10 +14,17 @@ app.TRANSLATION = {
         'lang-cs-cz': 'Čeština',
         'lang-en-us': 'Angličtina',
         // popups titles
-        'new-table': 'New table',
-        'new-view': 'New view',
-        'edit-table': 'Edit table',
-        'edit-view': 'Edit view'
+        'new-table': 'Nová tabulka',
+        'new-view': 'Nový pohled',
+        'edit-table': 'Upravit tabulku',
+        'edit-view': 'Upravit pohled',
+        'help-title': 'Pomoc',
+        // component configuration popup
+        'com-conf-header': 'Konfigurace komponenty',
+        'com-position': 'Pozice:',
+        'com-rotation': 'Rotace:',
+        'com-dimensions': 'Rozměry:',
+        'com-light': 'Světlo:'
     },
     'en_US': {
         'logo-msg': 'Diffractive optics simulator',
@@ -37,6 +44,13 @@ app.TRANSLATION = {
         'new-table': 'New table',
         'new-view': 'New view',
         'edit-table': 'Edit table',
-        'edit-view': 'Edit view'
+        'edit-view': 'Edit view',
+        'help-title': 'Help',
+        // component configuration popup
+        'com-conf-header': 'Component configuration',
+        'com-position': 'Position:',
+        'com-rotation': 'Rotation:',
+        'com-dimensions': 'Dimensions:',
+        'com-light': 'Light:'
     }
 };
