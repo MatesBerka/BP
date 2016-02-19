@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # BASE_DIR="$(dirname ${0})/../.."
- BASE_DIR="../"
+ BASE_DIR=".."
 
 PYTHON_BIN="python"
 JVM_ARCH="-d64"
@@ -22,8 +22,8 @@ JS_CLOSURE_SOY_DIR="${BASE_DIR}/www/js-soy"
 
 TEMPLATE_DIR="${BASE_DIR}/www/js"
 
-URL_APP="../../../js"
-URL_SOY="../../../js-soy"
+URL_APP="${BASE_DIR}/www/js"
+URL_SOY="${BASE_DIR}/www/js/js-soy"
 
 LANG="cs"
 LOCALE="cs"
@@ -41,7 +41,8 @@ compile() {
 		--compiler_flags="--compilation_level=ADVANCED_OPTIMIZATIONS" \
 		--compiler_flags="--warning_level=verbose" \
 		--compiler_flags="--define=goog.DEBUG=false" \
-		--compiler_flags="--define=goog.LOCALE='${LOCALE}'" \		--output_file=${JS_APP_COMPILLED}
+		--compiler_flags="--define=goog.LOCALE='${LOCALE}'" \
+		--output_file=${JS_APP_COMPILLED}
 }
 
 deps() {
