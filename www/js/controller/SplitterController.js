@@ -2,6 +2,10 @@ goog.provide('app.SplitterController');
 
 goog.require('app.ComponentController');
 
+/**
+ * @constructor
+ * @extends {app.ComponentController}
+ */
 app.SplitterController = function() {
     app.SplitterController.base(this, 'constructor');
 

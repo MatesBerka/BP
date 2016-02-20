@@ -6,8 +6,8 @@ goog.require('app.ComponentController');
  * @constructor
  * @extends {app.ComponentController}
  */
-app.LightController = function(model) {
-    app.LightController.base(this, 'constructor', model);
+app.LightController = function() {
+    app.LightController.base(this, 'constructor');
 
     this._selectedComponentType = 'LIGHT';
 };

@@ -14,6 +14,9 @@ goog.require('app.MirrorController');
 goog.require('app.SplitterController');
 goog.require('app.WallController');
 
+/**
+ * @constructor
+ */
 app.ViewController = function () {
     this._reflectionsCount = 4;
 
@@ -133,13 +136,13 @@ app.ViewController.prototype.addRay = function (ray) {
 
 app.ViewController.prototype.draw = function () {
     var ctx = this._model.getGraphicsContext(),
-        i = 0, j, rayLength, newRayLength, endPoint, ray, componentID, callback = this.addRay.bind(this);
+        i, j, rayLength, newRayLength, endPoint, ray, componentID, callback = this.addRay.bind(this);
 
     // clean canvas
     var area = this._model.getVisibleArea();
     ctx.clearRect(area[0], area[1], area[2], area[3]);
 
-    for (i; i < this._components.length; i++) {
+    for (i = 0; i < this._components.length; i++) {
         this._components[i].draw(ctx, callback);
     }
 
