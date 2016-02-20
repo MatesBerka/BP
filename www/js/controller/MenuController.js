@@ -1,6 +1,7 @@
 goog.provide('app.MenuController');
 
 goog.require('goog.ui.Dialog');
+
 /**
  * @constructor
  */
@@ -18,11 +19,11 @@ app.MenuController.prototype.init = function () {
     this.refDialog.setTitle(app.translation['reflections-count']);
     this.refDialog.setButtonSet(goog.ui.Dialog.ButtonSet.OK_CANCEL);
 
-    this.help = new goog.ui.Dialog();
-    this.help.setTitle(app.translation['help-title']);
+    this.helpDialog = new goog.ui.Dialog('wide-dialog');
+    this.helpDialog.setTitle(app.translation['help-title']);
     var helpButton = new goog.ui.Dialog.ButtonSet();
     helpButton.addButton({key: 'ok', caption: 'Ok'}, true);
-    this.help.setButtonSet(helpButton);
+    this.helpDialog.setButtonSet(helpButton);
 };
 
 app.MenuController.prototype.addListeners = function () {
@@ -131,7 +132,11 @@ app.MenuController.prototype.addListeners = function () {
 
     // help
     goog.events.listen(goog.dom.getElement('help'), goog.events.EventType.CLICK, function (e) {
-        this.help.setContent("ahoj");
-        this.help.setVisible(true);
+        this.helpDialog.setContent("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc volutpat tincidunt lectus, ut sagittis enim egestas ut. Donec sed luctus odio. Mauris finibus laoreet magna, vitae rhoncus tortor eleifend aliquet. Curabitur mattis pretium mauris. Etiam finibus nunc laoreet magna scelerisque dictum. Integer id viverra lacus. Sed posuere odio tortor, eget scelerisque quam viverra in. Morbi et turpis laoreet, pharetra libero porttitor, convallis nunc. " +
+            "Aliquam erat volutpat. Nam quis varius lectus, vitae tincidunt nisi. Vivamus consectetur consectetur nunc in consectetur. Suspendisse vehicula malesuada volutpat. Donec imperdiet sodales sagittis. Aliquam congue risus sed consequat tincidunt. Quisque ullamcorper ut libero sed rutrum. Sed eu malesuada risus. Nunc eget enim congue, vulputate arcu non, luctus tortor. Morbi porttitor turpis elit, elementum fermentum arcu ullamcorper nec. Nam luctus tincidunt quam ac iaculis. Nulla facilisi. Ut in elit tellus. " +
+            "Morbi at maximus nisl, sit amet laoreet turpis. Proin egestas ullamcorper arcu ac suscipit. Morbi sapien felis, vehicula ut metus a, vehicula luctus dolor. Nullam mollis egestas justo et suscipit. Aliquam erat volutpat. Maecenas vel ex nulla. Vestibulum imperdiet hendrerit ipsum sit amet vulputate. Cras eu turpis vel nisi sodales tempor. Morbi eu neque congue, gravida diam in, auctor lorem. Vivamus ornare, felis ac porta dapibus, lacus enim blandit ex, posuere tempus libero nisl at nisl. Suspendisse potenti. Mauris ornare consectetur ullamcorper. Nam vulputate nunc sed elit luctus, eu accumsan nibh lacinia. " +
+            "Nunc id neque non turpis hendrerit dictum id eu nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut congue mattis leo, quis laoreet dolor. Mauris justo felis, maximus et neque ut, elementum malesuada metus. Nunc dapibus efficitur dolor et aliquet. Sed lacus purus, semper quis libero ac, porta lacinia tellus. Aenean enim enim, lacinia id dapibus in, condimentum vel metus. " +
+            "Nunc at auctor justo, quis lobortis massa. Sed a urna id sapien ornare consectetur. Integer porta nisl nulla, vel vestibulum lectus ornare vel. Pellentesque malesuada aliquam porttitor. In fermentum mi sit amet velit facilisis, at fringilla lectus ultricies. Donec porttitor, nunc et bibendum cursus, mi tortor cursus magna, efficitur varius dui tellus non nibh. Suspendisse risus justo, eleifend at fringilla in, volutpat at sem. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque vehicula id orci vitae congue. Cras fermentum ullamcorper dolor a bibendum. Praesent at sem pretium, mollis tellus ut, venenatis quam. Ut a facilisis orci, non volutpat est. Praesent metus arcu, iaculis non pellentesque vitae,");
+        this.helpDialog.setVisible(true);
     }, true, this);
 };

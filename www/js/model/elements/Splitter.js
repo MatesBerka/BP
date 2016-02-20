@@ -3,7 +3,7 @@ goog.provide('app.model.Splitter');
 goog.require('app.model.Component');
 /**
  * @constructor
- * @extends {app.Parent}
+ * @extends {app.model.Component}
  */
 app.model.Splitter = function (coordX, coordY) {
 
@@ -118,4 +118,9 @@ app.model.Splitter.prototype.isSelected = function (x, y) {
         return this._isSelected = true;
     }
     return this._isSelected = false;
+};
+
+app.model.Splitter.prototype.copy = function () {
+    var copy = new app.model.Splitter(this._appliedTranslationX, this._appliedTranslationY);
+    return copy;
 };

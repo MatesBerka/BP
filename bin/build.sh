@@ -1,7 +1,5 @@
 #!/bin/bash
-
-# BASE_DIR="$(dirname ${0})/../.."
- BASE_DIR=".."
+BASE_DIR=".."
 
 PYTHON_BIN="python"
 JVM_ARCH="-d64"
@@ -26,7 +24,7 @@ URL_APP="${BASE_DIR}/www/js"
 URL_SOY="${BASE_DIR}/www/js/js-soy"
 
 LANG="cs"
-LOCALE="cs"
+LOCALE="cs_CZ"
 
 compile() {
 	${PYTHON_BIN} ${CLOSURE_BUILD_DIR}/closurebuilder.py \
@@ -39,6 +37,7 @@ compile() {
 		--compiler_jar=${CLOSURE_UTIL_DIR}/compiler.jar \
 		--jvm_flags="${JVM_ARCH}" \
 		--compiler_flags="--compilation_level=ADVANCED_OPTIMIZATIONS" \
+		--compiler_flags="--generate_exports" \
 		--compiler_flags="--warning_level=verbose" \
 		--compiler_flags="--define=goog.DEBUG=false" \
 		--compiler_flags="--define=goog.LOCALE='${LOCALE}'" \
@@ -112,8 +111,5 @@ case $1 in
 
 	*)
 		echo "Usage: $0 [build|compile|deps|messages|soy]"
-		echo "---"
-		echo "See http://www.closurecheatsheet.com/skeleton for more examples/usages"
-		echo "---"
 		exit 1
 esac

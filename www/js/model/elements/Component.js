@@ -1,7 +1,8 @@
+goog.provide('app.model');
 goog.provide('app.model.Component');
+
 /**
  * @constructor
- * @extends {app.model.Parent}
  */
 app.model.Component = function(coordX, coordY) {
 
@@ -15,8 +16,6 @@ app.model.Component = function(coordX, coordY) {
 
     this._rayMinLength = 3;
 
-    this._componentColor = '#000000';
-
     this._isSelected = false;
 
     this._intersectionPoint = [];
@@ -26,6 +25,7 @@ app.model.Component = function(coordX, coordY) {
     this._transformedPoints = [];
 
     this._generateShapePoints();
+
     this._transformPoints();
 };
 
@@ -38,6 +38,8 @@ app.model.Component.prototype.draw = goog.abstractMethod;
 app.model.Component.prototype.isSelected = goog.abstractMethod;
 
 app.model.Component.prototype._generateShapePoints = goog.abstractMethod;
+
+app.model.Component.prototype.copyArguments = goog.abstractMethod;
 
 app.model.Component.prototype.getPosX = function() {
     return this._appliedTranslationX;
@@ -55,9 +57,14 @@ app.model.Component.prototype.getRotation = function() {
     return this._appliedRotation * (180/Math.PI);
 };
 
-app.model.Component.prototype.setSelected = function(boolean) {
-    this._isSelected = boolean;
+app.model.Component.prototype.setRotation = function(rotation) {
+    this._appliedRotation = rotation;
+    this._transformPoints();
 };
+
+//app.model.Component.prototype.setSelected = function(boolean) {
+//    this._isSelected = boolean;
+//};
 
 app.model.Component.prototype._normalize2DVector = function(vec) {
     var len = Math.sqrt(vec[0]*vec[0] + vec[1]*vec[1]);

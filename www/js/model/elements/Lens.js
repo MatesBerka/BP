@@ -3,7 +3,7 @@ goog.provide('app.model.Lens');
 goog.require('app.model.Component');
 /**
  * @constructor
- * @extends {app.Parent}
+ * @extends {app.model.Component}
  */
 app.model.Lens = function(coordX, coordY) {
 
@@ -164,4 +164,18 @@ app.model.Lens.prototype.isSelected = function (x, y) {
         return this._isSelected = true;
     }
     return this._isSelected = false;
+};
+
+app.model.Lens.prototype.copyArguments = function(rotation, height, focusType, focusOffset) {
+    this._appliedRotation = rotation;
+    this._height = height;
+    this._focusType = focusType;
+    this._focusOffset = focusOffset;
+    this._transformPoints();
+};
+
+app.model.Lens.prototype.copy = function () {
+    var copy = new app.model.Lens(this._appliedTranslationX, this._appliedTranslationY);
+    copy.copyArguments(this._appliedRotation, this._height, this._focusType, this._focusOffset);
+    return copy;
 };

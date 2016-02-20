@@ -1,13 +1,12 @@
 goog.provide('app.ComponentController');
 
+goog.require('goog.dom');
 /**
  * @constructor
  */
-app.ComponentController = function() {
+app.ComponentController = function () {
 
     this._model = null;
-
-    this._selectedComponentType = null;
 
     this._componentConfigurationPanel = goog.dom.getElement('component-configuration');
 
@@ -18,16 +17,20 @@ app.ComponentController.prototype.showComponentControlPanel = goog.abstractMetho
 
 app.ComponentController.prototype.hideComponentControlPanel = goog.abstractMethod;
 
-app.ComponentController.prototype.addPanelListeners = goog.abstractMethod;
+app.ComponentController.prototype._addPanelListeners = goog.abstractMethod;
 
-app.ComponentController.prototype.setSelectedComponentModel = function(model) {
+app.ComponentController.prototype.setSelectedComponentModel = function (model) {
     this._model = model;
 };
 
-app.ComponentController.prototype.removeSelected = function() {
+app.ComponentController.prototype.removeSelected = function () {
     this._model.setSelected(false);
 };
 
-app.ComponentController.prototype.updatePosition = function(diffX, diffY) {
+app.ComponentController.prototype.updatePosition = function (diffX, diffY) {
     this._model.applyTranslation(diffX, diffY);
+};
+
+app.ComponentController.prototype.getComponentModelCopy = function() {
+    return this._model.copy();
 };

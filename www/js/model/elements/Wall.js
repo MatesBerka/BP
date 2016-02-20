@@ -3,7 +3,7 @@ goog.provide('app.model.Wall');
 goog.require('app.model.Component');
 /**
  * @constructor
- * @extends {app.Parent}
+ * @extends {app.model.Component}
  */
 app.model.Wall = function(coordX, coordY) {
     this._width = 10;
@@ -112,3 +112,17 @@ app.model.Wall.prototype.isSelected = function(x, y) {
     }
     return this._isSelected = false;
 };
+
+app.model.Wall.prototype.copyArguments = function(rotation, width, height) {
+    this._appliedRotation = rotation;
+    this._width = width;
+    this._height = height;
+    this._transformPoints();
+};
+
+app.model.Wall.prototype.copy = function () {
+    var copy = new app.model.Wall(this._appliedTranslationX, this._appliedTranslationY);
+    copy.copyArguments(this._appliedRotation, this._width, this._height);
+    return copy;
+};
+

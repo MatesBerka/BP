@@ -1,3 +1,5 @@
+goog.provide('app.locales');
+
 app.TRANSLATION = {
     'cs_CZ': {
         'logo-msg': 'Simulátor difraktivní optiky',
@@ -13,12 +15,14 @@ app.TRANSLATION = {
         'languages': 'Jazyk',
         'lang-cs-cz': 'Čeština',
         'lang-en-us': 'Angličtina',
-        // popups titles
+        // popups
         'new-table': 'Nová tabulka',
         'new-view': 'Nový pohled',
         'edit-table': 'Upravit tabulku',
         'edit-view': 'Upravit pohled',
         'help-title': 'Pomoc',
+        'copy-title': 'Kopírovat komponentu',
+        'copy-no-tables': 'Žádné stoly nejsou k dispozici.',
         // component configuration popup
         'com-conf-header': 'Konfigurace komponenty',
         'com-position': 'Pozice:',
@@ -40,12 +44,14 @@ app.TRANSLATION = {
         'languages': 'Language',
         'lang-cs-cz': 'Czech',
         'lang-en-us': 'English',
-        // popups titles
+        // popups
         'new-table': 'New table',
         'new-view': 'New view',
         'edit-table': 'Edit table',
         'edit-view': 'Edit view',
         'help-title': 'Help',
+        'copy-title': 'Copy component',
+        'copy-no-tables': 'No tables are available.',
         // component configuration popup
         'com-conf-header': 'Component configuration',
         'com-position': 'Position:',

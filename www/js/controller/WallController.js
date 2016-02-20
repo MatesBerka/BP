@@ -2,6 +2,10 @@ goog.provide('app.WallController');
 
 goog.require('app.ComponentController');
 
+/**
+ * @constructor
+ * @extends {app.ComponentController}
+ */
 app.WallController = function() {
     app.WallController.base(this, 'constructor');
 
@@ -10,7 +14,7 @@ app.WallController = function() {
 
 goog.inherits(app.WallController, app.ComponentController);
 
-app.WallController.prototype.showComponentControlPanel = function() {
+app.WallController.prototype.showComponentControlPanel = function(sceneController) {
     this._componentConfigurationPanel.style.display = "block";
     goog.dom.classlist.add(goog.dom.getElement('canvas-wrapper'), 'active-component-panel');
     var html =  '<label id="com-position">' + app.translation["com-position"] + '</label>' +
@@ -18,6 +22,8 @@ app.WallController.prototype.showComponentControlPanel = function() {
                 '<div class="input-field">Y: <input type="text" name="com-height" class="input-min" id="com-height"  value="' + this._model.getPosY() + '"> cm</div>';
 
     this._componentConfigurationPanel.innerHTML = html;
+
+    this._addPanelListeners(sceneController);
 };
 
 app.WallController.prototype.hideComponentControlPanel = function() {
@@ -25,6 +31,5 @@ app.WallController.prototype.hideComponentControlPanel = function() {
     this._componentConfigurationPanel.innerHTML = '';
 };
 
-app.WallController.prototype.addPanelListeners = function() {
-
+app.WallController.prototype._addPanelListeners = function(sceneController) {
 };

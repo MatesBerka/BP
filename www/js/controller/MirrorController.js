@@ -2,6 +2,10 @@ goog.provide('app.MirrorController');
 
 goog.require('app.ComponentController');
 
+/**
+ * @constructor
+ * @extends {app.ComponentController}
+ */
 app.MirrorController = function() {
     app.MirrorController.base(this, 'constructor');
 
@@ -11,9 +15,11 @@ app.MirrorController = function() {
 
 goog.inherits(app.MirrorController, app.ComponentController);
 
-app.MirrorController.prototype.showComponentControlPanel = function() {
+app.MirrorController.prototype.showComponentControlPanel = function(sceneController) {
     this._componentConfigurationPanel.style.display = "block";
     goog.dom.classlist.add(goog.dom.getElement('canvas-wrapper'), 'active-component-panel');
+
+    this._addPanelListeners(sceneController);
 };
 
 app.MirrorController.prototype.hideComponentControlPanel = function() {
@@ -21,6 +27,5 @@ app.MirrorController.prototype.hideComponentControlPanel = function() {
     goog.dom.classlist.remove(goog.dom.getElement('canvas-wrapper'), 'active-component-panel');
 };
 
-app.MirrorController.prototype.addPanelListeners = function() {
-
+app.MirrorController.prototype._addPanelListeners = function(sceneController) {
 };

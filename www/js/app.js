@@ -7,6 +7,7 @@ goog.require('goog.graphics');
 goog.require('goog.log');
 goog.require('app.SceneController');
 goog.require('app.MenuController');
+goog.require('app.locales');
 
 app.LOCALE = 'en_US';
 /**
@@ -42,3 +43,13 @@ app.translate = function() {
         }
     }
 };
+
+//https://www.youtube.com/watch?v=i20bzCUw464
+//http://fyzika.jreichl.com/main.article/view/481-zobrazeni-tenkou-cockou
+//https://www.youtube.com/watch?v=i20bzCUw464
+//https://phet.colorado.edu/sims/geometric-optics/geometric-optics_cs.html
+//http://www.e-fyzika.cz/kapitoly/08-geometricka-optika.pdf
+//http://www.gymhol.cz/projekt/fyzika/05_cocky/05_cocky.htm
+//http://www.itnetwork.cz/maturitni-otazka-fyzika-zobrazeni-cocky-zrcadla-pristroje
+//https://cs.wikipedia.org/wiki/Rozptyln%C3%A1_%C4%8Do%C4%8Dka
+//http://stackoverflow.com/questions/9705123/how-can-i-get-sin-cos-and-tan-to-use-degrees-instead-of-radians

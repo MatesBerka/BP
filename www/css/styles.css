@@ -53,6 +53,10 @@ input {
     max-width: 100%;
 }
 
+select {
+    padding: 5px;
+}
+
 #navigation {
     z-index: 999;
     width: 100%;
@@ -167,6 +171,10 @@ ul#top-items > li {
     margin: 15px;
     height: 400px;
     position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 .view-wrapper {
     position: relative;
@@ -228,28 +236,52 @@ ul#top-items > li {
 }
 
 /* Dialogs styles */
+.wide-dialog-bg,
 .modal-dialog-bg {
     background: #000;
     position: absolute;
     top: 0px;
     z-index: 1;
 }
+.wide-dialog,
 .modal-dialog {
     position: absolute;
     width: 330px;
     background: #ededed;
-    cursor: move;
     z-index: 2;
     webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.19),0 0 0 1px rgba(0,0,0,0.07);
     -moz-box-shadow: 0 1px 3px rgba(0,0,0,.19),0 0 0 1px rgba(0,0,0,.07);
     box-shadow: 0 1px 3px rgba(0,0,0,0.19),0 0 0 1px rgba(0,0,0,0.07);
+    border-radius: 6px;
+    overflow: hidden;
+    outline: none;
 }
 
+.wide-dialog {
+    width: 600px;
+}
+
+@media (max-width:600px){
+    .wide-dialog {
+        width: 330px;
+    }
+}
+.wide-dialog-title,
+.modal-dialog-title {
+    cursor: move;
+}
+
+.wide-dialog-buttons,
+.wide-dialog-title,
 .modal-dialog-buttons,
 .modal-dialog-title {
     padding: 10px;
-    color: white;
+    color: #ededed;
     background: #333;
+}
+
+.wide-dialog-content {
+    padding: 20px;
 }
 
 .modal-dialog-content {
@@ -274,7 +306,7 @@ ul#top-items > li {
     padding: 15px;
     background-color: #333333;
     text-align: center;
-    color: #ffffff;
+    color: #efefef;
 }
 
 #component-configuration {
@@ -289,27 +321,59 @@ ul#top-items > li {
     width: 100%;
     text-align: center;
     padding: 10px;
+    border-top: 1px solid #bfbfbf;
 }
 
 #component-configuration label {
     width: 100%;
     padding: 7px 0px;
     display: block;
+    border-bottom: 1px solid #bfbfbf;
+    margin: 5px 0px 10px 0px;
 }
 
 #component-configuration .input-field {
     width: 100%;
+    display: inline-block;
+}
+
+#component-configuration .input-field:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
 }
 
 #component-configuration .input-min {
     width: 50px;
 }
 
-#com-copy-btn,
-#com-save-btn {
+.com-left-side {
+    width: 50%;
+    display: block;
+    text-align: right;
+    height: 35px;
+    line-height: 35px;
+    padding-right: 5px;
+    vertical-align: middle;
+    float: left;
+}
+
+.com-right-side {
+    display: block;
+    float: left;
+    width: 50%;
+    text-align: left;
+    height: 35px;
+}
+
+button {
     -moz-box-shadow:inset 0px 1px 3px 0px #91b8b3;
     -webkit-box-shadow:inset 0px 1px 3px 0px #91b8b3;
     box-shadow:inset 0px 1px 3px 0px #91b8b3;
+    outline: none;
     background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #768d87), color-stop(1, #6c7c7c));
     background:-moz-linear-gradient(top, #768d87 5%, #6c7c7c 100%);
     background:-webkit-linear-gradient(top, #768d87 5%, #6c7c7c 100%);
@@ -328,12 +392,19 @@ ul#top-items > li {
     font-family:Arial;
     font-size:15px;
     font-weight:bold;
-    padding:11px 23px;
+    margin-right: 10px;
+    padding: 5px 10px;
     text-decoration:none;
     text-shadow:0px -1px 0px #2b665e;
 }
-#com-copy-btn:hover,
-#com-save-btn:hover {
+
+
+#com-copy-btn,
+#com-close-btn {
+    padding: 11px 23px;
+}
+
+button:hover {
     background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #6c7c7c), color-stop(1, #768d87));
     background:-moz-linear-gradient(top, #6c7c7c 5%, #768d87 100%);
     background:-webkit-linear-gradient(top, #6c7c7c 5%, #768d87 100%);
@@ -344,8 +415,7 @@ ul#top-items > li {
     background-color:#6c7c7c;
 }
 
-#com-copy-btn:active,
-#com-save-btn:active {
+button:active {
     position:relative;
     top:1px;
 }

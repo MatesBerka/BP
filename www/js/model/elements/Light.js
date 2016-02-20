@@ -3,7 +3,7 @@ goog.provide('app.model.Light');
 goog.require('app.model.Component');
 /**
  * @constructor
- * @extends {app.Parent}
+ * @extends {app.model.Component}
  */
 app.model.Light = function(coordX, coordY) {
 
@@ -19,6 +19,8 @@ app.model.Light = function(coordX, coordY) {
 
     this._lightID = -1;
 
+    this._wallsCount = 4;
+
     app.model.Light.base(this, 'constructor', coordX, coordY); // call parent constructor
 };
 
@@ -29,7 +31,7 @@ app.model.Light.prototype.getSize = function() {
 };
 
 app.model.Light.prototype.setSize = function(size) {
-    this._size = parseInt(size);
+    this._size = parseInt(size, 10);
     this._generateShapePoints();
     this._transformPoints();
 };
@@ -39,7 +41,7 @@ app.model.Light.prototype.getRaysCount = function() {
 };
 
 app.model.Light.prototype.setRaysCount = function(count) {
-    this._generatedRaysCount = parseInt(count);
+    this._generatedRaysCount = parseInt(count, 10);
 };
 
 app.model.Light.prototype.getLightType = function() {
@@ -57,11 +59,11 @@ app.model.Light.prototype.getRadius = function() {
 };
 
 app.model.Light.prototype.setRadius = function(radius) {
-    this._lightRadius = parseInt(radius);
+    this._lightRadius = parseInt(radius, 10);
 };
 
 app.model.Light.prototype.setLightID = function(lightID) {
-    return this._lightID = parseInt(lightID);
+    return this._lightID = parseInt(lightID, 10);
 };
 
 app.model.Light.prototype.getLightID = function() {
@@ -145,43 +147,43 @@ app.model.Light.prototype._circleIntersection = function(ray) {
     // http://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm
     // t2( dx2 + dy2 ) + 2t( exdx + eydy - dxh - dyk ) + ex2 + ey2 - 2exh - 2eyk + h2 + k2 - r2 = 0
 
+    //if(ray[0] == this._transformedPoints[0][0] && ray[1] == this._transformedPoints[0][1]) {
+    //    return Infinity;
+    //}
+    //
+    //var a, b, c, dis, x1, x2, point1 = [], point2 = [], length1 = Infinity, length2 = Infinity;
+    //
+    //a = Math.pow(ray[3], 2) + Math.pow(ray[4], 2);
+    //
+    //b = 2 * (ray[0]*ray[3] + ray[1]*ray[4] - ray[3]*this._transformedPoints[0][0] - ray[4]*this._transformedPoints[0][1]);
+    //
+    //c = ray[0]*ray[0] + ray[1]*ray[1] - 2*ray[0]*this._transformedPoints[0][0] - 2*ray[1]*this._transformedPoints[0][1] +
+    //Math.pow(this._transformedPoints[0][0], 2) + Math.pow(this._transformedPoints[0][1], 2) - Math.pow(this._size, 2);
+    //
+    //dis = Math.pow(b, 2) - 4*a*c;
+    //if(dis < 0)
+    //    return length1;
+    //
+    //x1 = (-b+Math.sqrt(dis))/2*a;
+    //point1[0] = ray[0] + ray[3]*x1;
+    //point1[1] = ray[1] + ray[4]*x1;
+    //x2 = (-b-Math.sqrt(dis))/2*a;
+    //point2[0] = ray[0] + ray[3]*x2;
+    //point2[1] = ray[1] + ray[4]*x2;
+    //
+    //length1 = Math.sqrt(Math.pow(Math.abs(point1[0] - ray[0]), 2) + Math.pow(Math.abs(point1[1] - ray[1]), 2));
+    //length2 = Math.sqrt(Math.pow(Math.abs(point2[0] - ray[0]), 2) + Math.pow(Math.abs(point2[1] - ray[1]), 2));
+    //
+    //if(length1 <= length2) {
+    //    this._intersectionPoint = point1;
+    //    return length1;
+    //} else {
+    //    this._intersectionPoint = point2;
+    //    return length2;
+    //}
+
     // TODO fix it!
     return Infinity;
-
-    if(ray[0] == this._transformedPoints[0][0] && ray[1] == this._transformedPoints[0][1]) {
-        return Infinity;
-    }
-
-    var a, b, c, dis, x1, x2, point1 = [], point2 = [], length1 = Infinity, length2 = Infinity;
-
-    a = Math.pow(ray[3], 2) + Math.pow(ray[4], 2);
-
-    b = 2 * (ray[0]*ray[3] + ray[1]*ray[4] - ray[3]*this._transformedPoints[0][0] - ray[4]*this._transformedPoints[0][1]);
-
-    c = ray[0]*ray[0] + ray[1]*ray[1] - 2*ray[0]*this._transformedPoints[0][0] - 2*ray[1]*this._transformedPoints[0][1] +
-    Math.pow(this._transformedPoints[0][0], 2) + Math.pow(this._transformedPoints[0][1], 2) - Math.pow(this._size, 2);
-
-    dis = Math.pow(b, 2) - 4*a*c;
-    if(dis < 0)
-        return length1;
-
-    x1 = (-b+Math.sqrt(dis))/2*a;
-    point1[0] = ray[0] + ray[3]*x1;
-    point1[1] = ray[1] + ray[4]*x1;
-    x2 = (-b-Math.sqrt(dis))/2*a;
-    point2[0] = ray[0] + ray[3]*x2;
-    point2[1] = ray[1] + ray[4]*x2;
-
-    length1 = Math.sqrt(Math.pow(Math.abs(point1[0] - ray[0]), 2) + Math.pow(Math.abs(point1[1] - ray[1]), 2));
-    length2 = Math.sqrt(Math.pow(Math.abs(point2[0] - ray[0]), 2) + Math.pow(Math.abs(point2[1] - ray[1]), 2));
-
-    if(length1 <= length2) {
-        this._intersectionPoint = point1;
-        return length1;
-    } else {
-        this._intersectionPoint = point2;
-        return length2;
-    }
 };
 
 app.model.Light.prototype.isIntersection = function(ray) {
@@ -308,9 +310,24 @@ app.model.Light.prototype.draw = function(ctx, callback) {
     this._generateRays(callback);
 };
 
+// TODO is it used somewhere?
 app.model.Light.prototype.changeLightType = function(type) {
     this._lightType = type;
     this._generateShapePoints();
     this._transformPoints();
 };
 
+app.model.Light.prototype.copyArguments = function(rotation, size, lightType, generatedRaysCount, lightRadius) {
+    this._appliedRotation = rotation;
+    this._size = size;
+    this._lightType = lightType;
+    this._generatedRaysCount = generatedRaysCount;
+    this._lightRadius = lightRadius;
+    this._transformPoints();
+};
+
+app.model.Light.prototype.copy = function () {
+    var copy = new app.model.Light(this._appliedTranslationX, this._appliedTranslationY);
+    copy.copyArguments(this._appliedRotation, this._size, this._lightType, this._generatedRaysCount, this._lightRadius);
+    return copy;
+};

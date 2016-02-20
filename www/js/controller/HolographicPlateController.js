@@ -2,6 +2,10 @@ goog.provide('app.HolographicPlateController');
 
 goog.require('app.ComponentController');
 
+/**
+ * @constructor
+ * @extends {app.ComponentController}
+ */
 app.HolographicPlateController = function() {
     app.HolographicPlateController.base(this, 'constructor');
 
@@ -10,7 +14,7 @@ app.HolographicPlateController = function() {
 
 goog.inherits(app.HolographicPlateController, app.ComponentController);
 
-app.HolographicPlateController.prototype.showComponentControlPanel = function(viewController) {
+app.HolographicPlateController.prototype.showComponentControlPanel = function(sceneController) {
     this._componentConfigurationPanel.style.display = "block";
     goog.dom.classlist.add(goog.dom.getElement('canvas-wrapper'), 'active-component-panel');
 
@@ -20,7 +24,7 @@ app.HolographicPlateController.prototype.showComponentControlPanel = function(vi
         '<div id="component-buttons"><button id="com-record-btn">Record</button></div>';
 
     this._componentConfigurationPanel.innerHTML = html;
-    this.addPanelListeners(viewController);
+    this._addPanelListeners(sceneController);
 };
 
 app.HolographicPlateController.prototype.hideComponentControlPanel = function() {
@@ -28,13 +32,14 @@ app.HolographicPlateController.prototype.hideComponentControlPanel = function() 
     goog.dom.classlist.remove(goog.dom.getElement('canvas-wrapper'), 'active-component-panel');
 };
 
-app.HolographicPlateController.prototype.addPanelListeners = function(viewController) {
+app.HolographicPlateController.prototype._addPanelListeners = function(sceneController) {
+
     goog.events.listen(goog.dom.getElement('com-record-btn'), goog.events.EventType.CLICK, function (e) {
 
         // TODO first pick refrence light
         this._model.makeRecord(1); // light id
-        viewController.draw();
+        sceneController.redrawAll();
         this._model.showRecord();
-        viewController.draw();
+        sceneController.redrawAll();
     }, true, this);
 };

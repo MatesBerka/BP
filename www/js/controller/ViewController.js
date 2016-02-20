@@ -17,19 +17,11 @@ goog.require('app.WallController');
 app.ViewController = function () {
     this._reflectionsCount = 4;
 
-    this._isAddNewComponent = false;
-
-    this._newComponentType = null;
-
-    this._componentMoveAction = false;
-
-    this._componentMoved = false;
-
     this._canvasMoveActive = false;
 
     this._model = null;
 
-    this._componentController = null;
+    this._components = [];
 
     this._rays = [];
 
@@ -42,46 +34,26 @@ app.ViewController.prototype.addListeners = function (view) {
     var classThis = this;
 
     // coordinates update
-    goog.events.listen(view, goog.events.EventType.MOUSEMOVE, classThis.updateCoordinates, true, this);
+    goog.events.listen(view, goog.events.EventType.MOUSEMOVE, classThis.updateCoordinates, false, this);
 
     // mouse down events
     goog.events.listen(view, goog.events.EventType.MOUSEDOWN, function (e) {
-        if (this._isAddNewComponent) { // pridani nove
-            this.addComponent(e.offsetX, e.offsetY);
-        } else if (this.isIntersection(e)) { // vyber komponenty
-            this._componentMoveActive = true;
+        if (this._canvasMoveActive) {
             this._mouseCursorPoint = [e.offsetX, e.offsetY];
-            goog.events.listen(view, goog.events.EventType.MOUSEMOVE, this.componentMoved, true, this);
-        } else { // muze byt posun platna
-            this._canvasMoveActive = true;
             goog.events.listen(view, goog.events.EventType.MOUSEMOVE, this.canvasMoved, true, this);
         }
     }, false, this);
 
     // mouse up events
     goog.events.listen(view, goog.events.EventType.MOUSEUP, function (e) {
-        if (this._isAddNewComponent) {
-            this._isAddNewComponent = false;
-            app.sceneController.hideCross();
-        } else if (this._componentMoveActive && this._componentMoved) {
-            this._componentMoveActive = false;
-            this._componentMoved = false;
-            this._componentController.removeSelected();
-            this.draw();
-            goog.events.unlisten(view, goog.events.EventType.MOUSEMOVE, this.componentMoved, true, this);
-        } else if (this._componentMoveActive && !this._componentMoved) {
-            this._componentMoveActive = false;
-            this._componentController.removeSelected();
-            this._componentController.showComponentControlPanel(this);
-            goog.events.unlisten(view, goog.events.EventType.MOUSEMOVE, this.componentMoved, true, this);
-        } else if (this._canvasMoveActive) {
+        if (this._canvasMoveActive) {
             this._canvasMoveActive = false;
             goog.events.unlisten(view, goog.events.EventType.MOUSEMOVE, this.canvasMoved, true, this);
         }
     }, false, this);
 
-    goog.events.listen(goog.dom.getElementByClass('zoom', view), goog.events.EventType.CLICK, function(e) {
-        if(e.target.className === 'zoom-in') {
+    goog.events.listen(goog.dom.getElementByClass('zoom', view), goog.events.EventType.CLICK, function (e) {
+        if (e.target.className === 'zoom-in') {
             this._model.scaleUp();
         } else {
             this._model.scaleDown();
@@ -89,8 +61,8 @@ app.ViewController.prototype.addListeners = function (view) {
         this.draw();
     }, false, this);
 
-    goog.events.listen(goog.dom.getElementByClass('move-control', view), goog.events.EventType.CLICK, function(e) {
-        switch(e.target.className) {
+    goog.events.listen(goog.dom.getElementByClass('move-control', view), goog.events.EventType.CLICK, function (e) {
+        switch (e.target.className) {
             case 'wide-top-move-control':
                 this._model.moveUp();
                 break;
@@ -108,64 +80,17 @@ app.ViewController.prototype.addListeners = function (view) {
     }, false, this);
 };
 
-app.ViewController.prototype.addComponent = function (coordX, coordY) {
-    var model = null;
-
-    switch (this._newComponentType) {
-        case 'MIRROR':
-            this._componentController = new app.MirrorController();
-            model = new app.model.Mirror(coordX, coordY);
-            break;
-        case 'LENS':
-            this._componentController = new app.LensController();
-            model = new app.model.Lens(coordX, coordY);
-            break;
-        case 'HOLO-PLATE':
-            this._componentController = new app.HolographicPlateController();
-            model = new app.model.HolographicPlate(coordX, coordY);
-            break;
-        case 'WALL':
-            this._componentController = new app.WallController();
-            model = new app.model.Wall(coordX, coordY);
-            break;
-        case 'SPLITTER':
-            this._componentController = new app.SplitterController();
-            model = new app.model.Splitter(coordX, coordY);
-            break;
-        case 'LIGHT':
-            this._componentController = new app.LightController();
-            model = new app.model.Light(coordX, coordY);
-            model.setLightID(this._model.getNewLightID());
-            break;
-    }
-
-    this._model.addComponent(model);
-    this._componentController.setSelectedComponentModel(model);
-    this._componentController.showComponentControlPanel(this);
-    this.draw();
-};
-
-app.ViewController.prototype.setAddNewComponent = function (type) {
-    this._isAddNewComponent = true;
-    this._newComponentType = type;
-};
-
-app.ViewController.prototype.removeListeners = function (view) {
-    // todo funguje to ikdyz jsem vynechal eventListener na konci? (track)
-    goog.events.unlisten(view, goog.events.EventType.MOUSEMOVE, this.updateCoordinates);
-};
-
 app.ViewController.prototype.updateCoordinates = function (e) {
     var coordinates = e.currentTarget.childNodes[1];
 
     var xCm, yCm, zoom;
-    xCm = e.offsetX / this._pixelsOnCm;
-    yCm = e.offsetY / this._pixelsOnCm;
+    xCm = (e.offsetX - this._model.getAppliedTranslationX()) / this._pixelsOnCm;
+    yCm = (e.offsetY - this._model.getAppliedTranslationY()) / this._pixelsOnCm;
     zoom = Math.floor(100 * this._model.getZoom());
     goog.dom.setTextContent(coordinates, 'x: ' + xCm.toFixed(2) + ' cm, y: ' + yCm.toFixed(2) + ' cm, zoom: ' + zoom + ' %');
 };
 
-app.ViewController.prototype.componentMoved = function (e) {
+app.ViewController.prototype.canvasMoved = function (e) {
     var diffX, diffY;
 
     diffX = e.offsetX - this._mouseCursorPoint[0];
@@ -174,51 +99,16 @@ app.ViewController.prototype.componentMoved = function (e) {
     this._mouseCursorPoint[0] = e.offsetX;
     this._mouseCursorPoint[1] = e.offsetY;
 
-    this._componentMoved = true;
-    this._componentController.updatePosition(diffX, diffY);
+    this._model.translate(diffX, diffY);
     this.draw();
 };
 
-app.ViewController.prototype.canvasMoved = function (e) {
-
+app.ViewController.prototype.reverseTransformPoint = function (point) {
+    return this._model.reverseTransformPoint(point);
 };
 
-app.ViewController.prototype.setSelectedComponent = function (componentModel) {
-    switch (componentModel.getType()) {
-        case 'MIRROR':
-            this._componentController = new app.MirrorController();
-            break;
-        case 'LENS':
-            this._componentController = new app.LensController();
-            break;
-        case 'HOLO-PLATE':
-            this._componentController = new app.HolographicPlateController();
-            break;
-        case 'WALL':
-            this._componentController = new app.WallController();
-            break;
-        case 'SPLITTER':
-            this._componentController = new app.SplitterController();
-            break;
-        case 'LIGHT':
-            this._componentController = new app.LightController();
-            break;
-    }
-
-    this._componentController.setSelectedComponentModel(componentModel);
-};
-
-app.ViewController.prototype.isIntersection = function (e) {
-    // FIND COMPONENT AND MARK IT AS SELECTED
-    var components = this._model.getComponents();
-    var point = this._model.reverseTransformPoint([e.offsetX, e.offsetY]);
-    for (var i = 0; i < components.length; i++) {
-        if (components[i].isSelected(point[0], point[1])) {
-            this.setSelectedComponent(components[i]);
-            return true;
-        }
-    }
-    return false;
+app.ViewController.prototype.reverseScale = function(point) {
+    return this._model.reverseScale(point);
 };
 
 app.ViewController.prototype.setViewModel = function (view) {
@@ -233,33 +123,37 @@ app.ViewController.prototype.setReflectionsCount = function (count) {
     this._reflectionsCount = count;
 };
 
+app.ViewController.prototype.setComponents = function(components) {
+    this._components = components;
+};
+
 app.ViewController.prototype.addRay = function (ray) {
     this._rays.push(ray);
 };
 
 app.ViewController.prototype.draw = function () {
     var ctx = this._model.getGraphicsContext(),
-        components = this._model.getComponents(),
         i = 0, j, rayLength, newRayLength, endPoint, ray, componentID, callback = this.addRay.bind(this);
 
     // clean canvas
-    ctx.clearRect(0, 0, this._model.getViewWidth(), this._model.getViewHeight());
+    var area = this._model.getVisibleArea();
+    ctx.clearRect(area[0], area[1], area[2], area[3]);
 
-    for (i; i < components.length; i++) {
-        components[i].draw(ctx, callback);
+    for (i; i < this._components.length; i++) {
+        this._components[i].draw(ctx, callback);
     }
 
     ctx.beginPath();
 
     var generateRays = true, raysCount, depthCount = 0;
-    while(generateRays) {
+    while (generateRays) {
         raysCount = this._rays.length;
         depthCount++;
-        for(i = 0; i < raysCount; i++) {
+        for (i = 0; i < raysCount; i++) {
             rayLength = Infinity;
             ray = this._rays.shift();
-            for (j = 0; j < components.length; j++) {
-                newRayLength = components[j].isIntersection(ray);
+            for (j = 0; j < this._components.length; j++) {
+                newRayLength = this._components[j].isIntersection(ray);
                 if (newRayLength < rayLength) {
                     rayLength = newRayLength;
                     componentID = j;
@@ -267,16 +161,19 @@ app.ViewController.prototype.draw = function () {
             }
 
             if (rayLength != Infinity) {
-                endPoint = components[componentID].intersect(this._rays);
+                endPoint = this._components[componentID].intersect(this._rays);
                 ctx.moveTo(ray[0], ray[1]);
                 ctx.lineTo(endPoint[0], endPoint[1]);
             } // TODO else let him to hit wall
         }
 
-        if(this._rays.length == 0 || depthCount >= 15) {
+        if (this._rays.length == 0 || depthCount >= this._reflectionsCount) {
             generateRays = false;
         }
     }
+
+    // delete remaining rays
+    this._rays = [];
 
     // draw everything
     ctx.stroke();

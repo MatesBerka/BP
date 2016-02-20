@@ -3,7 +3,7 @@ goog.provide('app.model.HolographicPlate');
 goog.require('app.model.Component');
 /**
  * @constructor
- * @extends {app.Parent}
+ * @extends {app.model.Component}
  */
 app.model.HolographicPlate = function (coordX, coordY) {
 
@@ -93,7 +93,7 @@ app.model.HolographicPlate.prototype._recordRay = function () {
     } else {
         var angle, match = false;
         for (angle in this._recordedRays[groupID]) {
-            if ((parseInt(angle) - this._angleErrorTolerence) < rayAngle && rayAngle < (parseInt(angle) + this._angleErrorTolerence)) {
+            if ((parseInt(angle, 10) - this._angleErrorTolerence) < rayAngle && rayAngle < (parseInt(angle, 10) + this._angleErrorTolerence)) {
                 this._recordedRays[groupID][angle].push(this._intersectionRay);
                 match = true;
                 break;
@@ -119,7 +119,7 @@ app.model.HolographicPlate.prototype._checkRecordedRays = function (rays) {
     // is representative?
     var rayAngle = this._getEngle();
     for (angle in this._recordedRays[groupID]) {
-        if ((parseInt(angle) - this._angleErrorTolerence) < rayAngle && rayAngle < (parseInt(angle) + this._angleErrorTolerence)) {
+        if ((parseInt(angle, 10) - this._angleErrorTolerence) < rayAngle && rayAngle < (parseInt(angle, 10) + this._angleErrorTolerence)) {
             rayAngle = angle;
             match = true;
             break;
@@ -227,4 +227,18 @@ app.model.HolographicPlate.prototype.isSelected = function (x, y) {
         return this._isSelected = true;
     }
     return this._isSelected = false;
+};
+
+app.model.HolographicPlate.prototype.copyArguments = function (rotation, height, groupSize, angleErrorTolerance) {
+    this._appliedRotation = rotation;
+    this._height = height;
+    this._groupSize = groupSize;
+    this._angleErrorTolerence = angleErrorTolerance;
+    this._transformPoints();
+};
+
+app.model.HolographicPlate.prototype.copy = function () {
+    var copy = new app.model.HolographicPlate(this._appliedTranslationX, this._appliedTranslationY);
+    copy.copyArguments(this._appliedRotation, this._height, this._groupSize, this._angleErrorTolerence);
+    return copy;
 };
