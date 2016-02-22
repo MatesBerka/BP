@@ -1,4 +1,3 @@
-goog.provide('app.model');
 goog.provide('app.model.Component');
 
 /**
@@ -25,8 +24,6 @@ app.model.Component = function(coordX, coordY) {
     this._transformedPoints = [];
 
     this._generateShapePoints();
-
-    this._transformPoints();
 };
 
 app.model.Component.prototype.isIntersection = goog.abstractMethod;
@@ -42,11 +39,11 @@ app.model.Component.prototype._generateShapePoints = goog.abstractMethod;
 app.model.Component.prototype.copyArguments = goog.abstractMethod;
 
 app.model.Component.prototype.getPosX = function() {
-    return this._appliedTranslationX;
+    return (this._appliedTranslationX / app.PIXELonCM).toFixed(2);
 };
 
 app.model.Component.prototype.getPosY = function() {
-    return this._appliedTranslationY;
+    return (this._appliedTranslationY / app.PIXELonCM).toFixed(2);
 };
 
 app.model.Component.prototype.getType = function() {
@@ -62,9 +59,9 @@ app.model.Component.prototype.setRotation = function(rotation) {
     this._transformPoints();
 };
 
-//app.model.Component.prototype.setSelected = function(boolean) {
-//    this._isSelected = boolean;
-//};
+app.model.Component.prototype.setSelected = function(boolean) {
+    this._isSelected = boolean;
+};
 
 app.model.Component.prototype._normalize2DVector = function(vec) {
     var len = Math.sqrt(vec[0]*vec[0] + vec[1]*vec[1]);
@@ -114,7 +111,6 @@ app.model.Component.prototype._transformPoint = function(point) {
     return newPoint;
 };
 
-
 app.model.Component.prototype.updateRotation = function(degrees) {
     this._appliedRotation = degrees*(Math.PI/180);
     this._transformPoints();
@@ -127,11 +123,11 @@ app.model.Component.prototype.applyTranslation = function(moveX, moveY) {
 };
 
 app.model.Component.prototype.updateTranslationX = function(x) {
-    this._appliedTranslationX = x;
+    this._appliedTranslationX = Math.round(x * app.PIXELonCM);
     this._transformPoints();
 };
 
 app.model.Component.prototype.updateTranslationY = function(y) {
-    this._appliedTranslationY = y;
+    this._appliedTranslationY = Math.round(y * app.PIXELonCM);
     this._transformPoints();
 };

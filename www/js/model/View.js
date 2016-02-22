@@ -53,8 +53,8 @@ app.model.View.prototype.updateSize = function (width, height) {
 app.model.View.prototype.getVisibleArea = function () {
     var area = [];
 
-    area[2] = this._width + app.model.View.CLEAR_OFFSET;
-    area[3] = this._height + app.model.View.CLEAR_OFFSET;
+    area[2] = (this._width + app.model.View.CLEAR_OFFSET)/this._appliedScale;
+    area[3] = (this._height + app.model.View.CLEAR_OFFSET)/this._appliedScale;
     area[0] = -this._appliedTranslationX - app.model.View.CLEAR_OFFSET;
     area[1] = -this._appliedTranslationY - app.model.View.CLEAR_OFFSET;
 

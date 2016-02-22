@@ -20,8 +20,6 @@ goog.require('app.WallController');
 app.ViewController = function () {
     this._reflectionsCount = 4;
 
-    this._canvasMoveActive = false;
-
     this._model = null;
 
     this._components = [];
@@ -29,8 +27,15 @@ app.ViewController = function () {
     this._rays = [];
 
     this._mouseCursorPoint = [];
+};
 
-    this._pixelsOnCm = goog.dom.getElement('cm-box').clientWidth;
+app.ViewController.prototype.addCanvasMove = function(view, coords) {
+    this._mouseCursorPoint = coords;
+    goog.events.listen(view, goog.events.EventType.MOUSEMOVE, this.canvasMoved, true, this);
+};
+
+app.ViewController.prototype.removeCanvasMove = function(view) {
+    goog.events.unlisten(view, goog.events.EventType.MOUSEMOVE, this.canvasMoved, true, this);
 };
 
 app.ViewController.prototype.addListeners = function (view) {
@@ -39,21 +44,20 @@ app.ViewController.prototype.addListeners = function (view) {
     // coordinates update
     goog.events.listen(view, goog.events.EventType.MOUSEMOVE, classThis.updateCoordinates, false, this);
 
-    // mouse down events
-    goog.events.listen(view, goog.events.EventType.MOUSEDOWN, function (e) {
-        if (this._canvasMoveActive) {
-            this._mouseCursorPoint = [e.offsetX, e.offsetY];
-            goog.events.listen(view, goog.events.EventType.MOUSEMOVE, this.canvasMoved, true, this);
-        }
-    }, false, this);
+    //// mouse down events
+    //goog.events.listen(view, goog.events.EventType.MOUSEDOWN, function (e) {
+    //    if (this._canvasMoveActive) {
+    //        this._mouseCursorPoint = [e.offsetX, e.offsetY];
+    //    }
+    //}, false, this);
 
-    // mouse up events
-    goog.events.listen(view, goog.events.EventType.MOUSEUP, function (e) {
-        if (this._canvasMoveActive) {
-            this._canvasMoveActive = false;
-            goog.events.unlisten(view, goog.events.EventType.MOUSEMOVE, this.canvasMoved, true, this);
-        }
-    }, false, this);
+    //// mouse up events
+    //goog.events.listen(view, goog.events.EventType.MOUSEUP, function (e) {
+    //    if (this._canvasMoveActive) {
+    //        this._canvasMoveActive = false;
+    //        goog.events.unlisten(view, goog.events.EventType.MOUSEMOVE, this.canvasMoved, true, this);
+    //    }
+    //}, false, this);
 
     goog.events.listen(goog.dom.getElementByClass('zoom', view), goog.events.EventType.CLICK, function (e) {
         if (e.target.className === 'zoom-in') {
@@ -87,8 +91,8 @@ app.ViewController.prototype.updateCoordinates = function (e) {
     var coordinates = e.currentTarget.childNodes[1];
 
     var xCm, yCm, zoom;
-    xCm = (e.offsetX - this._model.getAppliedTranslationX()) / this._pixelsOnCm;
-    yCm = (e.offsetY - this._model.getAppliedTranslationY()) / this._pixelsOnCm;
+    xCm = (e.offsetX - this._model.getAppliedTranslationX()) / app.PIXELonCM;
+    yCm = (e.offsetY - this._model.getAppliedTranslationY()) / app.PIXELonCM;
     zoom = Math.floor(100 * this._model.getZoom());
     goog.dom.setTextContent(coordinates, 'x: ' + xCm.toFixed(2) + ' cm, y: ' + yCm.toFixed(2) + ' cm, zoom: ' + zoom + ' %');
 };

@@ -1,12 +1,13 @@
 goog.provide('app.LightController');
 
 goog.require('app.ComponentController');
+goog.require('goog.ui.Select');
 
 /**
  * @constructor
  * @extends {app.ComponentController}
  */
-app.LightController = function() {
+app.LightController = function () {
     app.LightController.base(this, 'constructor');
 
     this._selectedComponentType = 'LIGHT';
@@ -14,69 +15,75 @@ app.LightController = function() {
 
 goog.inherits(app.LightController, app.ComponentController);
 
-app.LightController.prototype.showComponentControlPanel = function(sceneController) {
-    goog.dom.classlist.add(goog.dom.getElement('canvas-wrapper'), 'active-component-panel');
-    // todo prepsat do lepsi podoby
+app.LightController.prototype.showComponentControlPanel = function (sceneController) {
+    app.LightController.base(this, 'showComponentControlPanel', sceneController);
 
-    var select;
+    // dimensions
+    goog.dom.appendChild(this._componentConfigurationPanel,
+        goog.dom.createDom('label', {'id': 'com-dimensions'}, app.translation["com-dimensions"])
+    );
 
+    goog.dom.appendChild(this._componentConfigurationPanel,
+        goog.dom.createDom('div', {'class': 'input-field'},
+            goog.dom.createDom('span', {'class': 'com-left-side'}, 'A: '),
+            goog.dom.createDom('span', {'class': 'com-right-side'},
+                goog.dom.createDom('input', {
+                    'type': 'text', 'name': 'com-size', 'class': 'input-min', 'id': 'com-size',
+                    'value': this._model.getSize()
+                })
+            )
+        )
+    );
+
+    goog.dom.appendChild(this._componentConfigurationPanel,
+        goog.dom.createDom('label', {'id': 'com-light'}, app.translation["com-light"])
+    );
+
+    var option1, option2;
     if(this._model.getLightType() == 'BEAM') {
-        select = '<select id="com-light-type"><option selected value="BEAM">Beam</option><option value="CIRCLE">Circle</option></select>';
+        option1 = goog.dom.createDom('option', {'value': 'BEAM', 'selected': 'selected'}, 'Beam');
+        option2 = goog.dom.createDom('option', {'value': 'CIRCLE'}, 'Circle');
     } else {
-        select = '<select id="com-light-type"><option value="BEAM">Beam</option><option selected value="CIRCLE">Circle</option></select>';
+        option1 = goog.dom.createDom('option', {'value': 'BEAM'}, 'Beam');
+        option2 = goog.dom.createDom('option', {'value': 'CIRCLE', 'selected': 'selected'}, 'Circle');
     }
 
-    var html = '<label id="com-position">' + app.translation["com-position"] + '</label>' +
-        '<div class="input-field"><span class="com-left-side">X: </span><span class="com-right-side">' +
-        '<input type="text" name="com-pos-x" class="input-min" id="com-pos-x" value="'+ this._model.getPosX() + '"> cm</span></div>' +
-
-        '<div class="input-field"><span class="com-left-side">Y: </span><span class="com-right-side">' +
-        '<input type="text" name="com-pos-y" class="input-min" id="com-pos-y"  value="' + this._model.getPosY() + '"> cm</span></div>' +
-
-        '<label id="com-rotation">' + app.translation["com-rotation"] + '</label>' +
-        '<div class="input-field"><span class="com-left-side">XY: </span><span class="com-right-side">' +
-        '<input type="text" name="com-rotate" class="input-min" id="com-rotate" value="'+ this._model.getRotation() + '">°</span></div>' +
-
-        '<label id="com-dimensions">' + app.translation["com-dimensions"] + '</label>' +
-        '<div class="input-field"><span class="com-left-side">A: </span><span class="com-right-side">' +
-        '<input type="text" name="com-size" class="input-min" id="com-size" value="' + this._model.getSize() + '"> cm</span></div>' +
-
-        '<label id="com-dimensions">' + app.translation["com-light"] + '</label>' +
-        '<div class="input-field"><span class="com-left-side">Light type: </span><span class="com-right-side">' + select + '</span></div>' +
-
-        '<div class="input-field"><span class="com-left-side">Rays count: </span><span class="com-right-side">' +
-        '<input type="text" name="com-rays-count" class="input-min" id="com-rays-count" value="' + this._model.getRaysCount() + '"></span></div>' +
-
-        '<div class="input-field"><span class="com-left-side">Radius: </span><span class="com-right-side">' +
-        '<input type="text" name="com-radius" class="input-min" id="com-radius" value="' + this._model.getRadius() + '">°</span></div>';
-
-    this._componentConfigurationPanel.innerHTML = html;
+    goog.dom.appendChild(this._componentConfigurationPanel,
+        goog.dom.createDom('div', {'class': 'input-field'},
+            goog.dom.createDom('span', {'class': 'com-left-side'}, 'Light type: '),
+            goog.dom.createDom('span', {'class': 'com-right-side'},
+                goog.dom.createDom('select', {'id': 'com-light-type'}, option1, option2)
+            )
+        )
+    );
+    goog.dom.appendChild(this._componentConfigurationPanel,
+        goog.dom.createDom('div', {'class': 'input-field'},
+            goog.dom.createDom('span', {'class': 'com-left-side'}, 'Rays count: '),
+            goog.dom.createDom('span', {'class': 'com-right-side'},
+                goog.dom.createDom('input', {
+                    'type': 'text', 'name': 'com-rays-count', 'class': 'input-min', 'id': 'com-rays-count',
+                    'value': this._model.getRaysCount()
+                })
+            )
+        )
+    );
+    goog.dom.appendChild(this._componentConfigurationPanel,
+        goog.dom.createDom('div', {'class': 'input-field'},
+            goog.dom.createDom('span', {'class': 'com-left-side'}, 'Radius: '),
+            goog.dom.createDom('span', {'class': 'com-right-side'},
+                goog.dom.createDom('input', {
+                    'type': 'text', 'name': 'com-radius', 'class': 'input-min', 'id': 'com-radius',
+                    'value': this._model.getRadius()
+                })
+            )
+        )
+    );
 
     this._addPanelListeners(sceneController);
 };
 
-app.LightController.prototype.hideComponentControlPanel = function() {
-    this._componentConfigurationPanel.style.display = "none";
-    goog.dom.classlist.remove(goog.dom.getElement('canvas-wrapper'), 'active-component-panel');
-};
-
-app.LightController.prototype._addPanelListeners = function(sceneController) {
-
-    goog.events.listen(goog.dom.getElement('com-pos-x'), goog.events.EventType.KEYUP, function (e) {
-        this._model.updateTranslationX(e.target.value);
-        sceneController.redrawAll();
-    }, true, this);
-
-    goog.events.listen(goog.dom.getElement('com-pos-y'), goog.events.EventType.KEYUP, function (e) {
-        this._model.updateTranslationY(e.target.value);
-        sceneController.redrawAll();
-    }, true, this);
-
-    goog.events.listen(goog.dom.getElement('com-rotate'), goog.events.EventType.KEYUP, function (e) {
-        var degree = e.target.value % 360;
-        this._model.updateRotation(degree);
-        sceneController.redrawAll();
-    }, true, this);
+app.LightController.prototype._addPanelListeners = function (sceneController) {
+    app.LightController.base(this, '_addPanelListeners', sceneController);
 
     goog.events.listen(goog.dom.getElement('com-size'), goog.events.EventType.KEYUP, function (e) {
         this._model.setSize(e.target.value);

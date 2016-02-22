@@ -15,16 +15,13 @@ app.LensController = function() {
 goog.inherits(app.LensController, app.ComponentController);
 
 app.LensController.prototype.showComponentControlPanel = function(sceneController) {
-    this._componentConfigurationPanel.style.display = "block";
-    goog.dom.classlist.add(goog.dom.getElement('canvas-wrapper'), 'active-component-panel');
+    app.LensController.base(this, 'showComponentControlPanel', sceneController);
 
     this._addPanelListeners(sceneController);
 };
 
-app.LensController.prototype.hideComponentControlPanel = function() {
-    this._componentConfigurationPanel.style.display = "none";
-    goog.dom.classlist.remove(goog.dom.getElement('canvas-wrapper'), 'active-component-panel');
-};
-
 app.LensController.prototype._addPanelListeners = function(sceneController) {
+    app.LensController.base(this, '_addPanelListeners', sceneController);
+
+
 };

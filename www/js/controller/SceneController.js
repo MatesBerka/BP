@@ -34,6 +34,8 @@ app.SceneController.prototype.init = function () {
 
     this._componentMoved = false;
 
+    this._canvasMoveActive = false;
+
     this._mouseCursorPoint = [];
 
     this.createDialogs();
@@ -50,7 +52,7 @@ app.SceneController.prototype.init = function () {
     newTable.addView(newView);
     newView.setCanvas(this.addViewToGUI(viewID, 'View 1'));
 
-    this.addSceneListeners();
+    this.addListeners();
 
     var tableButton = goog.dom.getElement('button-table-' + tableID);
     this.setActiveTable(tableID, tableButton);
@@ -71,8 +73,9 @@ app.SceneController.prototype.hideCross = function () {
 app.SceneController.prototype.createDialogs = function () {
     this.newViewDialog = new goog.ui.Dialog();
     this.newViewDialog.setTitle(app.translation['new-view']);
-    this.newViewDialog.setContent('View name: <input type="text" id="new-view-name" name="new-view-name">');
-    this.newViewDialog.setButtonSet(goog.ui.Dialog.ButtonSet.OK_CANCEL);
+    this.newViewDialog.setSafeHtmlContent(
+    goog.html.legacyconversions.safeHtmlFromString('View name: <input type="text" id="new-view-name" name="new-view-name">'));
+    this.newViewDialog.setButtonSet(goog.ui.Dialog.ButtonSet.createOkCancel());
 
     this.editViewDialog = new goog.ui.Dialog();
     this.editViewDialog.setTitle(app.translation['edit-view']);
@@ -84,8 +87,8 @@ app.SceneController.prototype.createDialogs = function () {
 
     this.newTableDialog = new goog.ui.Dialog();
     this.newTableDialog.setTitle(app.translation['new-table']);
-    this.newTableDialog.setContent('Table name: <input type="text" id="new-table-name" name="new-table-name">');
-
+    this.newTableDialog.setSafeHtmlContent(
+    goog.html.legacyconversions.safeHtmlFromString('Table name: <input type="text" id="new-table-name" name="new-table-name">'));
     this.editTableDialog = new goog.ui.Dialog();
     this.editTableDialog.setTitle(app.translation['edit-table']);
     var tableButtonsSet = new goog.ui.Dialog.ButtonSet();
@@ -175,6 +178,7 @@ app.SceneController.prototype.hideView = function (viewID, buttonElement) {
     }
 };
 
+/** @suppress {checkTypes} */
 app.SceneController.prototype.addTableToGUI = function (tableID, tableName) {
     var table = goog.dom.createDom('div', {'id': 'table-' + tableID, 'class': 'table-wrapper'}),
         tables = goog.dom.getElement('tables'),
@@ -188,6 +192,7 @@ app.SceneController.prototype.addTableToGUI = function (tableID, tableName) {
     goog.dom.append(this._canvasWrapper, table);
 };
 
+/** @suppress {checkTypes} */
 app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
     var canvasName = 'canvas-' + this._activeTableID + '-' + viewID,
         viewWrapperName = 'view-' + this._activeTableID + '-' + viewID,
@@ -201,10 +206,10 @@ app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
         zoomIn = goog.dom.createDom('div', {'class': 'zoom-in'}, '+'),
         zoomOut = goog.dom.createDom('div', {'class': 'zoom-out'}, '-'),
         zoom = goog.dom.createDom('div', {'class': 'zoom'}, zoomIn, zoomOut),
-        moveTop = goog.dom.createDom('div', {'class': 'wide-top-move-control'}, goog.dom.htmlToDocumentFragment('&#8673;')),
-        moveRight = goog.dom.createDom('div', {'class': 'right-side-move-control'}, goog.dom.htmlToDocumentFragment('&#8674;')),
-        moveLeft = goog.dom.createDom('div', {'class': 'left-side-move-control'}, goog.dom.htmlToDocumentFragment('&#8672;')),
-        moveBottom = goog.dom.createDom('div', {'class': 'wide-bottom-move-control'}, goog.dom.htmlToDocumentFragment('&#8675;')),
+        moveTop = goog.dom.createDom('div', {'class': 'wide-top-move-control'}, String.fromCharCode(8673)),
+        moveRight = goog.dom.createDom('div', {'class': 'right-side-move-control'}, String.fromCharCode(8674)),
+        moveLeft = goog.dom.createDom('div', {'class': 'left-side-move-control'}, String.fromCharCode(8672)),
+        moveBottom = goog.dom.createDom('div', {'class': 'wide-bottom-move-control'}, String.fromCharCode(8675)),
         move = goog.dom.createDom('div', {'class': 'move-control'}, moveTop, moveRight, moveLeft, moveBottom),
         button = goog.dom.createDom('div', {'class': 'button-view', 'id': buttonID}, viewName);
 
@@ -219,12 +224,48 @@ app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
     this._viewController.addListeners(view);
     this.updateSizes();
 
-    goog.events.listen(view, [goog.events.EventType.MOUSEENTER, goog.events.EventType.MOUSEDOWN], function (e) {
-        var pieces = e.target.id.split('-');
-        if (pieces[0] == 'view') {
-            this.setSelectedView(parseInt(pieces[1]), parseInt(pieces[2]));
+    goog.events.listen(view, goog.events.EventType.MOUSEENTER, function (e) {
+        var pieces = e.currentTarget.id.split('-');
+        this.setSelectedView(parseInt(pieces[1], 10), parseInt(pieces[2], 10));
+    }, true, this);
+    goog.events.listen(view, goog.events.EventType.MOUSEDOWN, function (e) {
+        var pieces = e.currentTarget.id.split('-');
+        this.setSelectedView(parseInt(pieces[1], 10), parseInt(pieces[2], 10));
+
+        if (this._isAddNewComponent) { // pridani nove
+            this.addComponent(e.offsetX, e.offsetY);
+        } else if (this.isIntersection(e)) { // vyber komponenty
+            this._componentMoveActive = true;
+            this._mouseCursorPoint = [e.offsetX, e.offsetY];
+            goog.events.listen(this._canvasWrapper, goog.events.EventType.MOUSEMOVE, this.componentMoved, true, this);
+        } else { // muze byt posun platna
+            this._canvasMoveActive = true;
+            this._viewController.addCanvasMove(view, [e.offsetX, e.offsetY]);
         }
     }, true, this);
+
+    // mouse up events
+    goog.events.listen(view, goog.events.EventType.MOUSEUP, function (e) {
+        if (this._isAddNewComponent) {
+            this._isAddNewComponent = false;
+            this.hideCross();
+        } else if (this._componentMoveActive && this._componentMoved) {
+            this._componentMoveActive = false;
+            this._componentMoved = false;
+            this._componentController.removeSelected();
+            this.redrawAll();
+            goog.events.unlisten(this._canvasWrapper, goog.events.EventType.MOUSEMOVE, this.componentMoved, true, this);
+        } else if (this._componentMoveActive && !this._componentMoved) {
+            this._componentMoveActive = false;
+            this._componentController.removeSelected();
+            this._componentController.showComponentControlPanel(this);
+            goog.events.unlisten(this._canvasWrapper, goog.events.EventType.MOUSEMOVE, this.componentMoved, true, this);
+        } else if (this._canvasMoveActive) {
+            this._canvasMoveActive = false;
+            this._viewController.removeCanvasMove(view);
+        }
+    }, true, this);
+
 
     return canvas;
 };
@@ -279,14 +320,8 @@ app.SceneController.prototype.createView = function () {
 };
 
 app.SceneController.prototype.removeViewFromGUI = function (elementID) {
-    // TODO
-    var view = goog.dom.getElement(elementID);
-    goog.events.unlisten(view, goog.events.EventType.MOUSEENTER, null);
-    goog.events.unlisten(view, goog.events.EventType.MOUSEDOWN, null);
-
-    goog.dom.removeNode(view);
-    var viewWrapperName = elementID.replace("button-", "");
-    goog.dom.removeNode(goog.dom.getElement(viewWrapperName));
+    goog.dom.removeNode(goog.dom.getElement(elementID));
+    goog.dom.removeNode(goog.dom.getElement(elementID.replace("button-", "")));
 
     // reindex
     var viewsButtons = goog.dom.getElementsByClass('button-view');
@@ -321,7 +356,7 @@ app.SceneController.prototype.renameView = function () {
     viewButton.innerText = input.value;
 };
 
-app.SceneController.prototype.setSelectedComponent = function (componentModel) {
+app.SceneController.prototype.setSelectedComponent = function (componentModel, componentID) {
     switch (componentModel.getType()) {
         case 'MIRROR':
             this._componentController = new app.MirrorController();
@@ -342,7 +377,7 @@ app.SceneController.prototype.setSelectedComponent = function (componentModel) {
             this._componentController = new app.LightController();
             break;
     }
-    this._componentController.setSelectedComponentModel(componentModel);
+    this._componentController.setSelectedComponentModel(componentModel, componentID);
 };
 
 app.SceneController.prototype.isIntersection = function (e) {
@@ -351,7 +386,7 @@ app.SceneController.prototype.isIntersection = function (e) {
 
     for (var i = 0; i < components.length; i++) {
         if (components[i].isSelected(point[0], point[1])) {
-            this.setSelectedComponent(components[i]);
+            this.setSelectedComponent(components[i], i);
             return true;
         }
     }
@@ -374,7 +409,7 @@ app.SceneController.prototype.componentMoved = function (e) {
     this.redrawAll();
 };
 
-app.SceneController.prototype.addSceneListeners = function () {
+app.SceneController.prototype.addListeners = function () {
     var newViewDialog = this.newViewDialog,
         newTableDialog = this.newTableDialog,
         editViewDialog = this.editViewDialog,
@@ -451,46 +486,21 @@ app.SceneController.prototype.addSceneListeners = function () {
         this.redrawAll();
     }, false, this);
 
-    // set selected view
-    goog.events.listen(this._canvasWrapper, goog.events.EventType.MOUSEDOWN, function (e) {
-        if (this._isAddNewComponent) { // pridani nove
-            this.addComponent(e.offsetX, e.offsetY);
-        } else if (this.isIntersection(e)) { // vyber komponenty
-            this._componentMoveActive = true;
-            this._mouseCursorPoint = [e.offsetX, e.offsetY];
-            goog.events.listen(this._canvasWrapper, goog.events.EventType.MOUSEMOVE, this.componentMoved, true, this);
-        } else { // muze byt posun platna
-            this._viewController._canvasMoveActive = true;
-        }
-    }, true, this);
-
     // listen for resize
     goog.events.listen(window, goog.events.EventType.RESIZE, function () {
         this.updateSizes();
         this.redrawAll();
     }, false, this);
 
-    // mouse up events
-    goog.events.listen(this._canvasWrapper, goog.events.EventType.MOUSEUP, function (e) {
-        if (this._isAddNewComponent) {
-            this._isAddNewComponent = false;
-            this.hideCross();
-        } else if (this._componentMoveActive && this._componentMoved) {
-            this._componentMoveActive = false;
-            this._componentMoved = false;
-            this._componentController.removeSelected();
-            this.redrawAll();
-            goog.events.unlisten(this._canvasWrapper, goog.events.EventType.MOUSEMOVE, this.componentMoved, true, this);
-        } else if (this._componentMoveActive && !this._componentMoved) {
-            this._componentMoveActive = false;
-            this._componentController.removeSelected();
-            this._componentController.showComponentControlPanel(this);
-            goog.events.unlisten(this._canvasWrapper, goog.events.EventType.MOUSEMOVE, this.componentMoved, true, this);
-        }
-    }, true, this);
-
     // Common component listeners
     goog.events.listen(goog.dom.getElement('com-close-btn'), goog.events.EventType.CLICK, this.hideComponentControlPanel, false, this);
+
+    goog.events.listen(goog.dom.getElement('com-delete-btn'), goog.events.EventType.CLICK, function() {
+        var componentID = this._componentController.removeActiveComponent();
+        this._tables[this._activeTableID].removeComponent(componentID);
+        this.hideComponentControlPanel();
+        this.redrawAll();
+    }, false, this);
 
     goog.events.listen(goog.dom.getElement('com-copy-btn'), goog.events.EventType.CLICK, function (e) {
         var copyButtons = new goog.ui.Dialog.ButtonSet();
@@ -578,9 +588,9 @@ app.SceneController.prototype.addComponent = function (coordX, coordY) {
             break;
     }
 
-    this._tables[this._activeTableID].addComponent(model);
+    var modelID = this._tables[this._activeTableID].addComponent(model);
 
-    this._componentController.setSelectedComponentModel(model);
+    this._componentController.setSelectedComponentModel(model, modelID);
     this._componentController.showComponentControlPanel(this);
 
     this.redrawAll();

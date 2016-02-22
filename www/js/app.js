@@ -12,26 +12,26 @@ goog.require('app.locales');
 app.LOCALE = 'en_US';
 /**
  * Make {@code app.start} accessible after {@code ADVANCED_OPTIMIZATIONS}.
- * @param {Object} config
 * @export
-    */
+*/
 app.start = function() {
+    app.PIXELonCM = goog.dom.getElement('cm-box').clientWidth;
+
     app.translate();
-    if(true) { // TODO check url
-        // if url empty init default settings
-        app.init();
-    } else {
-        // else load data
-        app.loadSimulation();
-    }
+
+    var sceneController = new app.SceneController(true);
+    var menuController = new app.MenuController(sceneController);
+
+    //if(true) { // TODO check url
+    //    // if url empty init default settings
+    //    app.init();
+    //} else {
+    //    // else load data
+    //    app.loadSimulation();
+    //}
 };
 
-app.init = function() {
-    this.menuController = new app.MenuController();
-    this.sceneController = new app.SceneController(true);
-};
-
-app.loadSimulation = function() {};
+//app.loadSimulation = function() {};
 
 app.translate = function() {
     app.translation = app.TRANSLATION[app.LOCALE];

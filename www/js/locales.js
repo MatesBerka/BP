@@ -28,7 +28,12 @@ app.TRANSLATION = {
         'com-position': 'Pozice:',
         'com-rotation': 'Rotace:',
         'com-dimensions': 'Rozměry:',
-        'com-light': 'Světlo:'
+        'com-light': 'Světlo:',
+        'com-copy-btn': 'Kopírovat',
+        'com-delete-btn': 'Smazat',
+        'com-close-btn': 'Zavřít',
+        'com-height': 'Výška',
+        'com-width': 'Šířka'
     },
     'en_US': {
         'logo-msg': 'Diffractive optics simulator',
@@ -57,6 +62,11 @@ app.TRANSLATION = {
         'com-position': 'Position:',
         'com-rotation': 'Rotation:',
         'com-dimensions': 'Dimensions:',
-        'com-light': 'Light:'
+        'com-light': 'Light:',
+        'com-copy-btn': 'Copy',
+        'com-delete-btn': 'Delete',
+        'com-close-btn': 'Close',
+        'com-height': 'Height',
+        'com-width': 'Width'
     }
 };

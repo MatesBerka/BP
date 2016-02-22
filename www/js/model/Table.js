@@ -59,11 +59,21 @@ app.model.Table.prototype.getComponents = function() {
 };
 
 app.model.Table.prototype.addComponent = function(model) {
-    if(model.getType() === 'Light') {
+    if(model.getType() === 'LIGHT') {
         this._highestLightID++;
         model.setLightID(this._highestLightID);
         this._components.push(model);
     } else {
         this._components.push(model);
     }
+
+    return (this._components.length - 1);
+};
+
+app.model.Table.prototype.removeComponent = function(componentID) {
+    this._components.splice(componentID, 1);
+};
+
+app.model.Table.prototype.removeView = function(viewID) {
+    this._views.splice(viewID, 1);
 };

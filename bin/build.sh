@@ -20,8 +20,8 @@ JS_CLOSURE_SOY_DIR="${BASE_DIR}/www/js-soy"
 
 TEMPLATE_DIR="${BASE_DIR}/www/js"
 
-URL_APP="${BASE_DIR}/www/js"
-URL_SOY="${BASE_DIR}/www/js/js-soy"
+URL_APP="../../../${BASE_DIR}/www/js"
+URL_SOY="../../../${BASE_DIR}/www/js/js-soy"
 
 LANG="cs"
 LOCALE="cs_CZ"

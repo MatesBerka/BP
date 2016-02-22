@@ -16,16 +16,11 @@ app.MirrorController = function() {
 goog.inherits(app.MirrorController, app.ComponentController);
 
 app.MirrorController.prototype.showComponentControlPanel = function(sceneController) {
-    this._componentConfigurationPanel.style.display = "block";
-    goog.dom.classlist.add(goog.dom.getElement('canvas-wrapper'), 'active-component-panel');
+    app.MirrorController.base(this, 'showComponentControlPanel', sceneController);
 
     this._addPanelListeners(sceneController);
 };
 
-app.MirrorController.prototype.hideComponentControlPanel = function() {
-    this._componentConfigurationPanel.style.display = "none";
-    goog.dom.classlist.remove(goog.dom.getElement('canvas-wrapper'), 'active-component-panel');
-};
-
 app.MirrorController.prototype._addPanelListeners = function(sceneController) {
+    app.MirrorController.base(this, '_addPanelListeners', sceneController);
 };

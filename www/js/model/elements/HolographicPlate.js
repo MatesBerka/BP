@@ -1,6 +1,7 @@
 goog.provide('app.model.HolographicPlate');
 
 goog.require('app.model.Component');
+goog.require('app.shapes.Line');
 /**
  * @constructor
  * @extends {app.model.Component}
@@ -25,22 +26,17 @@ app.model.HolographicPlate = function (coordX, coordY) {
 
     this._refLightID = 0;
 
+    this._canvasMoveActive = false;
+
     this._lightSources = []; // IDs of light sources which are hitting this desk
 
     app.model.HolographicPlate.base(this, 'constructor', coordX, coordY); // call parent constructor
+
+    this._transformPoints();
 };
 
 goog.inherits(app.model.HolographicPlate, app.model.Component);
-
-app.model.HolographicPlate.prototype._generateShapePoints = function () {
-    var x = 0, y = 0, z = 0;
-
-    y = y - Math.floor(this._height / 2);
-    this._originPoints.push([x, y, z]);
-
-    y += this._height;
-    this._originPoints.push([x, y, z]);
-};
+goog.mixin(app.model.HolographicPlate.prototype, app.shapes.Line.prototype);
 
 app.model.HolographicPlate.prototype.setSize = function (height) {
     this._height = height;
@@ -58,7 +54,7 @@ app.model.HolographicPlate.prototype.showRecord = function () {
     this._showRecord = true;
 };
 
-app.model.HolographicPlate.prototype._getEngle = function () {
+app.model.HolographicPlate.prototype._getAngle = function () {
     var a = [], b = [], cosAlfa, angle;
 
     a[0] = this._intersectionRay[0] - this._intersectionPoint[0];
@@ -81,7 +77,7 @@ app.model.HolographicPlate.prototype._getEngle = function () {
 app.model.HolographicPlate.prototype._recordRay = function () {
     var point = this._reverseTransformPoint([this._intersectionPoint[0], this._intersectionPoint[1]]);
     var groupID = Math.floor((Math.floor(this._height / 2) + point[1]) / this._groupSize);
-    var rayAngle = this._getEngle();
+    var rayAngle = this._getAngle();
 
     this._intersectionRay[0] = this._intersectionPoint[0];
     this._intersectionRay[1] = this._intersectionPoint[1];
@@ -93,7 +89,7 @@ app.model.HolographicPlate.prototype._recordRay = function () {
     } else {
         var angle, match = false;
         for (angle in this._recordedRays[groupID]) {
-            if ((parseInt(angle, 10) - this._angleErrorTolerence) < rayAngle && rayAngle < (parseInt(angle, 10) + this._angleErrorTolerence)) {
+            if ((parseFloat(angle) - this._angleErrorTolerence) < rayAngle && rayAngle < (parseFloat(angle) + this._angleErrorTolerence)) {
                 this._recordedRays[groupID][angle].push(this._intersectionRay);
                 match = true;
                 break;
@@ -117,9 +113,9 @@ app.model.HolographicPlate.prototype._checkRecordedRays = function (rays) {
     var point = this._reverseTransformPoint([this._intersectionPoint[0], this._intersectionPoint[1]]);
     var groupID = Math.floor((Math.floor(this._height / 2) + point[1]) / this._groupSize);
     // is representative?
-    var rayAngle = this._getEngle();
+    var rayAngle = this._getAngle();
     for (angle in this._recordedRays[groupID]) {
-        if ((parseInt(angle, 10) - this._angleErrorTolerence) < rayAngle && rayAngle < (parseInt(angle, 10) + this._angleErrorTolerence)) {
+        if ((parseFloat(angle) - this._angleErrorTolerence) < rayAngle && rayAngle < (parseFloat(angle) + this._angleErrorTolerence)) {
             rayAngle = angle;
             match = true;
             break;

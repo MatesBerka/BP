@@ -22,6 +22,8 @@ app.model.Light = function(coordX, coordY) {
     this._wallsCount = 4;
 
     app.model.Light.base(this, 'constructor', coordX, coordY); // call parent constructor
+
+    this._transformPoints();
 };
 
 goog.inherits(app.model.Light, app.model.Component);
@@ -59,7 +61,7 @@ app.model.Light.prototype.getRadius = function() {
 };
 
 app.model.Light.prototype.setRadius = function(radius) {
-    this._lightRadius = parseInt(radius, 10);
+    this._lightRadius = parseFloat(radius);
 };
 
 app.model.Light.prototype.setLightID = function(lightID) {
@@ -131,7 +133,7 @@ app.model.Light.prototype._squareIntersection = function(ray) {
 
         // is intersection
         ix = ray[0] + ray[3]*t1;
-        iy = ray[1] + ray[3]*t1;
+        iy = ray[1] + ray[4]*t1;
 
         length = Math.sqrt(Math.pow(Math.abs(ix - ray[0]), 2) + Math.pow(Math.abs(iy - ray[1]), 2));
         if(length < rayLength) {
@@ -139,7 +141,11 @@ app.model.Light.prototype._squareIntersection = function(ray) {
             this._intersectionPoint = [ix, iy];
         }
     }
-    return rayLength;
+
+    if(rayLength < this._rayMinLength)
+        return Infinity;
+    else
+        return rayLength;
 };
 
 app.model.Light.prototype._circleIntersection = function(ray) {
