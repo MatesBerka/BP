@@ -13,6 +13,8 @@ app.ComponentController = function () {
     this._componentConfigurationPanel = goog.dom.getElement('component-configuration');
 
     this._pixelsOnCm = goog.dom.getElement('cm-box').clientWidth;
+    //http://kingscalculator.com/cz/ostatni-kalkulacky/vypocet-hustoty-pixelu
+    //https://cs.wikipedia.org/wiki/Body_na_palec
 };
 
 app.ComponentController.prototype.showComponentControlPanel = function (sceneController) {
@@ -27,8 +29,10 @@ app.ComponentController.prototype.showComponentControlPanel = function (sceneCon
         goog.dom.createDom('div', {'class': 'input-field'},
             goog.dom.createDom('span', {'class': 'com-left-side'}, 'X: '),
             goog.dom.createDom('span', {'class': 'com-right-side'},
-                goog.dom.createDom('input', {'type': 'text', 'name': 'com-pos-x', 'class': 'input-min', 'id': 'com-pos-x',
-                 'value': this._model.getPosX()})
+                goog.dom.createDom('input', {
+                    'type': 'text', 'name': 'com-pos-x', 'class': 'input-min', 'id': 'com-pos-x',
+                    'value': this._model.getPosX()
+                })
             )
         )
     );
@@ -36,8 +40,10 @@ app.ComponentController.prototype.showComponentControlPanel = function (sceneCon
         goog.dom.createDom('div', {'class': 'input-field'},
             goog.dom.createDom('span', {'class': 'com-left-side'}, 'Y: '),
             goog.dom.createDom('span', {'class': 'com-right-side'},
-                goog.dom.createDom('input', {'type': 'text', 'name': 'com-pos-y', 'class': 'input-min', 'id': 'com-pos-y',
-                    'value': this._model.getPosY()})
+                goog.dom.createDom('input', {
+                    'type': 'text', 'name': 'com-pos-y', 'class': 'input-min', 'id': 'com-pos-y',
+                    'value': this._model.getPosY()
+                })
             )
         )
     );
@@ -48,14 +54,20 @@ app.ComponentController.prototype.showComponentControlPanel = function (sceneCon
     );
     goog.dom.appendChild(this._componentConfigurationPanel,
         goog.dom.createDom('div', {'class': 'input-field'},
-            goog.dom.createDom('span', {'class': 'com-left-side'},'XY: '),
+            goog.dom.createDom('span', {'class': 'com-left-side'}, 'XY: '),
             goog.dom.createDom('span', {'class': 'com-right-side'},
-                goog.dom.createDom('input', {'type': 'text', 'name': 'com-rotate', 'class': 'input-min', 'id': 'com-rotate',
-                    'value': this._model.getRotation()})
+                goog.dom.createDom('input', {
+                    'type': 'text', 'name': 'com-rotate', 'class': 'input-min', 'id': 'com-rotate',
+                    'value': this._model.getRotation()
+                })
             )
         )
     );
 
+    // dimensions
+    goog.dom.appendChild(this._componentConfigurationPanel,
+        goog.dom.createDom('label', {'id': 'com-dimensions'}, app.translation["com-dimensions"])
+    );
 };
 
 app.ComponentController.prototype.hideComponentControlPanel = function () {
@@ -65,7 +77,7 @@ app.ComponentController.prototype.hideComponentControlPanel = function () {
 
 app.ComponentController.prototype._addPanelListeners = function (sceneController) {
     goog.events.listen(goog.dom.getElement('com-pos-x'), goog.events.EventType.KEYUP, function (e) {
-        if(e.target.value !== '') {
+        if (e.target.value !== '') {
             this._model.updateTranslationX(parseFloat(e.target.value));
         } else {
             this._model.updateTranslationX(0);
@@ -74,7 +86,7 @@ app.ComponentController.prototype._addPanelListeners = function (sceneController
     }, true, this);
 
     goog.events.listen(goog.dom.getElement('com-pos-y'), goog.events.EventType.KEYUP, function (e) {
-        if(e.target.value !== '') {
+        if (e.target.value !== '') {
             this._model.updateTranslationY(parseFloat(e.target.value));
         } else {
             this._model.updateTranslationY(0);
@@ -83,7 +95,7 @@ app.ComponentController.prototype._addPanelListeners = function (sceneController
     }, true, this);
 
     goog.events.listen(goog.dom.getElement('com-rotate'), goog.events.EventType.KEYUP, function (e) {
-        if(e.target.value !== '') {
+        if (e.target.value !== '') {
             var degree = e.target.value % 360;
             this._model.updateRotation(parseFloat(degree));
         } else {

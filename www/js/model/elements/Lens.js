@@ -35,6 +35,16 @@ app.model.Lens.prototype._generateFocusesPoints = function () {
     this._originPoints.push([this._focusOffset, 0, 0]);
 };
 
+app.model.Lens.prototype.getHeight = function() {
+    return (this._height / app.PIXELonCM).toFixed(2);
+};
+
+app.model.Lens.prototype.setHeight = function() {
+    this._height = Math.round(height * app.PIXELonCM);
+    this._generateShapePoints();
+    this._transformPoints();
+};
+
 app.model.Lens.prototype.setFocusOffset = function(offset) {
     this._focusOffset = offset;
     this._generateShapePoints();
@@ -65,7 +75,6 @@ app.model.Lens.prototype._getImagePosition = function(focus, obj) {
 };
 
 app.model.Lens.prototype.intersect = function (rays) {
-
     var point = this._reverseTransformPoint([this._intersectionRay[0], this._intersectionRay[1]]);
     var dVec = [], normDVec = [], imgPoint;
 

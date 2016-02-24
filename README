@@ -1,19 +1,5 @@
-Example for using Google Closure Library from http://www.closurecheatsheet.com/
 http://anton.shevchuk.name/wp-demo/closure-tutorials/cheatsheet.html#style
 
-
-Closure Library is Google product, see 
- - https://developers.google.com/closure/library/ 
+Closure Library is Google product, see
  - https://developers.google.com/readme/terms 
 for using and terms
-
-
-Install
-=======
-You just need to clone Closure Library into www/js-closure. From poject root (where is this file located) run:
-git clone https://code.google.com/p/closure-library/ www/js-closure
-
-Other
-=====
-http://www.closurecheatsheet.com/
-

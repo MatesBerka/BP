@@ -64,11 +64,20 @@ app.model.Component.prototype.setSelected = function(boolean) {
 };
 
 app.model.Component.prototype._normalize2DVector = function(vec) {
+    //http://forum.matematika.cz/viewtopic.php?id=5845
     var len = Math.sqrt(vec[0]*vec[0] + vec[1]*vec[1]);
     vec[0] = vec[0]/len;
     vec[1] = vec[1]/len;
 
     return vec;
+};
+
+app.model.Component.prototype.rotatePoint = function(point, radians) {
+    var result = [];
+    result[0] = point[0] * Math.cos(radians) + point[1] * Math.sin(radians);
+    result[1] = point[0] * -Math.sin(radians) + point[1] * Math.cos(radians);
+
+    return result;
 };
 
 app.model.Component.prototype._reverseTransformPoint = function(point) {

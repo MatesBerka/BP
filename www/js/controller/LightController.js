@@ -18,11 +18,6 @@ goog.inherits(app.LightController, app.ComponentController);
 app.LightController.prototype.showComponentControlPanel = function (sceneController) {
     app.LightController.base(this, 'showComponentControlPanel', sceneController);
 
-    // dimensions
-    goog.dom.appendChild(this._componentConfigurationPanel,
-        goog.dom.createDom('label', {'id': 'com-dimensions'}, app.translation["com-dimensions"])
-    );
-
     goog.dom.appendChild(this._componentConfigurationPanel,
         goog.dom.createDom('div', {'class': 'input-field'},
             goog.dom.createDom('span', {'class': 'com-left-side'}, 'A: '),
@@ -86,7 +81,7 @@ app.LightController.prototype._addPanelListeners = function (sceneController) {
     app.LightController.base(this, '_addPanelListeners', sceneController);
 
     goog.events.listen(goog.dom.getElement('com-size'), goog.events.EventType.KEYUP, function (e) {
-        this._model.setSize(e.target.value);
+        this._model.setSize(parseFloat(e.target.value));
         sceneController.redrawAll();
     }, true, this);
 
@@ -96,7 +91,7 @@ app.LightController.prototype._addPanelListeners = function (sceneController) {
     }, true, this);
 
     goog.events.listen(goog.dom.getElement('com-radius'), goog.events.EventType.KEYUP, function (e) {
-        this._model.setRadius(e.target.value);
+        this._model.setRadius(parseFloat(e.target.value));
         sceneController.redrawAll();
     }, true, this);
 
