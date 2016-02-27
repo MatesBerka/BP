@@ -8,6 +8,8 @@ goog.require('app.model.Component');
 app.model.Light = function (coordX, coordY) {
 
     this._size = 50;
+    // only for beam light
+    this._width = 10;
     // BEAM or CIRCLE
     this._lightType = 'BEAM';
 
@@ -29,11 +31,11 @@ app.model.Light = function (coordX, coordY) {
 goog.inherits(app.model.Light, app.model.Component);
 
 app.model.Light.prototype.getSize = function () {
-    return this._size;
+    return (this._size / app.PIXELonCM).toFixed(2);
 };
 
 app.model.Light.prototype.setSize = function (size) {
-    this._size = parseInt(size, 10);
+    this._size =  Math.round(size * app.PIXELonCM);
     this._generateShapePoints();
     this._transformPoints();
 };
@@ -88,17 +90,17 @@ app.model.Light.prototype._generateBallShapePoints = function () {
 app.model.Light.prototype._generateSquareShapePoints = function () {
     var x = 0, y, z = 0;
 
-    x = x - Math.floor(this._size / 2);
-    this._originPoints.push([x, x, z]);
+    x = x - Math.round(this._width / 2);
+    y = -Math.round(this._size / 2);
+    this._originPoints.push([x, y, z]);
 
-    y = x;
-    x += this._size;
+    x += this._width;
     this._originPoints.push([x, y, z]);
 
     y += this._size;
     this._originPoints.push([x, y, z]);
 
-    x -= this._size;
+    x -= this._width;
     this._originPoints.push([x, y, z]);
 };
 
@@ -191,10 +193,14 @@ app.model.Light.prototype.isIntersection = function (ray) {
     }
 };
 
-app.model.Light.prototype._isSquareSelected = function (point) {
-    var halfSize = Math.floor(this._size / 2);
+app.model.Light.prototype._isSquareSelected = function(point) {
+    var xs = -Math.floor(this._width/2), ys = -Math.floor(this._size/2), xe = Math.floor(this._width/2),
+        ye = Math.floor(this._size/2);
 
-    return (Math.abs(point[0]) <= halfSize && Math.abs(point[1]) <= halfSize);
+    if(point[0] >= xs && point[0] <= xe && point[1] >= ys && point[1] <= ye) {
+        return this._isSelected = true;
+    }
+    return this._isSelected = false;
 };
 
 app.model.Light.prototype._isCircleSelected = function (point) {
@@ -217,39 +223,6 @@ app.model.Light.prototype.isSelected = function (x, y) {
 
 app.model.Light.prototype.intersect = function (rays) {
     return this._intersectionPoint;
-};
-
-app.model.Light.prototype._generateRays = function (callback) {
-    var x, y, dx, dy, vec1, vec2, indentation, i, degree, radians, halfSize = Math.floor(this._size / 2);
-
-    if (this._lightType == 'BEAM') {
-        indentation = Math.floor(this._size / this._generatedRaysCount);
-        x = halfSize;
-        for (i = 0; i < this._generatedRaysCount; i++) {
-            y = i * indentation - halfSize;
-
-            vec1 = this._transformPoint([x, y, 0]);
-            vec2 = this._transformPoint([(x + 1), y, 0]);
-
-            dx = vec2[0] - vec1[0];
-            dy = vec2[1] - vec1[1];
-
-            callback([vec1[0], vec1[1], 0, dx, dy, 0, this._lightID, 0]);
-        }
-    } else if (this._lightType == 'CIRCLE') {
-        indentation = (2 * this._lightRadius) / this._generatedRaysCount;
-
-        for (i = 0; i < this._generatedRaysCount; i++) {
-            degree = this._lightRadius - i * indentation;
-            radians = degree * (Math.PI / 180);
-            vec1 = this._transformPoint([0, 0]);
-            vec2 = this.rotatePoint([1, 0], radians);
-            vec2 = this._transformPoint(vec2);
-            dx = vec2[0] - vec1[0];
-            dy = vec2[1] - vec1[1];
-            callback([vec1[0], vec1[1], 0, dx, dy, 0, this._lightID, 0]);
-        }
-    }
 };
 
 app.model.Light.prototype._drawBall = function (ctx) {
@@ -286,14 +259,33 @@ app.model.Light.prototype._drawBeam = function (ctx) {
 };
 
 app.model.Light.prototype.draw = function (ctx, callback) {
-
+    var x, y, dx, dy, vec1, vec2, indentation, i, degree, radians, halfSize = (this._size / 2);
     if (this._lightType == 'BEAM') {
         this._drawBeam(ctx);
+        indentation = this._size / this._generatedRaysCount;
+        x =  Math.floor(this._width / 2);
+        for (i = 0; i < this._generatedRaysCount; i++) {
+            y = i * indentation - halfSize + (indentation/2);
+            vec1 = this._transformPoint([x, y, 0]);
+            vec2 = this._transformPoint([(x + 1), y, 0]);
+            dx = vec2[0] - vec1[0];
+            dy = vec2[1] - vec1[1];
+            callback([vec1[0], vec1[1], 0, dx, dy, 0, this._lightID, 0]);
+        }
     } else {
         this._drawBall(ctx);
+        indentation = (2 * this._lightRadius) / this._generatedRaysCount;
+        for (i = 0; i < this._generatedRaysCount; i++) {
+            degree = this._lightRadius - i * indentation;
+            radians = degree * (Math.PI / 180);
+            vec1 = this._transformPoint([0, 0]);
+            vec2 = this.rotatePoint([1, 0], radians);
+            vec2 = this._transformPoint(vec2);
+            dx = vec2[0] - vec1[0];
+            dy = vec2[1] - vec1[1];
+            callback([vec1[0], vec1[1], 0, dx, dy, 0, this._lightID, 0]);
+        }
     }
-
-    this._generateRays(callback);
 };
 
 // TODO is it used somewhere?

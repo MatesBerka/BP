@@ -85,3 +85,13 @@ app.shapes.Line.prototype.isSelected = function(x, y) {
     }
     return this._isSelected = false;
 };
+
+app.shapes.Line.prototype.getHeight = function() {
+    return (this._height / app.PIXELonCM).toFixed(2);
+};
+
+app.shapes.Line.prototype.setHeight = function(height) {
+    this._height = Math.round(height * app.PIXELonCM);
+    this._generateShapePoints();
+    this._transformPoints();
+};

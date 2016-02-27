@@ -74,7 +74,7 @@ app.SceneController.prototype.createDialogs = function () {
     this.newViewDialog = new goog.ui.Dialog();
     this.newViewDialog.setTitle(app.translation['new-view']);
     this.newViewDialog.setSafeHtmlContent(
-    goog.html.legacyconversions.safeHtmlFromString('View name: <input type="text" id="new-view-name" name="new-view-name">'));
+        goog.html.legacyconversions.safeHtmlFromString('View name: <input type="text" id="new-view-name" name="new-view-name">'));
     this.newViewDialog.setButtonSet(goog.ui.Dialog.ButtonSet.createOkCancel());
 
     this.editViewDialog = new goog.ui.Dialog();
@@ -88,7 +88,7 @@ app.SceneController.prototype.createDialogs = function () {
     this.newTableDialog = new goog.ui.Dialog();
     this.newTableDialog.setTitle(app.translation['new-table']);
     this.newTableDialog.setSafeHtmlContent(
-    goog.html.legacyconversions.safeHtmlFromString('Table name: <input type="text" id="new-table-name" name="new-table-name">'));
+        goog.html.legacyconversions.safeHtmlFromString('Table name: <input type="text" id="new-table-name" name="new-table-name">'));
     this.editTableDialog = new goog.ui.Dialog();
     this.editTableDialog.setTitle(app.translation['edit-table']);
     var tableButtonsSet = new goog.ui.Dialog.ButtonSet();
@@ -228,16 +228,17 @@ app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
         var pieces = e.currentTarget.id.split('-');
         this.setSelectedView(parseInt(pieces[1], 10), parseInt(pieces[2], 10));
     }, true, this);
+
     goog.events.listen(view, goog.events.EventType.MOUSEDOWN, function (e) {
         var pieces = e.currentTarget.id.split('-');
         this.setSelectedView(parseInt(pieces[1], 10), parseInt(pieces[2], 10));
-
         if (this._isAddNewComponent) { // pridani nove
             this.addComponent(e.offsetX, e.offsetY);
         } else if (this.isIntersection(e)) { // vyber komponenty
             this._componentMoveActive = true;
             this._mouseCursorPoint = [e.offsetX, e.offsetY];
-            goog.events.listen(this._canvasWrapper, goog.events.EventType.MOUSEMOVE, this.componentMoved, true, this);
+            goog.events.listen(this._canvasWrapper, [goog.events.EventType.MOUSEMOVE],
+            this.componentMoved, true, this);
         } else { // muze byt posun platna
             this._canvasMoveActive = true;
             this._viewController.addCanvasMove(view, [e.offsetX, e.offsetY]);
@@ -254,18 +255,19 @@ app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
             this._componentMoved = false;
             this._componentController.removeSelected();
             this.redrawAll();
-            goog.events.unlisten(this._canvasWrapper, goog.events.EventType.MOUSEMOVE, this.componentMoved, true, this);
+            goog.events.unlisten(this._canvasWrapper, goog.events.EventType.MOUSEMOVE,
+            this.componentMoved, true, this);
         } else if (this._componentMoveActive && !this._componentMoved) {
             this._componentMoveActive = false;
             this._componentController.removeSelected();
             this._componentController.showComponentControlPanel(this);
-            goog.events.unlisten(this._canvasWrapper, goog.events.EventType.MOUSEMOVE, this.componentMoved, true, this);
+            goog.events.unlisten(this._canvasWrapper, goog.events.EventType.MOUSEMOVE,
+            this.componentMoved, true, this);
         } else if (this._canvasMoveActive) {
             this._canvasMoveActive = false;
             this._viewController.removeCanvasMove(view);
         }
     }, true, this);
-
 
     return canvas;
 };
@@ -347,6 +349,8 @@ app.SceneController.prototype.removeView = function () {
     this._tables[this._activeTableID].removeView(viewID);
     // remove
     this.removeViewFromGUI(input.name);
+    this.updateSizes();
+    this.redrawAll();
 };
 
 app.SceneController.prototype.renameView = function () {
@@ -396,6 +400,7 @@ app.SceneController.prototype.isIntersection = function (e) {
 app.SceneController.prototype.componentMoved = function (e) {
     var diffX, diffY;
 
+    console.log(e.offsetX, e.offsetY);
     diffX = e.offsetX - this._mouseCursorPoint[0];
     diffY = e.offsetY - this._mouseCursorPoint[1];
 
@@ -413,7 +418,8 @@ app.SceneController.prototype.addListeners = function () {
     var newViewDialog = this.newViewDialog,
         newTableDialog = this.newTableDialog,
         editViewDialog = this.editViewDialog,
-        editTableDialog = this.editTableDialog;
+        editTableDialog = this.editTableDialog,
+        dbClick = 0;
 
     // add new table
     goog.events.listen(newTableDialog, goog.ui.Dialog.EventType.SELECT, function (e) {
@@ -436,9 +442,11 @@ app.SceneController.prototype.addListeners = function () {
     }, false, this);
 
     goog.events.listen(goog.dom.getElement('tables'), goog.events.EventType.DBLCLICK, function (e) {
-        editTableDialog.setContent('Edit name: <input type="text" id="edit-table-name" name="' + e.target.id + '" value="' + e.target.innerText + '">');
+        // TODO fix
+        editTableDialog.setContent('Edit name: <input type="text" id="edit-table-name" name="' + e.target.id +
+            '" value="' + e.target.innerText + '">');
         editTableDialog.setVisible(true);
-    });
+    }, false, this);
 
     // add new view
     goog.events.listen(newViewDialog, goog.ui.Dialog.EventType.SELECT, function (e) {
@@ -461,29 +469,44 @@ app.SceneController.prototype.addListeners = function () {
     }, false, this);
 
     goog.events.listen(goog.dom.getElement('views'), goog.events.EventType.DBLCLICK, function (e) {
-        editViewDialog.setContent('Edit name: <input type="text" id="edit-view-name" name="' + e.target.id + '" value="' + e.target.innerText + '">');
+        // TODO fix
+        editViewDialog.setContent('Edit name: <input type="text" id="edit-view-name" name="' + e.target.id
+            + '" value="' + e.target.innerText + '">');
         editViewDialog.setVisible(true);
     }, false, this);
 
     // set active table
     goog.events.listen(goog.dom.getElement('tables'), goog.events.EventType.CLICK, function (e) {
-        this.hideComponentControlPanel();
-
-        var tableID = e.target.id.replace('button-table-', '');
-        if (!goog.dom.classlist.contains(e.target, 'active-table')) {
-            this.setActiveTable(tableID, e.target);
-        }
+        dbClick++;
+        var thisScope = this;
+        setTimeout(function () {
+            if (dbClick === 1) {
+                thisScope.hideComponentControlPanel();
+                var tableID = e.target.id.replace('button-table-', '');
+                if (!goog.dom.classlist.contains(e.target, 'active-table')) {
+                    thisScope.setActiveTable(tableID, e.target);
+                }
+            }
+            dbClick = 0;
+        }, 200);
     }, false, this);
 
     // set active views
     goog.events.listen(goog.dom.getElement('views'), goog.events.EventType.CLICK, function (e) {
-        var viewID = e.target.id.replace('button-view-', '');
-        if (goog.dom.classlist.contains(e.target, 'active-view')) {
-            this.hideView(viewID, e.target);
-        } else {
-            this.showView(viewID, e.target);
-        }
-        this.redrawAll();
+        dbClick++;
+        var thisScope = this;
+        setTimeout(function () {
+            if (dbClick === 1) {
+                var viewID = e.target.id.replace('button-view-', '');
+                if (goog.dom.classlist.contains(e.target, 'active-view')) {
+                    thisScope.hideView(viewID, e.target);
+                } else {
+                    thisScope.showView(viewID, e.target);
+                }
+                thisScope.redrawAll();
+            }
+            dbClick = 0;
+        }, 200);
     }, false, this);
 
     // listen for resize
@@ -495,7 +518,7 @@ app.SceneController.prototype.addListeners = function () {
     // Common component listeners
     goog.events.listen(goog.dom.getElement('com-close-btn'), goog.events.EventType.CLICK, this.hideComponentControlPanel, false, this);
 
-    goog.events.listen(goog.dom.getElement('com-delete-btn'), goog.events.EventType.CLICK, function() {
+    goog.events.listen(goog.dom.getElement('com-delete-btn'), goog.events.EventType.CLICK, function () {
         var componentID = this._componentController.removeActiveComponent();
         this._tables[this._activeTableID].removeComponent(componentID);
         this.hideComponentControlPanel();
@@ -507,7 +530,7 @@ app.SceneController.prototype.addListeners = function () {
 
         var list = this.getInactiveTablesList();
         var select, options = '';
-        if(list.length > 0) {
+        if (list.length > 0) {
             copyButtons.addButton({key: 'copy', caption: 'Copy'}, true);
             for (var i = 0; i < list.length; i++) {
                 options += '<option value="' + list[i]["id"] + '">' + list[i]["name"] + '</option>';
@@ -532,7 +555,7 @@ app.SceneController.prototype.addListeners = function () {
     }, false, this);
 };
 
-app.SceneController.prototype.hideComponentControlPanel = function() {
+app.SceneController.prototype.hideComponentControlPanel = function () {
     goog.dom.classlist.remove(this._canvasWrapper, 'active-component-panel');
     var element = goog.dom.getElement('component-configuration');
     element.innerHTML = '';
@@ -600,7 +623,7 @@ app.SceneController.prototype.getInactiveTablesList = function () {
     var list = [], item;
 
     for (var i = 0; i < this._tables.length; i++) {
-        if(i !== this._activeTableID) {
+        if (i !== this._activeTableID) {
             item = {};
             item['id'] = i;
             item['name'] = this._tables[i].getName();

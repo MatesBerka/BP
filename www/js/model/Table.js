@@ -76,4 +76,5 @@ app.model.Table.prototype.removeComponent = function(componentID) {
 
 app.model.Table.prototype.removeView = function(viewID) {
     this._views.splice(viewID, 1);
+    this._activeViewsCount--;
 };

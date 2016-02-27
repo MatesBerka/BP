@@ -24,7 +24,7 @@ app.model.View = function (tableID, viewID, viewName, offsetX, offsetY) {
     this._appliedTranslationY = offsetY;
 };
 
-app.model.View.CLEAR_OFFSET = 50;
+app.model.View.CLEAR_OFFSET = 100;
 
 app.model.View.prototype.rotate = function (degree) {
     // TODO record transformations
@@ -55,8 +55,8 @@ app.model.View.prototype.getVisibleArea = function () {
 
     area[2] = (this._width + app.model.View.CLEAR_OFFSET)/this._appliedScale;
     area[3] = (this._height + app.model.View.CLEAR_OFFSET)/this._appliedScale;
-    area[0] = -this._appliedTranslationX - app.model.View.CLEAR_OFFSET;
-    area[1] = -this._appliedTranslationY - app.model.View.CLEAR_OFFSET;
+    area[0] = (-this._appliedTranslationX - app.model.View.CLEAR_OFFSET)/this._appliedScale;
+    area[1] = (-this._appliedTranslationY - app.model.View.CLEAR_OFFSET)/this._appliedScale;
 
     return area;
 };

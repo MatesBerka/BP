@@ -88,17 +88,18 @@ app.MenuController.prototype.addListeners = function () {
 
     // simulation/save simulation
     goog.events.listen(goog.dom.getElement('logo'), goog.events.EventType.CLICK, function (e) {
-
+        // todo
     });
 
     // simulation/export simulation
     goog.events.listen(goog.dom.getElement('logo'), goog.events.EventType.CLICK, function (e) {
-
+        // todo
+        // into svg
     });
 
     // simulation/reset simulation
-    goog.events.listen(goog.dom.getElement('logo'), goog.events.EventType.CLICK, function (e) {
-
+    goog.events.listen(goog.dom.getElement('reset-menu-msg'), goog.events.EventType.CLICK, function (e) {
+        location.reload();
     });
 
     // components/add mirror

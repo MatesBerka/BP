@@ -9,7 +9,7 @@ goog.require('app.shapes.Line');
  */
 app.model.Mirror = function(coordX, coordY) {
 
-    this._height = 100;
+    this._height = 300;
 
     this._newRayLength = 0;
 

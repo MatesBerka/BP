@@ -17,14 +17,9 @@ goog.inherits(app.WallController, app.ComponentController);
 app.WallController.prototype.showComponentControlPanel = function(sceneController) {
     app.WallController.base(this, 'showComponentControlPanel', sceneController);
 
-    // dimensions
-    goog.dom.appendChild(this._componentConfigurationPanel,
-        goog.dom.createDom('label', {'id': 'com-dimensions'}, app.translation["com-dimensions"])
-    );
-
     goog.dom.appendChild(this._componentConfigurationPanel,
         goog.dom.createDom('div', {'class': 'input-field'},
-            goog.dom.createDom('span', {'class': 'com-left-side'}, app.translation["com-height"]),
+            goog.dom.createDom('span', {'class': 'com-left-side', 'id': 'com-height-title'}, app.translation["com-height-title"]),
             goog.dom.createDom('span', {'class': 'com-right-side'},
                 goog.dom.createDom('input', {
                     'type': 'text', 'name': 'com-height', 'class': 'input-min', 'id': 'com-height',
@@ -36,7 +31,7 @@ app.WallController.prototype.showComponentControlPanel = function(sceneControlle
 
     goog.dom.appendChild(this._componentConfigurationPanel,
         goog.dom.createDom('div', {'class': 'input-field'},
-            goog.dom.createDom('span', {'class': 'com-left-side'}, app.translation["com-width"]),
+            goog.dom.createDom('span', {'class': 'com-left-side', 'id': 'com-width-title'}, app.translation["com-width-title"]),
             goog.dom.createDom('span', {'class': 'com-right-side'},
                 goog.dom.createDom('input', {
                     'type': 'text', 'name': 'com-width', 'class': 'input-min', 'id': 'com-width',

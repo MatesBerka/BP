@@ -1,7 +1,7 @@
 goog.provide('app.model.Lens');
 
 goog.require('app.model.Component');
-goog.require('app.shapes.Line');
+goog.require('app.model.Lens');
 /**
  * @constructor
  * @extends {app.model.Component}
@@ -12,7 +12,7 @@ app.model.Lens = function(coordX, coordY) {
 
     this._type = 'LENS';
 
-    this._focusType = 'UNITE'; // DIVERSE
+    this._focusType = 'CONVERGING'; // DIVERSE
 
     this._focusOffset = 100;
 
@@ -20,48 +20,160 @@ app.model.Lens = function(coordX, coordY) {
 
     app.model.Lens.base(this, 'constructor', coordX, coordY); // call parent constructor
 
-    this._generateFocusesPoints();
+    this._generateLensPoints();
     this._transformPoints();
 };
 
 goog.inherits(app.model.Lens, app.model.Component);
-goog.mixin(app.model.Lens.prototype, app.shapes.Line.prototype);
+//goog.mixin(app.model.Lens.prototype, app.model.Lens.prototype);
 
 //https://www.google.cz/search?q=rozptylka&espv=2&biw=1920&bih=979&tbm=isch&source=lnms&sa=X&ved=0ahUKEwiX2MqH1_TKAhVDJ5oKHRzID6MQ_AUIBygB&dpr=1#imgrc=N_psa3FtWOpzFM%3A
 //https://www.youtube.com/watch?v=i20bzCUw464
 //https://www.khanacademy.org/science/physics/geometric-optics/mirrors-and-lenses/v/thin-lens-equation-and-problem-solving
-app.model.Lens.prototype._generateFocusesPoints = function () {
+app.model.Lens.prototype._generateShapePoints = function() {
+    var x = 0, y = 0, z = 0;
+
+    this._originPoints = [];
+    y = y - Math.floor(this._height / 2);
+    this._originPoints.push([x, y, z]);
+
+    y += this._height;
+    this._originPoints.push([x, y, z]);
+};
+
+app.model.Lens.prototype._generateLensPoints = function () {
+
+    // focuses
     this._originPoints.push([-this._focusOffset, 0, 0]);
     this._originPoints.push([this._focusOffset, 0, 0]);
+
+    // arrows
+    var y;
+    if(this._focusType === 'CONVERGING') {
+        y = -Math.floor(this._height/2) + 10;
+        this._originPoints.push([10,y,0]);
+        this._originPoints.push([-10,y,0]);
+        y = -y;
+        this._originPoints.push([10,y,0]);
+        this._originPoints.push([-10,y,0]);
+    } else {
+        y = -Math.floor(this._height/2) - 10;
+        this._originPoints.push([10,y,0]);
+        this._originPoints.push([-10,y,0]);
+        y = -y;
+        this._originPoints.push([10,y,0]);
+        this._originPoints.push([-10,y,0]);
+    }
+};
+
+app.model.Lens.prototype.getFocusOffset = function() {
+    return (this._focusOffset / app.PIXELonCM).toFixed(2);
+};
+
+app.model.Lens.prototype.setFocusOffset = function(offset) {
+    this._focusOffset = Math.round(offset * app.PIXELonCM);
+    this._generateShapePoints();
+    this._generateLensPoints();
+    this._transformPoints();
+};
+
+app.model.Lens.prototype.getLensType = function() {
+    return this._focusType;
+};
+
+app.model.Lens.prototype.setLensType = function(type) {
+    this._focusType = type;
+    this._generateShapePoints();
+    this._generateLensPoints();
+    this._transformPoints();
 };
 
 app.model.Lens.prototype.getHeight = function() {
     return (this._height / app.PIXELonCM).toFixed(2);
 };
 
-app.model.Lens.prototype.setHeight = function() {
+app.model.Lens.prototype.setHeight = function(height) {
     this._height = Math.round(height * app.PIXELonCM);
     this._generateShapePoints();
+    this._generateLensPoints();
     this._transformPoints();
 };
 
-app.model.Lens.prototype.setFocusOffset = function(offset) {
-    this._focusOffset = offset;
-    this._generateShapePoints();
-    this._generateFocusesPoints();
-    this._transformPoints();
+app.model.Lens.prototype.draw = function(ctx, callback) {
+    ctx.beginPath();
+    ctx.lineWidth = 3;
+    // top arrow
+    ctx.moveTo(this._transformedPoints[4][0], this._transformedPoints[4][1]);
+    ctx.lineTo(this._transformedPoints[0][0], this._transformedPoints[0][1]);
+    ctx.moveTo(this._transformedPoints[5][0], this._transformedPoints[5][1]);
+    ctx.lineTo(this._transformedPoints[0][0], this._transformedPoints[0][1]);
+
+    ctx.lineTo(this._transformedPoints[1][0], this._transformedPoints[1][1]);
+    // bottom arrow
+    ctx.moveTo(this._transformedPoints[6][0], this._transformedPoints[6][1]);
+    ctx.lineTo(this._transformedPoints[1][0], this._transformedPoints[1][1]);
+    ctx.moveTo(this._transformedPoints[7][0], this._transformedPoints[7][1]);
+    ctx.lineTo(this._transformedPoints[1][0], this._transformedPoints[1][1]);
+    ctx.stroke();
+
+    if (this._isSelected)
+        ctx.lineWidth = 5;
+
+    ctx.stroke();
+    ctx.lineWidth = 1;
 };
 
-app.model.Lens.prototype.getFocusOffset = function() {
-    return this._focusOffset;
+app.model.Lens.prototype.isIntersection = function(ray) {
+    //https://rootllama.wordpress.com/2014/06/20/ray-line-segment-intersection-test-in-2d/#comments
+    var numerator, denominator, t1, t2, v1, v2, v3, ix, iy, a, b,
+        length = Infinity;
+
+    a = this._transformedPoints[0];
+    b = this._transformedPoints[1];
+
+    v1 = [ray[0] - a[0], ray[1] - a[1]];
+    v2 = [b[0] - a[0], b[1] - a[1]];
+    v3 = [-ray[4], ray[3]];
+
+    numerator = v2[0] * v1[1] - v1[0] * v2[1];
+    denominator = v2[0] * v3[0] + v2[1] * v3[1];
+    t1 = numerator / denominator;
+
+    if (t1 < 0)
+        return length;
+
+    numerator = v1[0] * v3[0] + v1[1] * v3[1];
+    t2 = numerator / denominator;
+    if (t2 < 0 || t2 > 1)
+        return length;
+
+    ix = Math.round(ray[0] + ray[3] * t1);
+    iy = Math.round(ray[1] + ray[4] * t1);
+
+    if(ix == ray[0] && iy == ray[1])
+        return length;
+
+    // is intersection
+    length = Math.sqrt(Math.pow(Math.abs(ix - ray[0]), 2) + Math.pow(Math.abs(iy - ray[1]), 2));
+    if(length < this._rayMinLength)
+        return Infinity;
+
+    this._intersectionRay = ray.slice();
+    this._intersectionPoint = [ix, iy];
+    this._newRayLength = length;
+
+    return length;
 };
 
-app.model.Lens.prototype.getFocusType = function() {
-    return this._focusType;
-};
+app.model.Lens.prototype.isSelected = function(x, y) {
+    //http://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-box-intersection
+    var point = this._reverseTransformPoint([x, y]),
+        xs = -5, ys = -Math.floor(this._height / 2), xe = 5, ye = Math.floor(this._height / 2);
 
-app.model.Lens.prototype.setFocusOffset = function(focus) {
-    this._focus = focus;
+    if (point[0] >= xs && point[0] <= xe && point[1] >= ys && point[1] <= ye) {
+        return this._isSelected = true;
+    }
+    return this._isSelected = false;
 };
 
 app.model.Lens.prototype._getImagePosition = function(focus, obj) {
@@ -78,7 +190,7 @@ app.model.Lens.prototype.intersect = function (rays) {
     var point = this._reverseTransformPoint([this._intersectionRay[0], this._intersectionRay[1]]);
     var dVec = [], normDVec = [], imgPoint;
 
-    if(this._focusType == 'UNITE') {
+    if(this._focusType == 'CONVERGING') {
         imgPoint = this._getImagePosition(this._focusOffset, point);
         if(Math.abs(point[0]) < this._focusOffset) {
             dVec[0] = this._intersectionPoint[0] - imgPoint[0];

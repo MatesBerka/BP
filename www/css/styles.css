@@ -65,7 +65,7 @@ select {
     line-height: 24px;
     height: 50px;
     background-color: #d2eba5;
-    border-bottom: 1px solid #333333;
+    border-bottom: 1px solid #9C9C9C;
     margin-bottom: 5px;
     background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #d2eba5), color-stop(1, #95C37E));
     background:-moz-linear-gradient(top, #d2eba5 5%, #95C37E 100%);
@@ -102,7 +102,7 @@ ul.nested-items {
     position: absolute;
     background: #d2eba5;
     left: -1px;
-    border: 1px solid #333333;
+    border: 1px solid #9C9C9C;
     top: 49px;
     display: none;
     z-index: 99;
@@ -119,13 +119,13 @@ ul.nested-items > li {
     width: 100%;
     height: 40px;
     line-height: 20px;
-    border-top: 1px solid #333333;
+    border-top: 1px solid #9C9C9C;
 }
 ul.nested-items > li:first-child {
     border-top: none;
 }
 ul#top-items > li {
-    border-left: 1px solid #333333;
+    border-left: 1px solid #9C9C9C;
 }
 
 .table-wrapper,
@@ -138,29 +138,44 @@ ul#top-items > li {
     display: block;
 }
 
+#tables-navigation {
+    margin: 15px 15px 0px 15px;
+}
+
 #tables-section, #views-section {
     width: 100%;
     overflow: auto;
-    padding: 10px 15px 0px 15px;
+    border: 1px solid #dddddd;
+    background-color: #ededed;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
+
+#tables-section {
+    border-bottom: none;
+}
+
 #tables-section > div, #views-section > div {
     float: left;
 }
 #tables-section .button-table, #views-section .button-view {
     float: left;
-    margin-right: 10px;
-    background-color: #BFBFBF;
-    border: 1px solid #B9B9B9;
-    padding: 7px;
+    font-size: 14px;
+    background-color: #ededed;
+    border-right: 1px solid #dddddd;
+    padding: 10px;
     cursor: pointer;
 }
 #tables-section #add-new-table, #views-section #add-new-view {
-    font-size: 22px;
+    font-size: 19px;
     font-weight: 800;
-    line-height: 30px;
+    line-height: 24px;
     text-align: center;
-    height: 32px;
-    width: 32px;
+    height: 26px;
+    width: 26px;
+    margin: 4px;
     background: white;
     border: 1px solid #BFBFBF;
     border-radius: 100%;
@@ -168,7 +183,7 @@ ul#top-items > li {
 }
 #canvas-wrapper {
     max-width: 100%;
-    margin: 15px;
+    margin: 0px 15px 15px 15px;
     height: 400px;
     position: relative;
     -webkit-user-select: none;
@@ -179,6 +194,7 @@ ul#top-items > li {
 .view-wrapper {
     position: relative;
     border: 1px solid #ddd;
+    border-top: none;
     background-color: #ffffff;
     display: none;
 }
@@ -292,7 +308,7 @@ ul#top-items > li {
 #component-configuration-panel {
     position: absolute;
     top: 0px;
-    right: 0px;
+    right: -1px;
     z-index: 1;
     width: 250px;
     height: 100%;
@@ -351,10 +367,11 @@ ul#top-items > li {
 }
 
 .com-left-side {
-    width: 50%;
+    width: 55%;
     display: block;
     text-align: right;
     height: 35px;
+    font-size: 14px;
     line-height: 35px;
     padding-right: 5px;
     vertical-align: middle;
@@ -364,9 +381,14 @@ ul#top-items > li {
 .com-right-side {
     display: block;
     float: left;
-    width: 50%;
+    width: 45%;
     text-align: left;
     height: 35px;
+}
+
+.buttons-group {
+    padding: 10px 10px 5px 10px;
+    text-align: center;
 }
 
 button {
@@ -389,9 +411,7 @@ button {
     display:inline-block;
     cursor:pointer;
     color:#ffffff;
-    font-family:Arial;
     font-size:15px;
-    font-weight:bold;
     margin-right: 5px;
     padding: 5px;
     text-decoration:none;

@@ -38,10 +38,6 @@ app.model.HolographicPlate = function (coordX, coordY) {
 goog.inherits(app.model.HolographicPlate, app.model.Component);
 goog.mixin(app.model.HolographicPlate.prototype, app.shapes.Line.prototype);
 
-app.model.HolographicPlate.prototype.setSize = function (height) {
-    this._height = height;
-};
-
 app.model.HolographicPlate.prototype.makeRecord = function (refLightID) {
     this._removeRecordedRays();
     this._makeRecord = true;

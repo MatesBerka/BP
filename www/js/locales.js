@@ -32,8 +32,19 @@ app.TRANSLATION = {
         'com-copy-btn': 'Kopírovat',
         'com-delete-btn': 'Smazat',
         'com-close-btn': 'Zavřít',
-        'com-height': 'Výška',
-        'com-width': 'Šířka'
+        'com-height-title': 'Výška',
+        'com-width-title': 'Šířka',
+        'com-btn-title-record': 'Zaznamenat',
+        'com-lens-type-div': 'Rozptylka',
+        'com-lens-type-con': 'Spojka',
+        'com-lens-type-title': 'Typ čočky',
+        'com-lens-focus-offset': 'Vzdálenost ohniska:',
+        'com-light-size': 'A: ',
+        'com-light-beam': 'Kužel',
+        'com-light-circle': 'Kruh',
+        'com-light-type-title': 'Typ světla: ',
+        'com-light-rays-count': 'Počet paprsků: ',
+        'com-light-radius': 'Rádius: '
     },
     'en_US': {
         'logo-msg': 'Diffractive optics simulator',
@@ -66,7 +77,18 @@ app.TRANSLATION = {
         'com-copy-btn': 'Copy',
         'com-delete-btn': 'Delete',
         'com-close-btn': 'Close',
-        'com-height': 'Height',
-        'com-width': 'Width'
+        'com-height-title': 'Height',
+        'com-width-title': 'Width',
+        'com-btn-title-record': 'Make record',
+        'com-lens-type-div': 'Diverging',
+        'com-lens-type-con': 'Converging',
+        'com-lens-type-title': 'Lens type:',
+        'com-lens-focus-offset': 'Focus offset:',
+        'com-light-size': 'A: ',
+        'com-light-beam': 'Beam',
+        'com-light-circle': 'Circle',
+        'com-light-type-title': 'Light type: ',
+        'com-light-rays-count': 'Rays count: ',
+        'com-light-radius': 'Radius: '
     }
 };
