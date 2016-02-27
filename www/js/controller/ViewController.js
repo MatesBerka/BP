@@ -91,8 +91,8 @@ app.ViewController.prototype.updateCoordinates = function (e) {
     var coordinates = e.currentTarget.childNodes[1];
 
     var xCm, yCm, zoom;
-    xCm = (e.offsetX - this._model.getAppliedTranslationX()) / app.PIXELonCM;
-    yCm = (e.offsetY - this._model.getAppliedTranslationY()) / app.PIXELonCM;
+    xCm = (e.offsetX - this._model.getAppliedTranslationX()) / app.PIXEL_ON_CM;
+    yCm = (e.offsetY - this._model.getAppliedTranslationY()) / app.PIXEL_ON_CM;
     zoom = Math.floor(100 * this._model.getZoom());
     goog.dom.setTextContent(coordinates, 'x: ' + xCm.toFixed(2) + ' cm, y: ' + yCm.toFixed(2) + ' cm, zoom: ' + zoom + ' %');
 };

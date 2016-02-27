@@ -11,17 +11,17 @@ app.model.View = function (tableID, viewID, viewName, offsetX, offsetY) {
 
     this._viewName = viewName;
 
-    this._width = 0;
+    this.width = 0;
 
-    this._height = 0;
+    this.height = 0;
 
     this._ctx = null;
 
     this._appliedScale = 1;
 
-    this._appliedTranslationX = offsetX;
+    this.appliedTranslationX = offsetX;
 
-    this._appliedTranslationY = offsetY;
+    this.appliedTranslationY = offsetY;
 };
 
 app.model.View.CLEAR_OFFSET = 100;
@@ -41,32 +41,32 @@ app.model.View.prototype.setCanvas = function (canvas) {
 };
 
 app.model.View.prototype.getGraphicsContext = function () {
-    this._ctx.setTransform(this._appliedScale, 0, 0, this._appliedScale, this._appliedTranslationX, this._appliedTranslationY);
+    this._ctx.setTransform(this._appliedScale, 0, 0, this._appliedScale, this.appliedTranslationX, this.appliedTranslationY);
     return this._ctx;
 };
 
 app.model.View.prototype.updateSize = function (width, height) {
-    this._width = width;
-    this._height = height;
+    this.width = width;
+    this.height = height;
 };
 
 app.model.View.prototype.getVisibleArea = function () {
     var area = [];
 
-    area[2] = (this._width + app.model.View.CLEAR_OFFSET)/this._appliedScale;
-    area[3] = (this._height + app.model.View.CLEAR_OFFSET)/this._appliedScale;
-    area[0] = (-this._appliedTranslationX - app.model.View.CLEAR_OFFSET)/this._appliedScale;
-    area[1] = (-this._appliedTranslationY - app.model.View.CLEAR_OFFSET)/this._appliedScale;
+    area[2] = (this.width + app.model.View.CLEAR_OFFSET)/this._appliedScale;
+    area[3] = (this.height + app.model.View.CLEAR_OFFSET)/this._appliedScale;
+    area[0] = (-this.appliedTranslationX - app.model.View.CLEAR_OFFSET)/this._appliedScale;
+    area[1] = (-this.appliedTranslationY - app.model.View.CLEAR_OFFSET)/this._appliedScale;
 
     return area;
 };
 
 app.model.View.prototype.getAppliedTranslationX = function () {
-    return this._appliedTranslationX;
+    return this.appliedTranslationX;
 };
 
 app.model.View.prototype.getAppliedTranslationY = function () {
-    return this._appliedTranslationY;
+    return this.appliedTranslationY;
 };
 
 app.model.View.prototype.scaleUp = function () {
@@ -80,29 +80,29 @@ app.model.View.prototype.scaleDown = function () {
 };
 
 app.model.View.prototype.moveUp = function () {
-    this._appliedTranslationY -= 10;
+    this.appliedTranslationY -= 10;
 };
 
 app.model.View.prototype.moveDown = function () {
-    this._appliedTranslationY += 10;
+    this.appliedTranslationY += 10;
 };
 
 app.model.View.prototype.moveLeft = function () {
-    this._appliedTranslationX -= 10;
+    this.appliedTranslationX -= 10;
 };
 
 app.model.View.prototype.moveRight = function () {
-    this._appliedTranslationX += 10;
+    this.appliedTranslationX += 10;
 };
 
 app.model.View.prototype.translate = function (x, y) {
-    this._appliedTranslationX += x;
-    this._appliedTranslationY += y;
+    this.appliedTranslationX += x;
+    this.appliedTranslationY += y;
 };
 
 app.model.View.prototype.reverseTransformPoint = function (point) {
-    point[0] -= this._appliedTranslationX;
-    point[1] -= this._appliedTranslationY;
+    point[0] -= this.appliedTranslationX;
+    point[1] -= this.appliedTranslationY;
 
     point[0] = Math.round(point[0] / this._appliedScale);
     point[1] = Math.round(point[1] / this._appliedScale);

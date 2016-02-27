@@ -1,57 +1,64 @@
 goog.provide('app.model.Splitter');
 
-goog.require('app.model.Component');
-goog.require('app.shapes.Line');
+goog.require('app.model.LineShapeComponent');
 /**
+ * @param {number} coordX - component x position
+ * @param {number} coordY - component Y position
+ * @final
  * @constructor
- * @extends {app.model.Component}
+ * @extends {app.model.LineShapeComponent}
  */
 app.model.Splitter = function (coordX, coordY) {
 
-    this._height = 300;
-
     this._type = 'SPLITTER';
-
-    this._newRayLength = 0;
 
     app.model.Splitter.base(this, 'constructor', coordX, coordY); // call parent constructor
 
-    this._transformPoints();
+    this.transformPoints();
 };
 
-goog.inherits(app.model.Splitter, app.model.Component);
-goog.mixin(app.model.Splitter.prototype, app.shapes.Line.prototype);
+goog.inherits(app.model.Splitter, app.model.LineShapeComponent);
 
+/**
+ * @override
+ */
 app.model.Splitter.prototype.intersect = function (rays) {
     var dVec = [], normVec;
 
-    var point = this._reverseTransformPoint([this._intersectionRay[0], this._intersectionRay[1]]);
-    var intersectionPoint = this._reverseTransformPoint([this._intersectionPoint[0], this._intersectionPoint[1]]);
+    var point = this.reverseTransformPoint([this._intersectionRay[0], this._intersectionRay[1]]);
+    var intersectionPoint = this.reverseTransformPoint([this.intersectionPoint[0], this.intersectionPoint[1]]);
     point[1] = (-1*point[1]) + (2*intersectionPoint[1]);
-    var k = this._transformPoint(point);
+    var k = this.transformPoint(point);
 
-    dVec[0] = k[0] - this._intersectionPoint[0];
-    dVec[1] = k[1] - this._intersectionPoint[1];
+    dVec[0] = k[0] - this.intersectionPoint[0];
+    dVec[1] = k[1] - this.intersectionPoint[1];
 
-    normVec = this._normalize2DVector(dVec);
+    normVec = this.normalize2DVector(dVec);
 
-    var rayLength = this._intersectionRay[7] + this._newRayLength;
-    rays.push([this._intersectionPoint[0], this._intersectionPoint[1], 0, normVec[0], normVec[1], 0, this._intersectionRay[6], rayLength]);
+    var rayLength = this._intersectionRay[7] + this.newRayLength;
+    rays.push([this.intersectionPoint[0], this.intersectionPoint[1], 0, normVec[0], normVec[1], 0, this._intersectionRay[6], rayLength]);
 
-    this._intersectionRay[0] = this._intersectionPoint[0];
-    this._intersectionRay[1] = this._intersectionPoint[1];
+    this._intersectionRay[0] = this.intersectionPoint[0];
+    this._intersectionRay[1] = this.intersectionPoint[1];
     rays.push(this._intersectionRay);
 
-    return this._intersectionPoint;
+    return this.intersectionPoint;
 };
 
+/**
+ * @param {!number} height
+ * @override
+ */
 app.model.Splitter.prototype.copyArguments = function(height) {
-    this._height = height;
-    this._transformPoints();
+    this.height = height;
+    this.transformPoints();
 };
 
+/**
+ * @override
+ */
 app.model.Splitter.prototype.copy = function () {
-    var copy = new app.model.Splitter(this._appliedTranslationX, this._appliedTranslationY);
-    copy.copyArguments(this._height);
+    var copy = new app.model.Splitter(this.appliedTranslationX, this.appliedTranslationY);
+    copy.copyArguments(this.height);
     return copy;
 };

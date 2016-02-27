@@ -400,7 +400,6 @@ app.SceneController.prototype.isIntersection = function (e) {
 app.SceneController.prototype.componentMoved = function (e) {
     var diffX, diffY;
 
-    console.log(e.offsetX, e.offsetY);
     diffX = e.offsetX - this._mouseCursorPoint[0];
     diffY = e.offsetY - this._mouseCursorPoint[1];
 

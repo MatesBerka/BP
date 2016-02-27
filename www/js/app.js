@@ -15,7 +15,7 @@ app.LOCALE = 'en_US';
 * @export
 */
 app.start = function() {
-    app.PIXELonCM = goog.dom.getElement('cm-box').clientWidth;
+    app.PIXEL_ON_CM = goog.dom.getElement('cm-box').clientWidth;
 
     app.translate();
 
