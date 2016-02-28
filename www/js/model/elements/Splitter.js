@@ -2,17 +2,16 @@ goog.provide('app.model.Splitter');
 
 goog.require('app.model.LineShapeComponent');
 /**
- * @param {number} coordX - component x position
- * @param {number} coordY - component Y position
+ * @param {!number} coordX - component x position
+ * @param {!number} coordY - component Y position
  * @final
  * @constructor
  * @extends {app.model.LineShapeComponent}
  */
 app.model.Splitter = function (coordX, coordY) {
-
-    this._type = 'SPLITTER';
-
     app.model.Splitter.base(this, 'constructor', coordX, coordY); // call parent constructor
+
+    this.type = 'SPLITTER';
 
     this.transformPoints();
 };

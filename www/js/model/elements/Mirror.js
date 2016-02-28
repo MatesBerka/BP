@@ -3,17 +3,16 @@ goog.provide('app.model.Mirror');
 goog.require('app.model.LineShapeComponent');
 
 /**
- * @param {number} coordX - component x position
- * @param {number} coordY - component Y position
+ * @param {!number} coordX - component x position
+ * @param {!number} coordY - component Y position
  * @final
  * @constructor
  * @extends {app.model.LineShapeComponent}
  */
 app.model.Mirror = function(coordX, coordY) {
-
-    this._type = 'MIRROR';
-
     app.model.Mirror.base(this, 'constructor', coordX, coordY); // call parent constructor
+
+    this.type = 'MIRROR';
 
     this.transformPoints();
 };

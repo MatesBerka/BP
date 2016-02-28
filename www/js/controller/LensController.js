@@ -87,7 +87,7 @@ app.LensController.prototype.addPanelListeners = function(sceneController) {
     app.LensController.base(this, 'addPanelListeners', sceneController);
 
     goog.events.listen(goog.dom.getElement('com-height'), goog.events.EventType.KEYUP, function (e) {
-        app.ComponentController.validateFloatInput(e, this.model.setHeight);
+        app.ComponentController.validateFloatInput(e, this.model.setHeight, this.model);
         sceneController.redrawAll();
     }, true, this);
 
@@ -97,7 +97,7 @@ app.LensController.prototype.addPanelListeners = function(sceneController) {
     }, true, this);
 
     goog.events.listen(goog.dom.getElement('com-focus-offset'), goog.events.EventType.KEYUP, function (e) {
-        app.ComponentController.validateFloatInput(e, this.model.setFocusOffset);
+        app.ComponentController.validateFloatInput(e, this.model.setFocusOffset, this.model);
         sceneController.redrawAll();
     }, true, this);
 };

@@ -52,3 +52,15 @@ app.translate = function() {
 //http://www.itnetwork.cz/maturitni-otazka-fyzika-zobrazeni-cocky-zrcadla-pristroje
 //https://cs.wikipedia.org/wiki/Rozptyln%C3%A1_%C4%8Do%C4%8Dka
 //http://stackoverflow.com/questions/9705123/how-can-i-get-sin-cos-and-tan-to-use-degrees-instead-of-radians
+
+// TODO light ID, view ID - problem budou se spatne generovat
+// TODO spatny prevod centimetru
+// TODO klavesove skratky pro pridavani komponent
+// TODO pravitko
+// TODO mrizka
+// todo export
+// todo save
+// todo tablet
+// todo remove http link in comments (@see)
+// todo light ID zobrazit na kontrol panelu
+// todo schovat radius u light

@@ -2,8 +2,8 @@ goog.provide('app.model.Lens');
 
 goog.require('app.model.LineShapeComponent');
 /**
- * @param {number} coordX - component x position
- * @param {number} coordY - component Y position
+ * @param {!number} coordX - component x position
+ * @param {!number} coordY - component Y position
  * @final
  * @constructor
  * @extends {app.model.LineShapeComponent}
@@ -13,14 +13,13 @@ goog.require('app.model.LineShapeComponent');
  * https://www.khanacademy.org/science/physics/geometric-optics/mirrors-and-lenses/v/thin-lens-equation-and-problem-solving
  */
 app.model.Lens = function(coordX, coordY) {
-
-    this._type = 'LENS';
+    app.model.Lens.base(this, 'constructor', coordX, coordY); // call parent constructor
 
     this._focusType = 'CONVERGING'; // DIVERSE
 
     this._focusOffset = 100;
 
-    app.model.Lens.base(this, 'constructor', coordX, coordY); // call parent constructor
+    this.type = 'LENS';
 
     this._generateLensPoints();
     this.transformPoints();

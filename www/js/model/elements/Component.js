@@ -1,12 +1,18 @@
 goog.provide('app.model.Component');
 
 /**
- * @param {number} coordX - component x position
- * @param {number} coordY - component Y position
+ * @param {!number} coordX - component x position
+ * @param {!number} coordY - component Y position
  * @template Component
  * @constructor
  */
-app.model.Component = function(coordX, coordY) {
+app.model.Component = function (coordX, coordY) {
+    /**
+     * Holds component type
+     * @type {!string}
+     * @protected
+     */
+    this.type = '';
     /**
      * Applied x translation in px
      * @type {!number}
@@ -62,7 +68,7 @@ app.model.Component.RAY_MIN_LENGTH = 3;
  * @return {!number}
  * @public
  */
-app.model.Component.prototype.isIntersection = function(ray) {
+app.model.Component.prototype.isIntersection = function (ray) {
     throw Error('unimplemented abstract method');
 };
 
@@ -71,7 +77,7 @@ app.model.Component.prototype.isIntersection = function(ray) {
  * @param {function(Array<number>)} callback
  * @public
  */
-app.model.Component.prototype.draw = function(ctx, callback) {
+app.model.Component.prototype.draw = function (ctx, callback) {
     throw Error('unimplemented abstract method');
 };
 
@@ -81,7 +87,7 @@ app.model.Component.prototype.draw = function(ctx, callback) {
  * @return {!boolean}
  * @public
  */
-app.model.Component.prototype.isSelected = function(x, y) {
+app.model.Component.prototype.isSelected = function (x, y) {
     throw Error('unimplemented abstract method');
 };
 
@@ -104,18 +110,18 @@ app.model.Component.prototype.copy = goog.abstractMethod;
 /**
  * @public
  */
-app.model.Component.prototype.intersect = function(rays) {
+app.model.Component.prototype.intersect = function (rays) {
     return this.intersectionPoint;
 };
 
 /**
  * @protected
  */
-app.model.Component.prototype.transformPoints = function() {
+app.model.Component.prototype.transformPoints = function () {
     var newPoint;
     this.transformedPoints = [];
 
-    for(var i = 0; i < this.originPoints.length; i++) {
+    for (var i = 0; i < this.originPoints.length; i++) {
         newPoint = [];
         newPoint[0] = this.originPoints[i][0] * Math.cos(this.appliedRotation) - this.originPoints[i][1] * Math.sin(this.appliedRotation);
         newPoint[1] = this.originPoints[i][0] * Math.sin(this.appliedRotation) + this.originPoints[i][1] * Math.cos(this.appliedRotation);
@@ -134,10 +140,10 @@ app.model.Component.prototype.transformPoints = function() {
  * @return {!Array<number>} vec
  * @protected
  */
-app.model.Component.prototype.normalize2DVector = function(vec) {
-    var len = Math.sqrt(vec[0]*vec[0] + vec[1]*vec[1]);
-    vec[0] = vec[0]/len;
-    vec[1] = vec[1]/len;
+app.model.Component.prototype.normalize2DVector = function (vec) {
+    var len = Math.sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
+    vec[0] = vec[0] / len;
+    vec[1] = vec[1] / len;
 
     return vec;
 };
@@ -149,7 +155,7 @@ app.model.Component.prototype.normalize2DVector = function(vec) {
  * @return {!Array<number>} result
  * @protected
  */
-app.model.Component.prototype.rotatePoint = function(point, radians) {
+app.model.Component.prototype.rotatePoint = function (point, radians) {
     var result = [];
     result[0] = point[0] * Math.cos(radians) + point[1] * Math.sin(radians);
     result[1] = point[0] * -Math.sin(radians) + point[1] * Math.cos(radians);
@@ -162,7 +168,7 @@ app.model.Component.prototype.rotatePoint = function(point, radians) {
  * @return {!Array<number>} result
  * @protected
  */
-app.model.Component.prototype.reverseTransformPoint = function(point) {
+app.model.Component.prototype.reverseTransformPoint = function (point) {
     var result = [], translatedPoint = [];
     translatedPoint[0] = point[0] - this.appliedTranslationX;
     translatedPoint[1] = point[1] - this.appliedTranslationY;
@@ -178,7 +184,7 @@ app.model.Component.prototype.reverseTransformPoint = function(point) {
  * @return {!Array<number>} newPoint
  * @protected
  */
-app.model.Component.prototype.transformPoint = function(point) {
+app.model.Component.prototype.transformPoint = function (point) {
     var newPoint;
 
     newPoint = [];
@@ -195,8 +201,8 @@ app.model.Component.prototype.transformPoint = function(point) {
  * @param {!number} degrees
  * @public
  */
-app.model.Component.prototype.updateRotation = function(degrees) {
-    this.appliedRotation = degrees*(Math.PI/180);
+app.model.Component.prototype.updateRotation = function (degrees) {
+    this.appliedRotation = degrees * (Math.PI / 180);
     this.transformPoints();
 };
 
@@ -205,7 +211,7 @@ app.model.Component.prototype.updateRotation = function(degrees) {
  * @param {!number} moveY
  * @public
  */
-app.model.Component.prototype.applyTranslation = function(moveX, moveY) {
+app.model.Component.prototype.applyTranslation = function (moveX, moveY) {
     this.appliedTranslationX += moveX;
     this.appliedTranslationY += moveY;
     this.transformPoints();
@@ -215,7 +221,8 @@ app.model.Component.prototype.applyTranslation = function(moveX, moveY) {
  * @param {!number} x
  * @public
  */
-app.model.Component.prototype.updateTranslationX = function(x) {
+app.model.Component.prototype.updateTranslationX = function (x) {
+    console.dir(this);
     this.appliedTranslationX = Math.round(x * app.PIXEL_ON_CM);
     this.transformPoints();
 };
@@ -224,7 +231,7 @@ app.model.Component.prototype.updateTranslationX = function(x) {
  * @param {!number} y
  * @public
  */
-app.model.Component.prototype.updateTranslationY = function(y) {
+app.model.Component.prototype.updateTranslationY = function (y) {
     this.appliedTranslationY = Math.round(y * app.PIXEL_ON_CM);
     this.transformPoints();
 };
@@ -233,7 +240,7 @@ app.model.Component.prototype.updateTranslationY = function(y) {
  * @return {!string} component x coordinate
  * @public
  */
-app.model.Component.prototype.getPosX = function() {
+app.model.Component.prototype.getPosX = function () {
     return (this.appliedTranslationX / app.PIXEL_ON_CM).toFixed(2);
 };
 
@@ -241,7 +248,7 @@ app.model.Component.prototype.getPosX = function() {
  * @return {!string} component y coordinate
  * @public
  */
-app.model.Component.prototype.getPosY = function() {
+app.model.Component.prototype.getPosY = function () {
     return (this.appliedTranslationY / app.PIXEL_ON_CM).toFixed(2);
 };
 
@@ -249,23 +256,23 @@ app.model.Component.prototype.getPosY = function() {
  * @return {!string} component type
  * @public
  */
-app.model.Component.prototype.getType = function() {
-    return this._type;
+app.model.Component.prototype.getType = function () {
+    return this.type;
 };
 
 /**
  * @return {!number} applied rotation
  * @public
  */
-app.model.Component.prototype.getRotation = function() {
-    return this.appliedRotation * (180/Math.PI);
+app.model.Component.prototype.getRotation = function () {
+    return this.appliedRotation * (180 / Math.PI);
 };
 
 /**
  * @param {!number} rotation
  * @public
  */
-app.model.Component.prototype.setRotation = function(rotation) {
+app.model.Component.prototype.setRotation = function (rotation) {
     this.appliedRotation = rotation;
     this.transformPoints();
 };
@@ -274,6 +281,6 @@ app.model.Component.prototype.setRotation = function(rotation) {
  * @param {!boolean} boolean
  * @public
  */
-app.model.Component.prototype.setSelected = function(boolean) {
+app.model.Component.prototype.setSelected = function (boolean) {
     this.isComponentSelected = boolean;
 };

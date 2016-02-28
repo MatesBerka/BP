@@ -31,42 +31,44 @@ app.ComponentController = function () {
 /**
  * @param {goog.events.Event} e
  * @param {function(!number)} callback
+ * @param {app.model.Component} scope
  * @protected
  */
-app.ComponentController.validateFloatInput = function(e, callback) {
+app.ComponentController.validateFloatInput = function(e, callback, scope) {
     var val = parseFloat(e.target.value);
     if(isNaN(val)) {
         e.target.style.backgroundColor = "red";
     } else {
         e.target.style.backgroundColor = "white";
-        callback(val);
+        callback.call(scope, val);
     }
 };
 
 /**
  * @param {goog.events.Event} e
  * @param {function(!number)} callback
+ * @param {app.model.Component} scope
  * @protected
  */
-app.ComponentController.validateIntInput = function(e, callback) {
+app.ComponentController.validateIntInput = function(e, callback, scope) {
     var val = parseFloat(e.target.value);
     if(isNaN(val)) {
         e.target.style.backgroundColor = "red";
     } else {
         e.target.style.backgroundColor = "white";
-        callback(val);
+        callback.call(scope, val);
     }
 };
 
 /**
- * @param sceneController
+ * @param {app.SceneController} sceneController
  * @public
  */
 app.ComponentController.prototype.showComponentControlPanel = function (sceneController) {
     goog.dom.removeChildren(this.componentConfigurationPanel);
     goog.dom.classlist.add(goog.dom.getElement('canvas-wrapper'), 'active-component-panel');
 
-    // input x,y position
+    // input x, y position
     goog.dom.appendChild(this.componentConfigurationPanel,
         goog.dom.createDom('label', {'id': 'com-position'}, app.translation["com-position"])
     );
@@ -129,17 +131,17 @@ app.ComponentController.prototype.hideComponentControlPanel = function () {
  */
 app.ComponentController.prototype.addPanelListeners = function (sceneController) {
     goog.events.listen(goog.dom.getElement('com-pos-x'), goog.events.EventType.KEYUP, function (e) {
-        app.ComponentController.validateFloatInput(e, this.model.updateTranslationX);
+        app.ComponentController.validateFloatInput(e, this.model.updateTranslationX, this.model);
         sceneController.redrawAll();
     }, true, this);
 
     goog.events.listen(goog.dom.getElement('com-pos-y'), goog.events.EventType.KEYUP, function (e) {
-        app.ComponentController.validateFloatInput(e, this.model.updateTranslationY);
+        app.ComponentController.validateFloatInput(e, this.model.updateTranslationY, this.model);
         sceneController.redrawAll();
     }, true, this);
 
     goog.events.listen(goog.dom.getElement('com-rotate'), goog.events.EventType.KEYUP, function (e) {
-        app.ComponentController.validateFloatInput(e, this.model.updateRotation);
+        app.ComponentController.validateFloatInput(e, this.model.updateRotation, this.model);
         sceneController.redrawAll();
     }, true, this);
 };

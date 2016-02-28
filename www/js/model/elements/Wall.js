@@ -3,17 +3,16 @@ goog.provide('app.model.Wall');
 goog.require('app.model.RectangleShapeComponent');
 
 /**
- * @param {number} coordX - component x position
- * @param {number} coordY - component Y position
+ * @param {!number} coordX - component x position
+ * @param {!number} coordY - component Y position
  * @final
  * @constructor
  * @extends {app.model.RectangleShapeComponent}
  */
 app.model.Wall = function(coordX, coordY) {
-
-    this._type = 'WALL';
-
     app.model.Wall.base(this, 'constructor', coordX, coordY); // call parent constructor
+
+    this.type = 'WALL';
 
     this.transformPoints();
 };

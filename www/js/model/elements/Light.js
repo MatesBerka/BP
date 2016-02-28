@@ -2,17 +2,18 @@ goog.provide('app.model.Light');
 
 goog.require('app.model.Component');
 /**
- * @param {number} coordX - component x position
- * @param {number} coordY - component Y position
+ * @param {!number} coordX - component x position
+ * @param {!number} coordY - component Y position
  * @final
  * @constructor
  * @extends {app.model.Component}
  */
 app.model.Light = function (coordX, coordY) {
-
     this._size = 50;
     // only for beam light
     this.width = 10;
+
+    app.model.Light.base(this, 'constructor', coordX, coordY); // call parent constructor
     // BEAM or CIRCLE
     this._lightType = 'BEAM';
 
@@ -20,14 +21,12 @@ app.model.Light = function (coordX, coordY) {
 
     this._lightRadius = 30;
 
-    this._type = 'LIGHT';
+    this.type = 'LIGHT';
 
     // TODO co to light ID, pouziva se?
     this._lightID = -1;
 
     this.facesCount = 4;
-
-    app.model.Light.base(this, 'constructor', coordX, coordY); // call parent constructor
 
     this.transformPoints();
 };

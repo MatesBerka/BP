@@ -99,17 +99,17 @@ app.LightController.prototype.addPanelListeners = function (sceneController) {
     app.LightController.base(this, 'addPanelListeners', sceneController);
 
     goog.events.listen(goog.dom.getElement('com-size'), goog.events.EventType.KEYUP, function (e) {
-        app.ComponentController.validateFloatInput(e, this.model.setSize);
+        app.ComponentController.validateFloatInput(e, this.model.setSize, this.model);
         sceneController.redrawAll();
     }, true, this);
 
     goog.events.listen(goog.dom.getElement('com-rays-count'), goog.events.EventType.KEYUP, function (e) {
-        app.ComponentController.validateIntInput(e, this.model.setRaysCount);
+        app.ComponentController.validateIntInput(e, this.model.setRaysCount, this.model);
         sceneController.redrawAll();
     }, true, this);
 
     goog.events.listen(goog.dom.getElement('com-radius'), goog.events.EventType.KEYUP, function (e) {
-        app.ComponentController.validateFloatInput(e, this.model.setRadius);
+        app.ComponentController.validateFloatInput(e, this.model.setRadius, this.model);
         sceneController.redrawAll();
     }, true, this);
 

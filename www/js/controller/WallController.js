@@ -26,7 +26,7 @@ goog.inherits(app.WallController, app.ComponentController);
 
 /**
  * @override
- * @param sceneController
+ * @param {app.SceneController} sceneController
  */
 app.WallController.prototype.showComponentControlPanel = function(sceneController) {
     app.WallController.base(this, 'showComponentControlPanel', sceneController);
@@ -66,12 +66,12 @@ app.WallController.prototype.addPanelListeners = function(sceneController) {
     app.WallController.base(this, 'addPanelListeners', sceneController);
 
     goog.events.listen(goog.dom.getElement('com-height'), goog.events.EventType.KEYUP, function (e) {
-        app.ComponentController.validateFloatInput(e, this.model.setHeight);
+        app.ComponentController.validateFloatInput(e, this.model.setHeight, this.model);
         sceneController.redrawAll();
     }, true, this);
 
     goog.events.listen(goog.dom.getElement('com-width'), goog.events.EventType.KEYUP, function (e) {
-        app.ComponentController.validateFloatInput(e, this.model.setWidth);
+        app.ComponentController.validateFloatInput(e, this.model.setWidth, this.model);
         sceneController.redrawAll();
     }, true, this);
 };

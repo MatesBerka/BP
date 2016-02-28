@@ -8,7 +8,7 @@ goog.require('app.model.Component');
  * @constructor
  * @extends {app.model.Component}
  */
-app.model.LineShapeComponent = function(coordX, coordY) {
+app.model.LineShapeComponent = function (coordX, coordY) {
     /**
      * Used to define component height
      * @type {!number}
@@ -30,7 +30,7 @@ goog.inherits(app.model.LineShapeComponent, app.model.Component);
 /**
  * @override
  */
-app.model.LineShapeComponent.prototype.generateShapePoints = function() {
+app.model.LineShapeComponent.prototype.generateShapePoints = function () {
     var x = 0, y = 0, z = 0;
 
     this.originPoints = [];
@@ -42,10 +42,10 @@ app.model.LineShapeComponent.prototype.generateShapePoints = function() {
 };
 
 /**
+ * @see https://rootllama.wordpress.com/2014/06/20/ray-line-segment-intersection-test-in-2d/#comments
  * @override
  */
-app.model.LineShapeComponent.prototype.isIntersection = function(ray) {
-    //https://rootllama.wordpress.com/2014/06/20/ray-line-segment-intersection-test-in-2d/#comments
+app.model.LineShapeComponent.prototype.isIntersection = function (ray) {
     var numerator, denominator, t1, t2, v1, v2, v3, ix, iy, a, b,
         length = Infinity;
 
@@ -71,12 +71,12 @@ app.model.LineShapeComponent.prototype.isIntersection = function(ray) {
     ix = Math.round(ray[0] + ray[3] * t1);
     iy = Math.round(ray[1] + ray[4] * t1);
 
-    if(ix == ray[0] && iy == ray[1])
+    if (ix == ray[0] && iy == ray[1])
         return length;
 
     // is intersection
     length = Math.sqrt(Math.pow(Math.abs(ix - ray[0]), 2) + Math.pow(Math.abs(iy - ray[1]), 2));
-    if(length < app.model.Component.RAY_MIN_LENGTH)
+    if (length < app.model.Component.RAY_MIN_LENGTH)
         return Infinity;
 
     this._intersectionRay = ray.slice();
@@ -89,7 +89,7 @@ app.model.LineShapeComponent.prototype.isIntersection = function(ray) {
 /**
  * @override
  */
-app.model.LineShapeComponent.prototype.draw = function(ctx, callback) {
+app.model.LineShapeComponent.prototype.draw = function (ctx, callback) {
     ctx.beginPath();
     ctx.lineWidth = 3;
     ctx.moveTo(this.transformedPoints[0][0], this.transformedPoints[0][1]);
@@ -107,7 +107,7 @@ app.model.LineShapeComponent.prototype.draw = function(ctx, callback) {
  * @override
  * @public
  */
-app.model.LineShapeComponent.prototype.isSelected = function(x, y) {
+app.model.LineShapeComponent.prototype.isSelected = function (x, y) {
     //http://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-box-intersection
     var point = this.reverseTransformPoint([x, y]),
         xs = -5, ys = -Math.floor(this.height / 2), xe = 5, ye = Math.floor(this.height / 2);
@@ -121,14 +121,14 @@ app.model.LineShapeComponent.prototype.isSelected = function(x, y) {
 /**
  * @public
  */
-app.model.LineShapeComponent.prototype.getHeight = function() {
+app.model.LineShapeComponent.prototype.getHeight = function () {
     return (this.height / app.PIXEL_ON_CM).toFixed(2);
 };
 
 /**
  * @public
  */
-app.model.LineShapeComponent.prototype.setHeight = function(height) {
+app.model.LineShapeComponent.prototype.setHeight = function (height) {
     this.height = Math.round(height * app.PIXEL_ON_CM);
     this.generateShapePoints();
     this.transformPoints();

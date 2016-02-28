@@ -54,7 +54,7 @@ app.SplitterController.prototype.addPanelListeners = function(sceneController) {
     app.SplitterController.base(this, 'addPanelListeners', sceneController);
 
     goog.events.listen(goog.dom.getElement('com-height'), goog.events.EventType.KEYUP, function (e) {
-        app.ComponentController.validateFloatInput(e, this.model.setHeight);
+        app.ComponentController.validateFloatInput(e, this.model.setHeight, this.model);
         sceneController.redrawAll();
     }, true, this);
 };
