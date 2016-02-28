@@ -3,7 +3,7 @@ goog.provide('app.HolographicPlateController');
 goog.require('app.ComponentController');
 
 /**
- * @param {app.model.HolographicPlate} model
+ * @param {!app.model.HolographicPlate} model
  * @param {!number} modelID
  * @constructor
  * @extends {app.ComponentController}
@@ -45,7 +45,7 @@ app.HolographicPlateController.prototype.showComponentControlPanel = function(sc
 
     goog.dom.appendChild(this.componentConfigurationPanel,
         goog.dom.createDom('div', {'class': 'buttons-group'},
-            goog.dom.createDom('button', {'id': 'com-record-btn'}, app.translation['com-btn-title-record'])
+            goog.dom.createDom('button', {'id': 'com-record-btn'}, app.translation['com-record-btn'])
         )
     );
 

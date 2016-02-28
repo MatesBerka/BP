@@ -3,7 +3,7 @@ goog.provide('app.WallController');
 goog.require('app.ComponentController');
 
 /**
- * @param {app.model.Wall} model
+ * @param {!app.model.Wall} model
  * @param {!number} modelID
  * @constructor
  * @extends {app.ComponentController}

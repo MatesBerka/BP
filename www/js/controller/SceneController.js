@@ -8,10 +8,62 @@ goog.require('app.model.View');
 /**
  * @param {!boolean} newSimulation
  * @final
- * @template SceneController
  * @constructor
  */
 app.SceneController = function (newSimulation) {
+    /**
+     * @const
+     * @type {!app.ViewController}
+     * @private
+     */
+    this._VIEW_CONTROLLER = new app.ViewController();
+    /**
+     * @type {app.ComponentController}
+     * @private
+     */
+    this._componentController = null;
+    /**
+     * @type {!string}
+     * @private
+     */
+    this._newComponentType = '';
+    /**
+     * @const
+     * @type {Element}
+     * @private
+     */
+    this._CANVAS_WRAPPER = goog.dom.getElement('canvas-wrapper');
+    /**
+     * @type {!Array<app.model.Table>}
+     * @private
+     */
+    this._tables = [];
+    /**
+     * @type {!Array<number>}
+     * @private
+     */
+    this._mouseCursorPoint = [];
+    /**
+     * @type {!boolean}
+     * @private
+     */
+    this._isAddNewComponent = false;
+    /**
+     * @type {!boolean}
+     * @private
+     */
+    this._componentMoveActive = false;
+    /**
+     * @type {!boolean}
+     * @private
+     */
+    this._componentMoved = false;
+    /**
+     * @type {!boolean}
+     * @private
+     */
+    this._canvasMoveActive = false;
+
     if (newSimulation) {
         this.init();
     }
@@ -21,27 +73,6 @@ app.SceneController = function (newSimulation) {
  * @private
  */
 app.SceneController.prototype.init = function () {
-
-    this._viewController = new app.ViewController();
-
-    this._canvasWrapper = goog.dom.getElement('canvas-wrapper');
-
-    this._tables = [];
-
-    this._newComponentType = null;
-
-    this._isAddNewComponent = false;
-
-    this._componentController = null;
-
-    this._componentMoveActive = false;
-
-    this._componentMoved = false;
-
-    this._canvasMoveActive = false;
-
-    this._mouseCursorPoint = [];
-
     this.createDialogs();
 
     // create first table and view
@@ -62,11 +93,12 @@ app.SceneController.prototype.init = function () {
 };
 
 /**
+ * @param {!string} type
  * @public
  */
 app.SceneController.prototype.showCross = function (type) {
-    if (!goog.dom.classlist.contains(this._canvasWrapper, 'show-cross')) {
-        goog.dom.classlist.add(this._canvasWrapper, 'show-cross');
+    if (!goog.dom.classlist.contains(this._CANVAS_WRAPPER, 'show-cross')) {
+        goog.dom.classlist.add(this._CANVAS_WRAPPER, 'show-cross');
         this._isAddNewComponent = true;
         this._newComponentType = type;
     }
@@ -76,7 +108,7 @@ app.SceneController.prototype.showCross = function (type) {
  * @private
  */
 app.SceneController.prototype.hideCross = function () {
-    goog.dom.classlist.remove(this._canvasWrapper, 'show-cross');
+    goog.dom.classlist.remove(this._CANVAS_WRAPPER, 'show-cross');
 };
 
 /**
@@ -92,9 +124,9 @@ app.SceneController.prototype.createDialogs = function () {
     this.editViewDialog = new goog.ui.Dialog();
     this.editViewDialog.setTitle(app.translation['edit-view']);
     var viewButtonsSet = new goog.ui.Dialog.ButtonSet();
-        viewButtonsSet.addButton({key: 'save', caption: 'Save'}, true);
-        viewButtonsSet.addButton({key: 'remove', caption: 'Remove view'}, true);
-        viewButtonsSet.addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.CANCEL, false, true);
+    viewButtonsSet.addButton({key: 'save', caption: 'Save'}, true);
+    viewButtonsSet.addButton({key: 'remove', caption: 'Remove view'}, true);
+    viewButtonsSet.addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.CANCEL, false, true);
     this.editViewDialog.setButtonSet(viewButtonsSet);
     this.newTableDialog = new goog.ui.Dialog();
     this.newTableDialog.setTitle(app.translation['new-table']);
@@ -104,9 +136,9 @@ app.SceneController.prototype.createDialogs = function () {
     this.editTableDialog = new goog.ui.Dialog();
     this.editTableDialog.setTitle(app.translation['edit-table']);
     var tableButtonsSet = new goog.ui.Dialog.ButtonSet();
-        tableButtonsSet.addButton({key: 'save', caption: 'Save'}, true);
-        tableButtonsSet.addButton({key: 'remove', caption: 'Remove table'}, true);
-        tableButtonsSet.addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.CANCEL, false, true);
+    tableButtonsSet.addButton({key: 'save', caption: 'Save'}, true);
+    tableButtonsSet.addButton({key: 'remove', caption: 'Remove table'}, true);
+    tableButtonsSet.addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.CANCEL, false, true);
     this.editTableDialog.setButtonSet(tableButtonsSet);
 
     this.copyDialog = new goog.ui.Dialog();
@@ -118,13 +150,12 @@ app.SceneController.prototype.createDialogs = function () {
  */
 app.SceneController.prototype.updateSizes = function () {
     var height = Math.max(document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.offsetHeight),
-        width = this._canvasWrapper.clientWidth,
+        width = this._CANVAS_WRAPPER.clientWidth,
         views = goog.dom.getElementsByClass('active-view', goog.dom.getElement('table-' + this._activeTableID));
 
     height = height - 184;
-    this._canvasWrapper.style.height = height + 'px';
+    this._CANVAS_WRAPPER.style.height = height + 'px';
 
-    // todo active views count uz mas je to views.length fix it?!
     height = height / this._tables[this._activeTableID].getActiveViewsCount();
     for (var i = 0; i < views.length; i++) {
         this._tables[this._activeTableID].updateViewSize(i, width, height);
@@ -138,6 +169,8 @@ app.SceneController.prototype.updateSizes = function () {
 };
 
 /**
+ * @param {!number} tableID
+ * @param {Element} buttonElement
  * @private
  */
 app.SceneController.prototype.setActiveTable = function (tableID, buttonElement) {
@@ -168,14 +201,18 @@ app.SceneController.prototype.setActiveTable = function (tableID, buttonElement)
 };
 
 /**
+ * @param {!number} tableID
+ * @param {!number} viewID
  * @private
  */
 app.SceneController.prototype.setSelectedView = function (tableID, viewID) {
-    this._viewController.setComponents(this._tables[tableID].getComponents());
-    this._viewController.setViewModel(this._tables[tableID].getView(viewID));
+    this._VIEW_CONTROLLER.setComponents(this._tables[tableID].getComponents());
+    this._VIEW_CONTROLLER.setViewModel(this._tables[tableID].getView(viewID));
 };
 
 /**
+ * @param {!string} viewID - format: (tableID)-(viewID)
+ * @param {Element} buttonElement
  * @private
  */
 app.SceneController.prototype.showView = function (viewID, buttonElement) {
@@ -186,11 +223,13 @@ app.SceneController.prototype.showView = function (viewID, buttonElement) {
         goog.dom.classlist.add(view, 'active-view');
         this.updateSizes();
     } catch (err) {
-        //console.log(err);
+        console.log(err);
     }
 };
 
 /**
+ * @param {!string} viewID - format: (tableID)-(viewID)
+ * @param {Element} buttonElement
  * @private
  */
 app.SceneController.prototype.hideView = function (viewID, buttonElement) {
@@ -206,6 +245,8 @@ app.SceneController.prototype.hideView = function (viewID, buttonElement) {
 };
 
 /**
+ * @param {!number} tableID
+ * @param {!string} tableName
  * @private
  */
 app.SceneController.prototype.addTableToGUI = function (tableID, tableName) {
@@ -218,10 +259,12 @@ app.SceneController.prototype.addTableToGUI = function (tableID, tableName) {
         'id': 'button-table-' + tableID
     }, tableName));
     views.appendChild(goog.dom.createDom('div', {'id': 'table-' + tableID + '-views'}, ''));
-    this._canvasWrapper.appendChild(table);
+    this._CANVAS_WRAPPER.appendChild(table);
 };
 
 /**
+ * @param {!number} viewID
+ * @param {!string} viewName
  * @private
  */
 app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
@@ -252,7 +295,7 @@ app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
     tableElement.appendChild(view);
 
     this.showView(this._activeTableID + '-' + viewID, button);
-    this._viewController.addListeners(view);
+    this._VIEW_CONTROLLER.addListeners(view);
     this.updateSizes();
 
     goog.events.listen(view, goog.events.EventType.MOUSEENTER, function (e) {
@@ -268,11 +311,11 @@ app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
         } else if (this.isIntersection(e)) { // vyber komponenty
             this._componentMoveActive = true;
             this._mouseCursorPoint = [e.offsetX, e.offsetY];
-            goog.events.listen(this._canvasWrapper, [goog.events.EventType.MOUSEMOVE],
-            this.componentMoved, true, this);
+            goog.events.listen(this._CANVAS_WRAPPER, [goog.events.EventType.MOUSEMOVE],
+                this.componentMoved, true, this);
         } else { // muze byt posun platna
             this._canvasMoveActive = true;
-            this._viewController.addCanvasMove(view, [e.offsetX, e.offsetY]);
+            this._VIEW_CONTROLLER.addCanvasMove(view, [e.offsetX, e.offsetY]);
         }
     }, true, this);
 
@@ -286,17 +329,17 @@ app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
             this._componentMoved = false;
             this._componentController.removeSelected();
             this.redrawAll();
-            goog.events.unlisten(this._canvasWrapper, goog.events.EventType.MOUSEMOVE,
-            this.componentMoved, true, this);
+            goog.events.unlisten(this._CANVAS_WRAPPER, goog.events.EventType.MOUSEMOVE,
+                this.componentMoved, true, this);
         } else if (this._componentMoveActive && !this._componentMoved) {
             this._componentMoveActive = false;
             this._componentController.removeSelected();
             this._componentController.showComponentControlPanel(this);
-            goog.events.unlisten(this._canvasWrapper, goog.events.EventType.MOUSEMOVE,
-            this.componentMoved, true, this);
+            goog.events.unlisten(this._CANVAS_WRAPPER, goog.events.EventType.MOUSEMOVE,
+                this.componentMoved, true, this);
         } else if (this._canvasMoveActive) {
             this._canvasMoveActive = false;
-            this._viewController.removeCanvasMove(view);
+            this._VIEW_CONTROLLER.removeCanvasMove(view);
         }
     }, true, this);
 
@@ -313,6 +356,7 @@ app.SceneController.prototype.createTable = function () {
 };
 
 /**
+ * @param {!string} elementID
  * @private
  */
 app.SceneController.prototype.removeTableFromGUI = function (elementID) {
@@ -368,6 +412,7 @@ app.SceneController.prototype.createView = function () {
 };
 
 /**
+ * @param {!string} elementID
  * @private
  */
 app.SceneController.prototype.removeViewFromGUI = function (elementID) {
@@ -416,36 +461,40 @@ app.SceneController.prototype.renameView = function () {
 };
 
 /**
+ * @param {!app.model.Component} componentModel
+ * @param {!number} componentID
  * @private
  */
 app.SceneController.prototype.setSelectedComponent = function (componentModel, componentID) {
     switch (componentModel.getType()) {
         case 'MIRROR':
-            this._componentController = new app.MirrorController(componentModel, componentID);
+            this._componentController = new app.MirrorController(/**@type{!app.model.Mirror}*/(componentModel), componentID);
             break;
         case 'LENS':
-            this._componentController = new app.LensController(componentModel, componentID);
+            this._componentController = new app.LensController(/**@type{!app.model.Lens}*/(componentModel), componentID);
             break;
         case 'HOLO-PLATE':
-            this._componentController = new app.HolographicPlateController(componentModel, componentID);
+            this._componentController = new app.HolographicPlateController(/**@type{!app.model.HolographicPlate}*/(componentModel), componentID);
             break;
         case 'WALL':
-            this._componentController = new app.WallController(componentModel, componentID);
+            this._componentController = new app.WallController(/**@type{!app.model.Wall}*/(componentModel), componentID);
             break;
         case 'SPLITTER':
-            this._componentController = new app.SplitterController(componentModel, componentID);
+            this._componentController = new app.SplitterController(/**@type{!app.model.Splitter}*/(componentModel), componentID);
             break;
         case 'LIGHT':
-            this._componentController = new app.LightController(componentModel, componentID);
+            this._componentController = new app.LightController(/**@type{!app.model.Light}*/(componentModel), componentID);
             break;
     }
 };
 
 /**
+ * @param {goog.events.BrowserEvent} e
+ * @return {!boolean}
  * @private
  */
 app.SceneController.prototype.isIntersection = function (e) {
-    var point = this._viewController.reverseTransformPoint([e.offsetX, e.offsetY]),
+    var point = this._VIEW_CONTROLLER.reverseTransformPoint([e.offsetX, e.offsetY]),
         components = this._tables[this._activeTableID].getComponents();
 
     for (var i = 0; i < components.length; i++) {
@@ -458,6 +507,7 @@ app.SceneController.prototype.isIntersection = function (e) {
 };
 
 /**
+ * @param {goog.events.BrowserEvent} e
  * @private
  */
 app.SceneController.prototype.componentMoved = function (e) {
@@ -469,7 +519,7 @@ app.SceneController.prototype.componentMoved = function (e) {
     this._mouseCursorPoint[0] = e.offsetX;
     this._mouseCursorPoint[1] = e.offsetY;
 
-    var point = this._viewController.reverseScale([diffX, diffY]);
+    var point = this._VIEW_CONTROLLER.reverseScale([diffX, diffY]);
 
     this._componentMoved = true;
     this._componentController.updatePosition(point[0], point[1]);
@@ -487,153 +537,227 @@ app.SceneController.prototype.addListeners = function () {
         dbClick = 0;
 
     // add new table
-    goog.events.listen(newTableDialog, goog.ui.Dialog.EventType.SELECT, function (e) {
-        if (e.key == 'ok') { this.createTable(); }
-    }, false, this);
+    goog.events.listen(newTableDialog, goog.ui.Dialog.EventType.SELECT,
+        /**
+         * @this {!app.SceneController}
+         * @param {!goog.ui.Dialog.Event} e
+         */
+        function (e) {
+            if (e.key == 'ok') {
+                this.createTable();
+            }
+        },
+        false, this);
 
-    goog.events.listen(goog.dom.getElement('add-new-table'), goog.events.EventType.CLICK, function (e) {
-        newTableDialog.setVisible(true);
-    });
+    goog.events.listen(goog.dom.getElement('add-new-table'), goog.events.EventType.CLICK,
+        /** @this {!app.SceneController} */
+        function () {
+            newTableDialog.setVisible(true);
+        }
+    );
 
     // edit table
-    goog.events.listen(editTableDialog, goog.ui.Dialog.EventType.SELECT, function (e) {
-        if (e.key == 'save') {
-            this.renameTable();
-        } else if (e.key == 'remove') {
-            this.removeTable();
-        }
-    }, false, this);
+    goog.events.listen(editTableDialog, goog.ui.Dialog.EventType.SELECT,
+        /**
+         * @this {!app.SceneController}
+         * @param {!goog.ui.Dialog.Event} e
+         */
+        function (e) {
+            if (e.key == 'save') {
+                this.renameTable();
+            } else if (e.key == 'remove') {
+                this.removeTable();
+            }
+        },
+        false, this);
 
-    goog.events.listen(goog.dom.getElement('tables'), goog.events.EventType.DBLCLICK, function (e) {
-        editTableDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['edit-name'],
-            goog.html.SafeHtml.create('input', {'type': 'text', 'id': 'edit-table-name', 'name': e.target.id, 'value': e.target.innerText})]
-        ));
-        editTableDialog.setVisible(true);
-    }, false, this);
+    goog.events.listen(goog.dom.getElement('tables'), goog.events.EventType.DBLCLICK,
+        /**
+         * @this {!app.SceneController}
+         * @param {!goog.events.BrowserEvent} e
+         */
+        function (e) {
+            editTableDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['edit-name'],
+                goog.html.SafeHtml.create('input', {
+                    'type': 'text',
+                    'id': 'edit-table-name',
+                    'name': e.target.id,
+                    'value': e.target.innerText
+                })]
+            ));
+            editTableDialog.setVisible(true);
+        },
+        false, this);
 
     // add new view
-    goog.events.listen(newViewDialog, goog.ui.Dialog.EventType.SELECT, function (e) {
-        if (e.key == 'ok') { this.createView(); }
-    }, false, this);
+    goog.events.listen(newViewDialog, goog.ui.Dialog.EventType.SELECT,
+        /**
+         * @this {!app.SceneController}
+         * @param {!goog.ui.Dialog.Event} e
+         */
+        function (e) {
+            if (e.key == 'ok') this.createView();
+        },
+        false, this);
 
     goog.events.listen(goog.dom.getElement('add-new-view'), goog.events.EventType.CLICK, function (e) {
         newViewDialog.setVisible(true);
     });
 
     // edit view
-    goog.events.listen(editViewDialog, goog.ui.Dialog.EventType.SELECT, function (e) {
-        if (e.key == 'save') {
-            this.renameView();
-        } else if (e.key == 'remove') {
-            this.removeView();
-        }
-    }, false, this);
+    goog.events.listen(editViewDialog, goog.ui.Dialog.EventType.SELECT,
+        /**
+         * @this {!app.SceneController}
+         * @param {!goog.ui.Dialog.Event} e
+         */
+        function (e) {
+            if (e.key == 'save') {
+                this.renameView();
+            } else if (e.key == 'remove') {
+                this.removeView();
+            }
+        },
+        false, this);
 
-    goog.events.listen(goog.dom.getElement('views'), goog.events.EventType.DBLCLICK, function (e) {
-        editTableDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['edit-name'],
-            goog.html.SafeHtml.create('input', {'type': 'text', 'id': 'edit-view-name', 'name': e.target.id, 'value': e.target.innerText})]
-        ));
-        editViewDialog.setVisible(true);
-    }, false, this);
+    goog.events.listen(goog.dom.getElement('views'), goog.events.EventType.DBLCLICK,
+        /**
+         * @this {!app.SceneController}
+         * @param {!goog.events.BrowserEvent} e
+         */
+        function (e) {
+            editTableDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['edit-name'],
+                goog.html.SafeHtml.create('input', {
+                    'type': 'text',
+                    'id': 'edit-view-name',
+                    'name': e.target.id,
+                    'value': e.target.innerText
+                })]
+            ));
+            editViewDialog.setVisible(true);
+        },
+        false, this);
 
     // set active table
-    goog.events.listen(goog.dom.getElement('tables'), goog.events.EventType.CLICK, function (e) {
-        if(++dbClick === 2) return;
-        var thisScope = this;
-        setTimeout(function () {
-            if (dbClick === 1) {
-                thisScope.hideComponentControlPanel();
-                if (!goog.dom.classlist.contains(e.target, 'active-table')) {
-                    thisScope.setActiveTable(parseInt(e.target.id.replace('button-table-', ''), 10), e.target);
+    goog.events.listen(goog.dom.getElement('tables'), goog.events.EventType.CLICK,
+        /**
+         * @this {!app.SceneController}
+         * @param {!goog.events.BrowserEvent} e
+         */
+        function (e) {
+            if (++dbClick === 2) return;
+            setTimeout(function (thisScope) {
+                if (dbClick === 1) {
+                    thisScope.hideComponentControlPanel();
+                    if (!goog.dom.classlist.contains(/**@type{Element}*/(e.target), 'active-table')) {
+                        thisScope.setActiveTable(parseInt(e.target.id.replace('button-table-', ''), 10), e.target);
+                    }
                 }
-            }
-            dbClick = 0;
-        }, 200);
-    }, false, this);
+                dbClick = 0;
+            }, 200, this);
+        },
+        false, this);
 
     // set active views
-    goog.events.listen(goog.dom.getElement('views'), goog.events.EventType.CLICK, function (e) {
-        dbClick++;
-        var thisScope = this;
-        setTimeout(function () {
-            if (dbClick === 1) {
-                var viewID = e.target.id.replace('button-view-', '');
-                if (goog.dom.classlist.contains(e.target, 'active-view')) {
-                    thisScope.hideView(viewID, e.target);
-                } else {
-                    thisScope.showView(viewID, e.target);
+    goog.events.listen(goog.dom.getElement('views'), goog.events.EventType.CLICK,
+        /**
+         * @this {!app.SceneController}
+         * @param {!goog.events.BrowserEvent} e
+         */
+        function (e) {
+            dbClick++;
+            setTimeout(function (thisScope) {
+                if (dbClick === 1) {
+                    var viewID = e.target.id.replace('button-view-', '');
+                    if (goog.dom.classlist.contains(/**@type{Element}*/(e.target), 'active-view')) {
+                        thisScope.hideView(viewID, e.target);
+                    } else {
+                        thisScope.showView(viewID, e.target);
+                    }
+                    thisScope.redrawAll();
                 }
-                thisScope.redrawAll();
-            }
-            dbClick = 0;
-        }, 200);
-    }, false, this);
+                dbClick = 0;
+            }, 200, this);
+        }, false, this);
 
     // listen for resize
-    goog.events.listen(window, goog.events.EventType.RESIZE, function () {
-        this.updateSizes();
-        this.redrawAll();
-    }, false, this);
+    goog.events.listen(/** @type {EventTarget} */(window), goog.events.EventType.RESIZE,
+        /** @this {!app.SceneController} */
+        function () {
+            this.updateSizes();
+            this.redrawAll();
+        }, false, this);
 
     // Common component listeners
-    goog.events.listen(goog.dom.getElement('com-close-btn'), goog.events.EventType.CLICK, this.hideComponentControlPanel, false, this);
+    goog.events.listen(goog.dom.getElement('com-close-btn'), goog.events.EventType.CLICK,
+        this.hideComponentControlPanel, false, this);
 
-    goog.events.listen(goog.dom.getElement('com-delete-btn'), goog.events.EventType.CLICK, function () {
-        var componentID = this._componentController.removeActiveComponent();
-        this._tables[this._activeTableID].removeComponent(componentID);
-        this.hideComponentControlPanel();
-        this.redrawAll();
-    }, false, this);
+    goog.events.listen(goog.dom.getElement('com-delete-btn'), goog.events.EventType.CLICK,
+        /** @this {!app.SceneController} */
+        function () {
+            var componentID = this._componentController.removeActiveComponent();
+            this._tables[this._activeTableID].removeComponent(componentID);
+            this.hideComponentControlPanel();
+            this.redrawAll();
+        }, false, this);
 
-    goog.events.listen(goog.dom.getElement('com-copy-btn'), goog.events.EventType.CLICK, function (e) {
-        var copyButtons = new goog.ui.Dialog.ButtonSet(),
-            list = this.getInactiveTablesList(),
-            /** @type {!Array<!goog.html.SafeHtml>} */ options = [];
+    goog.events.listen(goog.dom.getElement('com-copy-btn'), goog.events.EventType.CLICK,
+        /** @this {!app.SceneController} */
+        function () {
+            var copyButtons = new goog.ui.Dialog.ButtonSet(),
+                list = this.getInactiveTablesList(),
+                /** @type {!Array<!goog.html.SafeHtml>} */ options = [];
 
-        if (list.length > 0) {
-            copyButtons.addButton({key: 'copy', caption: 'Copy'}, true);
-            copyButtons.addButton({key: 'close', caption: 'Close'}, true);
-            for (var i = 0; i < list.length; i++) {
-                options.push(goog.html.SafeHtml.create('option', {'value': list[i]['id']}, list[i]['name']));
+            if (list.length > 0) {
+                copyButtons.addButton({key: 'copy', caption: 'Copy'}, true);
+                copyButtons.addButton({key: 'close', caption: 'Close'}, true);
+                for (var i = 0; i < list.length; i++) {
+                    options.push(goog.html.SafeHtml.create('option', {'value': list[i]['id']}, list[i]['name']));
+                }
+                this.copyDialog.setSafeHtmlContent(goog.html.SafeHtml.create('select', {'id': 'copy-to-table'}, options));
+            } else {
+                copyButtons.addButton({key: 'close', caption: 'Close'}, true);
+                this.copyDialog.setTextContent(app.translation['copy-no-tables']);
             }
-            this.copyDialog.setSafeHtmlContent(goog.html.SafeHtml.create('select', {'id': 'copy-to-table'}, options));
-        } else {
-            copyButtons.addButton({key: 'close', caption: 'Close'}, true);
-            this.copyDialog.setTextContent(app.translation['copy-no-tables']);
-        }
-        this.copyDialog.setVisible(true);
-    }, false, this);
+            this.copyDialog.setVisible(true);
+        }, false, this);
 
-    goog.events.listen(this.copyDialog, goog.ui.Dialog.EventType.SELECT, function (e) {
-        if (e.key == 'copy') {
-            var select = goog.dom.getElement('copy-to-table');
-            var tableID = select.options[select.selectedIndex].value;
-            this._tables[tableID].addComponent(this._componentController.getComponentModelCopy());
-        }
-    }, false, this);
+    goog.events.listen(this.copyDialog, goog.ui.Dialog.EventType.SELECT,
+        /**
+         * @this {!app.SceneController}
+         * @param {!goog.ui.Dialog.Event} e
+         */
+        function (e) {
+            if (e.key == 'copy') {
+                var select = goog.dom.getElement('copy-to-table');
+                var tableID = select.options[select.selectedIndex].value;
+                this._tables[tableID].addComponent(this._componentController.getComponentModelCopy());
+            }
+        }, false, this);
 };
 
 /**
  * @private
  */
 app.SceneController.prototype.hideComponentControlPanel = function () {
-    goog.dom.classlist.remove(this._canvasWrapper, 'active-component-panel');
+    goog.dom.classlist.remove(this._CANVAS_WRAPPER, 'active-component-panel');
     var element = goog.dom.getElement('component-configuration');
     element.innerHTML = '';
 };
 
 /**
+ * @return {!number}
  * @public
  */
 app.SceneController.prototype.getReflectionsCount = function () {
-    return this._viewController.getReflectionsCount();
+    return this._VIEW_CONTROLLER.getReflectionsCount();
 };
 
 /**
+ * @param {!number} count
  * @public
  */
 app.SceneController.prototype.setReflectionsCount = function (count) {
-    this._viewController.setReflectionsCount(count);
+    this._VIEW_CONTROLLER.setReflectionsCount(count);
     this.redrawAll();
 };
 
@@ -643,18 +767,20 @@ app.SceneController.prototype.setReflectionsCount = function (count) {
 app.SceneController.prototype.redrawAll = function () {
     var views = this._tables[this._activeTableID].getViews();
 
-    this._viewController.setComponents(this._tables[this._activeTableID].getComponents());
+    this._VIEW_CONTROLLER.setComponents(this._tables[this._activeTableID].getComponents());
     for (var i = 0; i < views.length; i++) {
-        this._viewController.setViewModel(views[i]);
-        this._viewController.draw();
+        this._VIEW_CONTROLLER.setViewModel(views[i]);
+        this._VIEW_CONTROLLER.draw();
     }
 };
 
 /**
+ * @param {!number} coordX
+ * @param {!number} coordY
  * @private
  */
 app.SceneController.prototype.addComponent = function (coordX, coordY) {
-    var model = null, modelID, coords = this._viewController.reverseTransformPoint([coordX, coordY]);
+    var model = null, modelID, coords = this._VIEW_CONTROLLER.reverseTransformPoint([coordX, coordY]);
 
     switch (this._newComponentType) {
         case 'MIRROR':
@@ -694,6 +820,7 @@ app.SceneController.prototype.addComponent = function (coordX, coordY) {
 };
 
 /**
+ * @return {Array<Object>}
  * @private
  */
 app.SceneController.prototype.getInactiveTablesList = function () {

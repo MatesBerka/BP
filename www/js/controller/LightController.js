@@ -4,7 +4,7 @@ goog.require('app.ComponentController');
 goog.require('goog.ui.Select');
 
 /**
- * @param {app.model.Light} model
+ * @param {!app.model.Light} model
  * @param {!number} modelID
  * @constructor
  * @extends {app.ComponentController}

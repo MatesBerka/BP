@@ -5,7 +5,6 @@ goog.require('app.model.Component');
  * @param {number} coordX - component x position
  * @param {number} coordY - component Y position
  * @final
- * @template Light
  * @constructor
  * @extends {app.model.Component}
  */

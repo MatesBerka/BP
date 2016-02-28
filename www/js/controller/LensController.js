@@ -3,7 +3,7 @@ goog.provide('app.LensController');
 goog.require('app.ComponentController');
 
 /**
- * @param {app.model.Lens} model
+ * @param {!app.model.Lens} model
  * @param {!number} modelID
  * @constructor
  * @extends {app.ComponentController}

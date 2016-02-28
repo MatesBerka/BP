@@ -3,7 +3,7 @@ goog.provide('app.MirrorController');
 goog.require('app.ComponentController');
 
 /**
- * @param {app.model.Mirror} model
+ * @param {!app.model.Mirror} model
  * @param {!number} modelID
  * @constructor
  * @extends {app.ComponentController}

@@ -3,7 +3,7 @@ goog.provide('app.SplitterController');
 goog.require('app.ComponentController');
 
 /**
- * @param {app.model.Splitter} model
+ * @param {!app.model.Splitter} model
  * @param {!number} modelID
  * @constructor
  * @extends {app.ComponentController}
