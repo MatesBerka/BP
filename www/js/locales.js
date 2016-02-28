@@ -46,7 +46,10 @@ app.TRANSLATION = {
         'com-light-circle': 'Kruh',
         'com-light-type-title': 'Typ světla: ',
         'com-light-rays-count': 'Počet paprsků: ',
-        'com-light-radius': 'Rádius: '
+        'com-light-radius': 'Rádius: ',
+        'com-plate-settings': 'Nastavení plátna',
+        'com-plate-resolution': 'Rozlišení: ',
+        'com-plate-tolerance': 'Odchylka: ' // todo vylepsit
     },
     'en_US': {
         'logo-msg': 'Diffractive optics simulator',
@@ -93,6 +96,9 @@ app.TRANSLATION = {
         'com-light-circle': 'Circle',
         'com-light-type-title': 'Light type: ',
         'com-light-rays-count': 'Rays count: ',
-        'com-light-radius': 'Radius: '
+        'com-light-radius': 'Radius: ',
+        'com-plate-settings': 'Plate settings',
+        'com-plate-resolution': 'Resolution: ',
+        'com-plate-tolerance': 'Tolerance: '
     }
 };

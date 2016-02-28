@@ -131,30 +131,24 @@ app.model.Light.prototype._squareIntersection = function (ray) {
  * @private
  */
 app.model.Light.prototype._circleIntersection = function (ray) {
-    var a, b, c, dis, x1, x2, point = [], length = Infinity;
+    var a, b, c, dis, x1, point = [], length = Infinity, imgPointOffset  = 100000,
+    dirX = imgPointOffset * ray[3], dirY = imgPointOffset * ray[4];
 
-    a = Math.pow(ray[3], 2) + Math.pow(ray[4], 2);
-    b = 2 * (ray[0] * ray[3] + ray[1] * ray[4] - ray[3] * this.transformedPoints[0][0] - ray[4] * this.transformedPoints[0][1]);
+    a = Math.pow(dirX, 2) + Math.pow(dirY, 2);
+    b = 2 * (ray[0] * dirX + ray[1] * dirY - dirX * this.transformedPoints[0][0] - dirY * this.transformedPoints[0][1]);
     c = ray[0] * ray[0] + ray[1] * ray[1] - 2 * ray[0] * this.transformedPoints[0][0] - 2 * ray[1] * this.transformedPoints[0][1] +
         Math.pow(this.transformedPoints[0][0], 2) + Math.pow(this.transformedPoints[0][1], 2) - Math.pow(this._size, 2);
 
-    dis = Math.pow(b, 2) - 4 * a * c;
+    dis = b * b - 4 * a * c;
     if (dis < 0)
         return length;
 
     dis = Math.sqrt(dis);
-    x1 = (-b + dis) / (2 * a);
-    x2 = (-b - dis) / (2 * a);
+    x1 = (-b - dis) / (2 * a);
 
     if (x1 >= 0 && x1 <= 1) {
-        point[0] = ray[0] + ray[3] * x1;
-        point[1] = ray[1] + ray[4] * x1;
-        length = Math.sqrt(Math.pow(Math.abs(point[0] - ray[0]), 2) + Math.pow(Math.abs(point[1] - ray[1]), 2));
-        this.intersectionPoint = point;
-        return length;
-    } else if (x2 >= 0 && x2 <= 1) {
-        point[0] = ray[0] + ray[3] * x2;
-        point[1] = ray[1] + ray[4] * x2;
+        point[0] = ray[0] + dirX * x1;
+        point[1] = ray[1] + dirY * x1;
         length = Math.sqrt(Math.pow(Math.abs(point[0] - ray[0]), 2) + Math.pow(Math.abs(point[1] - ray[1]), 2));
         this.intersectionPoint = point;
         return length;
@@ -179,11 +173,11 @@ app.model.Light.prototype.isIntersection = function (ray) {
  * @return {!boolean}
  * @private
  */
-app.model.Light.prototype._isSquareSelected = function(point) {
-    var xs = -Math.floor(this.width/2), ys = -Math.floor(this._size/2), xe = Math.floor(this.width/2),
-        ye = Math.floor(this._size/2);
+app.model.Light.prototype._isSquareSelected = function (point) {
+    var xs = -Math.floor(this.width / 2), ys = -Math.floor(this._size / 2), xe = Math.floor(this.width / 2),
+        ye = Math.floor(this._size / 2);
 
-    if(point[0] >= xs && point[0] <= xe && point[1] >= ys && point[1] <= ye) {
+    if (point[0] >= xs && point[0] <= xe && point[1] >= ys && point[1] <= ye) {
         return this.isComponentSelected = true;
     }
     return this.isComponentSelected = false;
@@ -271,9 +265,9 @@ app.model.Light.prototype.draw = function (ctx, callback) {
     if (this._lightType == 'BEAM') {
         this._drawBeam(ctx);
         indentation = this._size / this._generatedRaysCount;
-        x =  Math.floor(this.width / 2);
+        x = Math.floor(this.width / 2);
         for (i = 0; i < this._generatedRaysCount; i++) {
-            y = i * indentation - halfSize + (indentation/2);
+            y = i * indentation - halfSize + (indentation / 2);
             vec1 = this.transformPoint([x, y, 0]);
             vec2 = this.transformPoint([(x + 1), y, 0]);
             dx = vec2[0] - vec1[0];
@@ -282,7 +276,7 @@ app.model.Light.prototype.draw = function (ctx, callback) {
         }
     } else {
         this._drawBall(ctx);
-        indentation = (2 * this._lightRadius) / this._generatedRaysCount;
+        indentation = ((2 * this._lightRadius) % 361) / this._generatedRaysCount;
         for (i = 0; i < this._generatedRaysCount; i++) {
             degree = this._lightRadius - i * indentation;
             radians = degree * (Math.PI / 180);
@@ -335,7 +329,7 @@ app.model.Light.prototype.getSize = function () {
  * @public
  */
 app.model.Light.prototype.setSize = function (size) {
-    this._size =  Math.round(size * app.PIXEL_ON_CM);
+    this._size = Math.round(size * app.PIXEL_ON_CM);
     this.generateShapePoints();
     this.transformPoints();
 };

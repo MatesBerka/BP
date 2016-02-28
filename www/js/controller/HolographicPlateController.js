@@ -44,6 +44,32 @@ app.HolographicPlateController.prototype.showComponentControlPanel = function(sc
     );
 
     goog.dom.appendChild(this.componentConfigurationPanel,
+        goog.dom.createDom('label', {'id': 'com-position'}, app.translation["com-plate-settings"])
+    );
+    goog.dom.appendChild(this.componentConfigurationPanel,
+        goog.dom.createDom('div', {'class': 'input-field'},
+            goog.dom.createDom('span', {'class': 'com-left-side'}, app.translation["com-plate-resolution"]),
+            goog.dom.createDom('span', {'class': 'com-right-side'},
+                goog.dom.createDom('input', {
+                    'type': 'text', 'name': 'com-plate-res', 'class': 'input-min', 'id': 'com-plate-res',
+                    'value': this.model.getPlateResolution()
+                })
+            )
+        )
+    );
+    goog.dom.appendChild(this.componentConfigurationPanel,
+        goog.dom.createDom('div', {'class': 'input-field'},
+            goog.dom.createDom('span', {'class': 'com-left-side'}, app.translation["com-plate-tolerance"]),
+            goog.dom.createDom('span', {'class': 'com-right-side'},
+                goog.dom.createDom('input', {
+                    'type': 'text', 'name': 'com-plate-tol', 'class': 'input-min', 'id': 'com-plate-tol',
+                    'value': this.model.getAngleTolerance()
+                })
+            )
+        )
+    );
+
+    goog.dom.appendChild(this.componentConfigurationPanel,
         goog.dom.createDom('div', {'class': 'buttons-group'},
             goog.dom.createDom('button', {'id': 'com-record-btn'}, app.translation['com-record-btn'])
         )
@@ -64,8 +90,19 @@ app.HolographicPlateController.prototype.addPanelListeners = function(sceneContr
         sceneController.redrawAll();
     }, true, this);
 
+    goog.events.listen(goog.dom.getElement('com-plate-res'), goog.events.EventType.KEYUP, function (e) {
+        app.ComponentController.validateFloatInput(e, this.model.setPlateResolution, this.model);
+        sceneController.redrawAll();
+    }, true, this);
+
+    goog.events.listen(goog.dom.getElement('com-plate-tol'), goog.events.EventType.KEYUP, function (e) {
+        app.ComponentController.validateFloatInput(e, this.model.setAngleTolerance, this.model);
+        sceneController.redrawAll();
+    }, true, this);
+
     goog.events.listen(goog.dom.getElement('com-record-btn'), goog.events.EventType.CLICK, function (e) {
-        // TODO first pick refrence light
+        // colect lights
+        // redraw
         this.model.makeRecord(1); // light id
         sceneController.redrawAll();
         this.model.showRecord();

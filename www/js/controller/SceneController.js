@@ -124,9 +124,9 @@ app.SceneController.prototype.createDialogs = function () {
     this.editViewDialog = new goog.ui.Dialog();
     this.editViewDialog.setTitle(app.translation['edit-view']);
     var viewButtonsSet = new goog.ui.Dialog.ButtonSet();
-    viewButtonsSet.addButton({key: 'save', caption: 'Save'}, true);
-    viewButtonsSet.addButton({key: 'remove', caption: 'Remove view'}, true);
-    viewButtonsSet.addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.CANCEL, false, true);
+        viewButtonsSet.addButton({key: 'save', caption: 'Save'}, true);
+        viewButtonsSet.addButton({key: 'remove', caption: 'Remove view'}, true);
+        viewButtonsSet.addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.CANCEL, false, true);
     this.editViewDialog.setButtonSet(viewButtonsSet);
     this.newTableDialog = new goog.ui.Dialog();
     this.newTableDialog.setTitle(app.translation['new-table']);
@@ -136,9 +136,9 @@ app.SceneController.prototype.createDialogs = function () {
     this.editTableDialog = new goog.ui.Dialog();
     this.editTableDialog.setTitle(app.translation['edit-table']);
     var tableButtonsSet = new goog.ui.Dialog.ButtonSet();
-    tableButtonsSet.addButton({key: 'save', caption: 'Save'}, true);
-    tableButtonsSet.addButton({key: 'remove', caption: 'Remove table'}, true);
-    tableButtonsSet.addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.CANCEL, false, true);
+        tableButtonsSet.addButton({key: 'save', caption: 'Save'}, true);
+        tableButtonsSet.addButton({key: 'remove', caption: 'Remove table'}, true);
+        tableButtonsSet.addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.CANCEL, false, true);
     this.editTableDialog.setButtonSet(tableButtonsSet);
 
     this.copyDialog = new goog.ui.Dialog();
@@ -198,6 +198,7 @@ app.SceneController.prototype.setActiveTable = function (tableID, buttonElement)
         console.log(err);
     }
     this._activeTableID = tableID;
+    this.redrawAll();
 };
 
 /**
@@ -625,7 +626,7 @@ app.SceneController.prototype.addListeners = function () {
          * @param {!goog.events.BrowserEvent} e
          */
         function (e) {
-            editTableDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['edit-name'],
+            editViewDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['edit-name'],
                 goog.html.SafeHtml.create('input', {
                     'type': 'text',
                     'id': 'edit-view-name',
@@ -727,7 +728,7 @@ app.SceneController.prototype.addListeners = function () {
          * @param {!goog.ui.Dialog.Event} e
          */
         function (e) {
-            if (e.key == 'copy') {
+            if (e.key == 'ok') {
                 var select = goog.dom.getElement('copy-to-table');
                 var tableID = select.options[select.selectedIndex].value;
                 this._tables[tableID].addComponent(this._componentController.getComponentModelCopy());

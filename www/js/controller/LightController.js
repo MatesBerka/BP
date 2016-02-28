@@ -45,7 +45,7 @@ app.LightController.prototype.showComponentControlPanel = function (sceneControl
     );
 
     goog.dom.appendChild(this.componentConfigurationPanel,
-        goog.dom.createDom('label', {'id': 'com-light'}, app.translation["com-light"])
+        goog.dom.createDom('label', {'id': 'com-light'}, app.translation["com-light"], ' ' + this.model.getLightID() + ' (ID)')
     );
 
     var option1, option2;
@@ -77,7 +77,7 @@ app.LightController.prototype.showComponentControlPanel = function (sceneControl
         )
     );
     goog.dom.appendChild(this.componentConfigurationPanel,
-        goog.dom.createDom('div', {'class': 'input-field'},
+        goog.dom.createDom('div', {'class': 'input-field', 'id': 'light-radius-wrapper'},
             goog.dom.createDom('span', {'class': 'com-left-side', 'id': 'com-light-radius'}, app.translation['com-light-radius']),
             goog.dom.createDom('span', {'class': 'com-right-side'},
                 goog.dom.createDom('input', {
@@ -115,6 +115,13 @@ app.LightController.prototype.addPanelListeners = function (sceneController) {
 
     goog.events.listen(goog.dom.getElement('com-light-type'), goog.events.EventType.CHANGE, function (e) {
         this.model.setLightType(e.target.value);
+        if(e.target.value == 'CIRCLE') {
+            if(!goog.dom.classlist.contains(this.componentConfigurationPanel, 'circle-light')) {
+                goog.dom.classlist.add(this.componentConfigurationPanel, 'circle-light');
+            }
+        } else {
+            goog.dom.classlist.remove(this.componentConfigurationPanel, 'circle-light');
+        }
         sceneController.redrawAll();
     }, true, this);
 };

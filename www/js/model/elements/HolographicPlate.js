@@ -68,6 +68,37 @@ app.model.HolographicPlate = function (coordX, coordY) {
 goog.inherits(app.model.HolographicPlate, app.model.LineShapeComponent);
 
 /**
+ * @returns {!string}
+ * @public
+ */
+app.model.HolographicPlate.prototype.getPlateResolution = function() {
+    return (this._groupSize / app.PIXEL_ON_CM).toFixed(2);
+};
+
+/**
+ * @param {!number} resolution
+ * @public
+ */
+app.model.HolographicPlate.prototype.setPlateResolution = function(resolution) {
+    this._groupSize = Math.round(resolution * app.PIXEL_ON_CM);
+};
+
+/**
+ * @returns {!number}
+ * @public
+ */
+app.model.HolographicPlate.prototype.getAngleTolerance = function() {
+    return this._angleErrorTolerence;
+};
+/**#
+ * @param {!number} tolerance
+ * @public
+ */
+app.model.HolographicPlate.prototype.setAngleTolerance = function(tolerance) {
+    this._angleErrorTolerence = tolerance;
+};
+
+/**
  * @param {!number} refLightID
  * @public
  */
@@ -118,7 +149,7 @@ app.model.HolographicPlate.prototype._recordRay = function () {
     // and finally add
     if (this._recordedRays[groupID] === undefined) {
         this._recordedRays[groupID] = {};
-        this._recordedRays[groupID][rayAngle] = [this._intersectionRay];
+        this._recordedRays[groupID][rayAngle] = [];
     } else {
         var angle, match = false;
         for (angle in this._recordedRays[groupID]) {
@@ -182,6 +213,7 @@ app.model.HolographicPlate.prototype.intersect = function (rays) {
     if (this._showRecord)
         this._checkRecordedRays(rays);
 
+    // todo is it used? (_lightSources)
     this._lightSources[this._intersectionRay[6]] = 1;
 
     return this.intersectionPoint;
