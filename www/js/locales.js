@@ -18,6 +18,9 @@ app.TRANSLATION = {
         // popups
         'new-table': 'Nová tabulka',
         'new-view': 'Nový pohled',
+        'view-name': 'Jméno pohledu: ',
+        'edit-name': 'Změnit jméno: ',
+        'table-name': 'Jméno stolu: ',
         'edit-table': 'Upravit tabulku',
         'edit-view': 'Upravit pohled',
         'help-title': 'Pomoc',
@@ -63,6 +66,9 @@ app.TRANSLATION = {
         // popups
         'new-table': 'New table',
         'new-view': 'New view',
+        'view-name': 'View name: ',
+        'table-name': 'Table name: ',
+        'edit-name': 'Change name: ',
         'edit-table': 'Edit table',
         'edit-view': 'Edit view',
         'help-title': 'Help',

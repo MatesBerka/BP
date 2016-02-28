@@ -3,6 +3,7 @@ goog.provide('app.model.Component');
 /**
  * @param {number} coordX - component x position
  * @param {number} coordY - component Y position
+ * @template Component
  * @constructor
  */
 app.model.Component = function(coordX, coordY) {
@@ -192,7 +193,7 @@ app.model.Component.prototype.transformPoint = function(point) {
 
 /**
  * @param {!number} degrees
- * @protected
+ * @public
  */
 app.model.Component.prototype.updateRotation = function(degrees) {
     this.appliedRotation = degrees*(Math.PI/180);
@@ -202,7 +203,7 @@ app.model.Component.prototype.updateRotation = function(degrees) {
 /**
  * @param {!number} moveX
  * @param {!number} moveY
- * @protected
+ * @public
  */
 app.model.Component.prototype.applyTranslation = function(moveX, moveY) {
     this.appliedTranslationX += moveX;

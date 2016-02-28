@@ -1,128 +1,176 @@
 goog.provide('app.ComponentController');
 
 goog.require('goog.dom');
+
 /**
  * @constructor
  */
 app.ComponentController = function () {
-
-    this._model = null;
-
-    this._modelID = -1;
-
-    this._componentConfigurationPanel = goog.dom.getElement('component-configuration');
-
-    this._pixelsOnCm = goog.dom.getElement('cm-box').clientWidth;
-    //http://kingscalculator.com/cz/ostatni-kalkulacky/vypocet-hustoty-pixelu
-    //https://cs.wikipedia.org/wiki/Body_na_palec
+    /**
+     * Points to currently selected component model
+     * @type {app.model.Component}
+     * @protected
+     */
+    this.model = null;
+    /**
+     * TODO is modelID used? remove?
+     * currently selected component model ID
+     * @type {!number}
+     * @protected
+     */
+    this.modelID = -1;
+    /**
+     * TOTO make it a static member?
+     * Element which contains component control panel
+     * @type {Element}
+     * @protected
+     */
+    this.componentConfigurationPanel = goog.dom.getElement('component-configuration');
 };
 
+/**
+ * @param {goog.events.Event} e
+ * @param {function(!number)} callback
+ * @protected
+ */
+app.ComponentController.validateFloatInput = function(e, callback) {
+    var val = parseFloat(e.target.value);
+    if(isNaN(val)) {
+        e.target.style.backgroundColor = "red";
+    } else {
+        e.target.style.backgroundColor = "white";
+        callback(val);
+    }
+};
+
+/**
+ * @param {goog.events.Event} e
+ * @param {function(!number)} callback
+ * @protected
+ */
+app.ComponentController.validateIntInput = function(e, callback) {
+    var val = parseFloat(e.target.value);
+    if(isNaN(val)) {
+        e.target.style.backgroundColor = "red";
+    } else {
+        e.target.style.backgroundColor = "white";
+        callback(val);
+    }
+};
+
+/**
+ * @param sceneController
+ * @public
+ */
 app.ComponentController.prototype.showComponentControlPanel = function (sceneController) {
-    goog.dom.removeChildren(this._componentConfigurationPanel);
+    goog.dom.removeChildren(this.componentConfigurationPanel);
     goog.dom.classlist.add(goog.dom.getElement('canvas-wrapper'), 'active-component-panel');
 
-    //input x,y position
-    goog.dom.appendChild(this._componentConfigurationPanel,
+    // input x,y position
+    goog.dom.appendChild(this.componentConfigurationPanel,
         goog.dom.createDom('label', {'id': 'com-position'}, app.translation["com-position"])
     );
-    goog.dom.appendChild(this._componentConfigurationPanel,
+    goog.dom.appendChild(this.componentConfigurationPanel,
         goog.dom.createDom('div', {'class': 'input-field'},
             goog.dom.createDom('span', {'class': 'com-left-side'}, 'X: '),
             goog.dom.createDom('span', {'class': 'com-right-side'},
                 goog.dom.createDom('input', {
                     'type': 'text', 'name': 'com-pos-x', 'class': 'input-min', 'id': 'com-pos-x',
-                    'value': this._model.getPosX()
+                    'value': this.model.getPosX()
                 })
             )
         )
     );
-    goog.dom.appendChild(this._componentConfigurationPanel,
+    goog.dom.appendChild(this.componentConfigurationPanel,
         goog.dom.createDom('div', {'class': 'input-field'},
             goog.dom.createDom('span', {'class': 'com-left-side'}, 'Y: '),
             goog.dom.createDom('span', {'class': 'com-right-side'},
                 goog.dom.createDom('input', {
                     'type': 'text', 'name': 'com-pos-y', 'class': 'input-min', 'id': 'com-pos-y',
-                    'value': this._model.getPosY()
+                    'value': this.model.getPosY()
                 })
             )
         )
     );
 
     // rotation
-    goog.dom.appendChild(this._componentConfigurationPanel,
+    goog.dom.appendChild(this.componentConfigurationPanel,
         goog.dom.createDom('label', {'id': 'com-rotation'}, app.translation["com-rotation"])
     );
-    goog.dom.appendChild(this._componentConfigurationPanel,
+    goog.dom.appendChild(this.componentConfigurationPanel,
         goog.dom.createDom('div', {'class': 'input-field'},
             goog.dom.createDom('span', {'class': 'com-left-side'}, 'XY: '),
             goog.dom.createDom('span', {'class': 'com-right-side'},
                 goog.dom.createDom('input', {
                     'type': 'text', 'name': 'com-rotate', 'class': 'input-min', 'id': 'com-rotate',
-                    'value': this._model.getRotation()
+                    'value': this.model.getRotation()
                 })
             )
         )
     );
 
     // dimensions
-    goog.dom.appendChild(this._componentConfigurationPanel,
+    goog.dom.appendChild(this.componentConfigurationPanel,
         goog.dom.createDom('label', {'id': 'com-dimensions'}, app.translation["com-dimensions"])
     );
 };
 
+/**
+ * @public
+ */
 app.ComponentController.prototype.hideComponentControlPanel = function () {
-    this._componentConfigurationPanel.style.display = "none";
+    this.componentConfigurationPanel.style.display = "none";
     goog.dom.classlist.remove(goog.dom.getElement('canvas-wrapper'), 'active-component-panel');
 };
 
-app.ComponentController.prototype._addPanelListeners = function (sceneController) {
+/**
+ * @param {app.SceneController} sceneController
+ * @protected
+ */
+app.ComponentController.prototype.addPanelListeners = function (sceneController) {
     goog.events.listen(goog.dom.getElement('com-pos-x'), goog.events.EventType.KEYUP, function (e) {
-        if (e.target.value !== '') {
-            this._model.updateTranslationX(parseFloat(e.target.value));
-        } else {
-            this._model.updateTranslationX(0);
-        }
+        app.ComponentController.validateFloatInput(e, this.model.updateTranslationX);
         sceneController.redrawAll();
     }, true, this);
 
     goog.events.listen(goog.dom.getElement('com-pos-y'), goog.events.EventType.KEYUP, function (e) {
-        if (e.target.value !== '') {
-            this._model.updateTranslationY(parseFloat(e.target.value));
-        } else {
-            this._model.updateTranslationY(0);
-        }
+        app.ComponentController.validateFloatInput(e, this.model.updateTranslationY);
         sceneController.redrawAll();
     }, true, this);
 
     goog.events.listen(goog.dom.getElement('com-rotate'), goog.events.EventType.KEYUP, function (e) {
-        if (e.target.value !== '') {
-            var degree = e.target.value % 360;
-            this._model.updateRotation(parseFloat(degree));
-        } else {
-            this._model.updateRotation(0);
-        }
+        app.ComponentController.validateFloatInput(e, this.model.updateRotation);
         sceneController.redrawAll();
     }, true, this);
 };
 
-app.ComponentController.prototype.setSelectedComponentModel = function (model, modelID) {
-    this._model = model;
-    this._modelID = modelID;
-};
-
+/**
+ * @public
+ */
 app.ComponentController.prototype.removeActiveComponent = function () {
-    this._model = null;
-    this._modelID = -1;
+    this.model = null;
+    this.modelID = -1;
 };
 
+/**
+ * @public
+ */
 app.ComponentController.prototype.removeSelected = function () {
-    this._model.setSelected(false);
+    this.model.setSelected(false);
 };
 
+/**
+ * @param {!number} diffX
+ * @param {!number} diffY
+ * @public
+ */
 app.ComponentController.prototype.updatePosition = function (diffX, diffY) {
-    this._model.applyTranslation(diffX, diffY);
+    this.model.applyTranslation(diffX, diffY);
 };
 
+/**
+ * @public
+ */
 app.ComponentController.prototype.getComponentModelCopy = function () {
-    return this._model.copy();
+    return this.model.copy();
 };

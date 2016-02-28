@@ -1,19 +1,18 @@
 goog.provide('app.start');
 
-goog.require('goog.debug.DivConsole');
 goog.require('goog.events');
-goog.require('goog.events.EventType');
-goog.require('goog.graphics');
-goog.require('goog.log');
 goog.require('app.SceneController');
 goog.require('app.MenuController');
 goog.require('app.locales');
 
 app.LOCALE = 'en_US';
 /**
+ * sources:
+ * http://kingscalculator.com/cz/ostatni-kalkulacky/vypocet-hustoty-pixelu
+ * https://cs.wikipedia.org/wiki/Body_na_palec
  * Make {@code app.start} accessible after {@code ADVANCED_OPTIMIZATIONS}.
-* @export
-*/
+ * @export
+ */
 app.start = function() {
     app.PIXEL_ON_CM = goog.dom.getElement('cm-box').clientWidth;
 

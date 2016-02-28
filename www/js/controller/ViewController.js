@@ -20,7 +20,7 @@ goog.require('app.WallController');
 app.ViewController = function () {
     this._reflectionsCount = 4;
 
-    this._model = null;
+    this.model = null;
 
     this._components = [];
 
@@ -61,9 +61,9 @@ app.ViewController.prototype.addListeners = function (view) {
 
     goog.events.listen(goog.dom.getElementByClass('zoom', view), goog.events.EventType.CLICK, function (e) {
         if (e.target.className === 'zoom-in') {
-            this._model.scaleUp();
+            this.model.scaleUp();
         } else {
-            this._model.scaleDown();
+            this.model.scaleDown();
         }
         this.draw();
     }, false, this);
@@ -71,16 +71,16 @@ app.ViewController.prototype.addListeners = function (view) {
     goog.events.listen(goog.dom.getElementByClass('move-control', view), goog.events.EventType.CLICK, function (e) {
         switch (e.target.className) {
             case 'wide-top-move-control':
-                this._model.moveUp();
+                this.model.moveUp();
                 break;
             case 'left-side-move-control':
-                this._model.moveLeft();
+                this.model.moveLeft();
                 break;
             case 'right-side-move-control':
-                this._model.moveRight();
+                this.model.moveRight();
                 break;
             case 'wide-bottom-move-control':
-                this._model.moveDown();
+                this.model.moveDown();
                 break;
         }
         this.draw();
@@ -91,9 +91,9 @@ app.ViewController.prototype.updateCoordinates = function (e) {
     var coordinates = e.currentTarget.childNodes[1];
 
     var xCm, yCm, zoom;
-    xCm = (e.offsetX - this._model.getAppliedTranslationX()) / app.PIXEL_ON_CM;
-    yCm = (e.offsetY - this._model.getAppliedTranslationY()) / app.PIXEL_ON_CM;
-    zoom = Math.floor(100 * this._model.getZoom());
+    xCm = (e.offsetX - this.model.getAppliedTranslationX()) / app.PIXEL_ON_CM;
+    yCm = (e.offsetY - this.model.getAppliedTranslationY()) / app.PIXEL_ON_CM;
+    zoom = Math.floor(100 * this.model.getZoom());
     goog.dom.setTextContent(coordinates, 'x: ' + xCm.toFixed(2) + ' cm, y: ' + yCm.toFixed(2) + ' cm, zoom: ' + zoom + ' %');
 };
 
@@ -106,20 +106,20 @@ app.ViewController.prototype.canvasMoved = function (e) {
     this._mouseCursorPoint[0] = e.offsetX;
     this._mouseCursorPoint[1] = e.offsetY;
 
-    this._model.translate(diffX, diffY);
+    this.model.translate(diffX, diffY);
     this.draw();
 };
 
 app.ViewController.prototype.reverseTransformPoint = function (point) {
-    return this._model.reverseTransformPoint(point);
+    return this.model.reverseTransformPoint(point);
 };
 
 app.ViewController.prototype.reverseScale = function(point) {
-    return this._model.reverseScale(point);
+    return this.model.reverseScale(point);
 };
 
 app.ViewController.prototype.setViewModel = function (view) {
-    this._model = view;
+    this.model = view;
 };
 
 app.ViewController.prototype.getReflectionsCount = function () {
@@ -139,11 +139,11 @@ app.ViewController.prototype.addRay = function (ray) {
 };
 
 app.ViewController.prototype.draw = function () {
-    var ctx = this._model.getGraphicsContext(),
+    var ctx = this.model.getGraphicsContext(),
         i, j, rayLength, newRayLength, endPoint, ray, componentID, callback = this.addRay.bind(this);
 
     // clean canvas
-    var area = this._model.getVisibleArea();
+    var area = this.model.getVisibleArea();
     ctx.clearRect(area[0], area[1], area[2], area[3]);
 
     for (i = 0; i < this._components.length; i++) {

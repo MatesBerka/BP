@@ -5,6 +5,7 @@ goog.require('app.model.Component');
  * @param {number} coordX - component x position
  * @param {number} coordY - component Y position
  * @final
+ * @template Light
  * @constructor
  * @extends {app.model.Component}
  */
@@ -22,6 +23,7 @@ app.model.Light = function (coordX, coordY) {
 
     this._type = 'LIGHT';
 
+    // TODO co to light ID, pouziva se?
     this._lightID = -1;
 
     this.facesCount = 4;

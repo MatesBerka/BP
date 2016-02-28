@@ -7,6 +7,7 @@ goog.require('app.model.RectangleShapeComponent');
  * @param {number} coordY - component Y position
  * @final
  * @constructor
+ * @template Wall
  * @extends {app.model.RectangleShapeComponent}
  */
 app.model.Wall = function(coordX, coordY) {

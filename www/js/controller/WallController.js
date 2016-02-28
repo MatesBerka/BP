@@ -3,65 +3,75 @@ goog.provide('app.WallController');
 goog.require('app.ComponentController');
 
 /**
+ * @param {app.model.Wall} model
+ * @param {!number} modelID
  * @constructor
  * @extends {app.ComponentController}
  */
-app.WallController = function() {
+app.WallController = function(model, modelID) {
     app.WallController.base(this, 'constructor');
-
-    this._selectedComponentType = 'WALL';
+    /**
+     * Points to currently selected component model
+     * @type {app.model.Wall}
+     * @override
+     */
+    this.model = model;
+    /**
+     * @override
+     */
+    this.modelID = modelID;
 };
 
 goog.inherits(app.WallController, app.ComponentController);
 
+/**
+ * @override
+ * @param sceneController
+ */
 app.WallController.prototype.showComponentControlPanel = function(sceneController) {
     app.WallController.base(this, 'showComponentControlPanel', sceneController);
 
-    goog.dom.appendChild(this._componentConfigurationPanel,
+    goog.dom.appendChild(this.componentConfigurationPanel,
         goog.dom.createDom('div', {'class': 'input-field'},
             goog.dom.createDom('span', {'class': 'com-left-side', 'id': 'com-height-title'}, app.translation["com-height-title"]),
             goog.dom.createDom('span', {'class': 'com-right-side'},
                 goog.dom.createDom('input', {
                     'type': 'text', 'name': 'com-height', 'class': 'input-min', 'id': 'com-height',
-                    'value': this._model.getHeight()
+                    'value': this.model.getHeight()
                 })
             )
         )
     );
 
-    goog.dom.appendChild(this._componentConfigurationPanel,
+    goog.dom.appendChild(this.componentConfigurationPanel,
         goog.dom.createDom('div', {'class': 'input-field'},
             goog.dom.createDom('span', {'class': 'com-left-side', 'id': 'com-width-title'}, app.translation["com-width-title"]),
             goog.dom.createDom('span', {'class': 'com-right-side'},
                 goog.dom.createDom('input', {
                     'type': 'text', 'name': 'com-width', 'class': 'input-min', 'id': 'com-width',
-                    'value': this._model.getWidth()
+                    'value': this.model.getWidth()
                 })
             )
         )
     );
 
-    this._addPanelListeners(sceneController);
+    this.addPanelListeners(sceneController);
 };
 
-app.WallController.prototype._addPanelListeners = function(sceneController) {
-    app.WallController.base(this, '_addPanelListeners', sceneController);
+/**
+ * @override
+ * @param sceneController
+ */
+app.WallController.prototype.addPanelListeners = function(sceneController) {
+    app.WallController.base(this, 'addPanelListeners', sceneController);
 
     goog.events.listen(goog.dom.getElement('com-height'), goog.events.EventType.KEYUP, function (e) {
-        if(e.target.value !== '') {
-            this._model.setHeight(parseFloat(e.target.value));
-        } else {
-            this._model.setHeight(0);
-        }
+        app.ComponentController.validateFloatInput(e, this.model.setHeight);
         sceneController.redrawAll();
     }, true, this);
 
     goog.events.listen(goog.dom.getElement('com-width'), goog.events.EventType.KEYUP, function (e) {
-        if(e.target.value !== '') {
-            this._model.setWidth(parseFloat(e.target.value));
-        } else {
-            this._model.setWidth(0);
-        }
+        app.ComponentController.validateFloatInput(e, this.model.setWidth);
         sceneController.redrawAll();
     }, true, this);
 };

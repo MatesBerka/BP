@@ -6,6 +6,7 @@ goog.require('app.model.LineShapeComponent');
  * @param {number} coordX - component x position
  * @param {number} coordY - component Y position
  * @final
+ * @template HolographicPlate
  * @constructor
  * @extends {app.model.LineShapeComponent}
  */
