@@ -61,4 +61,6 @@ app.translate = function() {
 // TODO mrizka
 // todo save
 // todo tablet
+// TODO ON/OFF light switch
 // todo remove http link in comments (@see)
+ray [[x,y,z],[x,y,z], lightID, rayLength];

@@ -32,6 +32,12 @@ app.model.Component = function (coordX, coordY) {
      */
     this.appliedRotation = 0;
     /**
+     * Temporary stores length of intersecting ray
+     * @type {!number}
+     * @protected
+     */
+    this.newRayLength = 0;
+    /**
      * True if user clicked on this component
      * @type {!boolean}
      * @protected
@@ -108,9 +114,12 @@ app.model.Component.prototype.copyArguments = goog.abstractMethod;
 app.model.Component.prototype.copy = goog.abstractMethod;
 
 /**
+ * @param {!Array<Array<!number>>} rays
+ * @param {!Array<!number>} ray
  * @public
  */
-app.model.Component.prototype.intersect = function (rays) {
+app.model.Component.prototype.intersect = function (rays, ray) {
+    ray[7] += this.newRayLength;
     return this.intersectionPoint;
 };
 

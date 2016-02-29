@@ -22,7 +22,7 @@ goog.inherits(app.model.Mirror, app.model.LineShapeComponent);
 /**
  * @override
  */
-app.model.Mirror.prototype.intersect = function (rays) {
+app.model.Mirror.prototype.intersect = function (rays, ray) {
     var dVec = [], normVec;
 
     var point = this.reverseTransformPoint([this._intersectionRay[0], this._intersectionRay[1]]);
@@ -38,6 +38,7 @@ app.model.Mirror.prototype.intersect = function (rays) {
     var rayLength = this._intersectionRay[7] + this.newRayLength;
     rays.push([this.intersectionPoint[0], this.intersectionPoint[1], 0, normVec[0], normVec[1], 0, this._intersectionRay[6], rayLength]);
 
+    ray[7] += this.newRayLength;
     return this.intersectionPoint;
 };
 

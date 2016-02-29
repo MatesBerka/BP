@@ -209,13 +209,6 @@ app.model.Light.prototype.isSelected = function (x, y) {
 };
 
 /**
- * @override
- */
-app.model.Light.prototype.intersect = function (rays) {
-    return this.intersectionPoint;
-};
-
-/**
  * Sources:
  * http://billmill.org/static/canvastutorial/ball.html
  * https://developer.mozilla.org/cs/docs/Canvas_tutori%C3%A1l/Kreslen%C3%AD_tvar%C5%AF

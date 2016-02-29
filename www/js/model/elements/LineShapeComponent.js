@@ -15,12 +15,6 @@ app.model.LineShapeComponent = function (coordX, coordY) {
      * @protected
      */
     this.height = 300;
-    /**
-     * Temporary stores length of intersecting ray
-     * @type {!number}
-     * @protected
-     */
-    this.newRayLength = 0;
 
     app.model.LineShapeComponent.base(this, 'constructor', coordX, coordY); // call parent constructor
 };
