@@ -144,7 +144,7 @@ app.model.Lens.prototype._getImagePosition = function(focus, obj) {
  */
 app.model.Lens.prototype.intersect = function (rays, ray) {
     var point = this.reverseTransformPoint([this._intersectionRay[0], this._intersectionRay[1]]);
-    var dVec = [], normDVec = [], imgPoint;
+    var dVec = [], normDVec, imgPoint;
 
     if(this._focusType == 'CONVERGING') {
         imgPoint = this._getImagePosition(this._focusOffset, point);

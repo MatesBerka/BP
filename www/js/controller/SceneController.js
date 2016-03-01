@@ -124,6 +124,7 @@ app.SceneController.prototype.createDialogs = function () {
     this.editViewDialog = new goog.ui.Dialog();
     this.editViewDialog.setTitle(app.translation['edit-view']);
     var viewButtonsSet = new goog.ui.Dialog.ButtonSet();
+        // TODO prelozit popisky, a bude preklad fungovat?, ne nefunguje opravit!!!
         viewButtonsSet.addButton({key: 'save', caption: 'Save'}, true);
         viewButtonsSet.addButton({key: 'remove', caption: 'Remove view'}, true);
         viewButtonsSet.addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.CANCEL, false, true);

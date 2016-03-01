@@ -25,6 +25,12 @@ app.TRANSLATION = {
         'help-title': 'Pomoc',
         'copy-title': 'Kopírovat komponentu',
         'copy-no-tables': 'Žádné stoly nejsou k dispozici.',
+        'cancel-btn': 'Zavřít',
+        'hol-rec-err': 'Neuložené paprsky',
+        'ref-errors': 'Chyby v následujících oddílech: ',
+        'ref-err-sec': 'V oddílu ',
+        'ref-err-src': ', světelného zdroje ',
+        'ref-err-ray': ', paprsek překročil limit délky koherence o ',
         // component configuration popup
         'com-conf-header': 'Konfigurace komponenty',
         'com-position': 'Pozice:',
@@ -49,7 +55,11 @@ app.TRANSLATION = {
         'com-light-radius': 'Rádius: ',
         'com-plate-settings': 'Nastavení plátna',
         'com-plate-resolution': 'Rozlišení: ',
-        'com-plate-tolerance': 'Odchylka: ' // todo vylepsit
+        'com-plate-tolerance': 'Odchylka: ', // todo vylepsit
+        'pick-ref-light': 'Výběr referenčního světla',
+        'ref-light': 'Světlo: ',
+        'pick-light': 'Vyber',
+        'pick-all-lights': 'Všechna'
     },
     'en_US': {
         'logo-msg': 'Diffractive optics simulator',
@@ -75,6 +85,12 @@ app.TRANSLATION = {
         'help-title': 'Help',
         'copy-title': 'Copy component',
         'copy-no-tables': 'No tables are available.',
+        'cancel-btn': 'Close',
+        'hol-rec-err': 'Unrecorded rays',
+        'ref-errors': 'Errors in following sectors: ',
+        'ref-err-sec': 'In sector ',
+        'ref-err-src': ', light source ',
+        'ref-err-ray': ', ray crossed coherence limit about ',
         // component configuration popup
         'com-conf-header': 'Component configuration',
         'com-position': 'Position:',
@@ -99,6 +115,10 @@ app.TRANSLATION = {
         'com-light-radius': 'Radius: ',
         'com-plate-settings': 'Plate settings',
         'com-plate-resolution': 'Resolution: ',
-        'com-plate-tolerance': 'Tolerance: '
+        'com-plate-tolerance': 'Tolerance: ',
+        'pick-ref-light': 'Pick reference light',
+        'ref-light': 'Light: ',
+        'pick-light': 'Pick',
+        'pick-all-lights': 'All'
     }
 };

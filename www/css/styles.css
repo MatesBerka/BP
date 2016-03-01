@@ -484,3 +484,24 @@ button:active {
 #component-configuration.circle-light #light-radius-wrapper {
     display: block;
 }
+
+#ref-err-label {
+    padding: 2px 0px 10px 5px;
+    font-size: 14px;
+    display: inline-block;
+}
+
+#ref-err-wrapper {
+    height: 200px;
+    overflow-y: scroll;
+    border: 1px solid #dddddd;
+}
+
+#ref-err-wrapper .ref-err-row {
+    padding: 5px;
+    display: inline-block;
+    background: #ffffff;
+    border-bottom: 1px solid #dddddd;
+    line-height: 16px;
+    font-size: 12px;
+}
