@@ -1,4 +1,5 @@
 goog.provide('app.start');
+goog.provide('app.utils');
 
 goog.require('goog.events');
 goog.require('app.SceneController');
@@ -7,16 +8,13 @@ goog.require('app.locales');
 
 app.LOCALE = 'en_US';
 /**
- * sources:
- * http://kingscalculator.com/cz/ostatni-kalkulacky/vypocet-hustoty-pixelu
- * https://cs.wikipedia.org/wiki/Body_na_palec
  * Make {@code app.start} accessible after {@code ADVANCED_OPTIMIZATIONS}.
  * @export
  */
 app.start = function() {
     app.PIXEL_ON_CM = goog.dom.getElement('cm-box').clientWidth;
 
-    app.translate();
+    app.utils.translate();
 
     var sceneController = new app.SceneController(true);
     var menuController = new app.MenuController(sceneController);
@@ -30,9 +28,7 @@ app.start = function() {
     //}
 };
 
-//app.loadSimulation = function() {};
-
-app.translate = function() {
+app.utils.translate = function() {
     app.translation = app.TRANSLATION[app.LOCALE];
 
     for (var key in app.translation) {
@@ -43,6 +39,9 @@ app.translate = function() {
     }
 };
 
+//http://kingscalculator.com/cz/ostatni-kalkulacky/vypocet-hustoty-pixelu
+//https://cs.wikipedia.org/wiki/Body_na_palec
+//http://www.gymhol.cz/projekt/fyzika/09_difrakce/09_difrakce.htm
 //https://www.youtube.com/watch?v=i20bzCUw464
 //http://fyzika.jreichl.com/main.article/view/481-zobrazeni-tenkou-cockou
 //https://www.youtube.com/watch?v=i20bzCUw464
@@ -63,7 +62,18 @@ app.translate = function() {
 // todo tablet
 // TODO ON/OFF light switch
 // todo remove http link in comments (@see)
-// TODO prelozit popisky, a bude preklad fungovat?, ne nefunguje opravit!!! line 127 sceneController
 // TODO opravdu holograficka deska deli skupiny dobre?
-//ray [[x,y,z],[x,y,z], lightID, rayLength];
-//_intersectionRay and ray in intersect()
+
+// ray [[x,y,z],[x,y,z], lightID, rayLength];
+// _intersectionRay and ray in intersect()
+
+//co brat v potaz?
+//· Po?áte?ní pozice (x,y,z)
+//· Po?áte?ní optickŭ prvek (prvek, ze kterého paprsek vychází)
+//· Sm?rovŭ vektor
+//· Seznam vlnovŭch délek
+//· Vlastnosti polarizace (pro kadou vlnovou délku)
+//· Vlastnosti koherence (pro kadou vlnovou délku)
+//· Energie (pro kadou vlnovou délku)
+//· Cílovŭ optickŭ prvek (po nalezení)
+//· Cílová pozice(x,y,z) (po nalezení)

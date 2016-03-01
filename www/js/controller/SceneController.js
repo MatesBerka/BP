@@ -115,35 +115,31 @@ app.SceneController.prototype.hideCross = function () {
  * @private
  */
 app.SceneController.prototype.createDialogs = function () {
-    this.newViewDialog = new goog.ui.Dialog();
-    this.newViewDialog.setTitle(app.translation['new-view']);
-    this.newViewDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['view-name'],
-        goog.html.SafeHtml.create('input', {'type': 'text', 'id': 'new-view-name', 'name': 'new-view-name'})]
-    ));
-    this.newViewDialog.setButtonSet(goog.ui.Dialog.ButtonSet.createOkCancel());
-    this.editViewDialog = new goog.ui.Dialog();
-    this.editViewDialog.setTitle(app.translation['edit-view']);
-    var viewButtonsSet = new goog.ui.Dialog.ButtonSet();
-        // TODO prelozit popisky, a bude preklad fungovat?, ne nefunguje opravit!!!
-        viewButtonsSet.addButton({key: 'save', caption: 'Save'}, true);
-        viewButtonsSet.addButton({key: 'remove', caption: 'Remove view'}, true);
-        viewButtonsSet.addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.CANCEL, false, true);
-    this.editViewDialog.setButtonSet(viewButtonsSet);
-    this.newTableDialog = new goog.ui.Dialog();
-    this.newTableDialog.setTitle(app.translation['new-table']);
-    this.newTableDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['table-name'],
-        goog.html.SafeHtml.create('input', {'type': 'text', 'id': 'new-table-name', 'name': 'new-table-name'})]
-    ));
-    this.editTableDialog = new goog.ui.Dialog();
-    this.editTableDialog.setTitle(app.translation['edit-table']);
-    var tableButtonsSet = new goog.ui.Dialog.ButtonSet();
-        tableButtonsSet.addButton({key: 'save', caption: 'Save'}, true);
-        tableButtonsSet.addButton({key: 'remove', caption: 'Remove table'}, true);
-        tableButtonsSet.addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.CANCEL, false, true);
-    this.editTableDialog.setButtonSet(tableButtonsSet);
-
-    this.copyDialog = new goog.ui.Dialog();
-    this.copyDialog.setTitle(app.translation['copy-title']);
+    /**
+     * @type {goog.ui.Dialog}
+     * @private
+     */
+    this._newViewDialog = new goog.ui.Dialog();
+    /**
+     * @type {goog.ui.Dialog}
+     * @private
+     */
+    this._editViewDialog = new goog.ui.Dialog();
+    /**
+     * @type {goog.ui.Dialog}
+     * @private
+     */
+    this._newTableDialog = new goog.ui.Dialog();
+    /**
+     * @type {goog.ui.Dialog}
+     * @private
+     */
+    this._editTableDialog = new goog.ui.Dialog();
+    /**
+     * @type {goog.ui.Dialog}
+     * @private
+     */
+    this._copyDialog = new goog.ui.Dialog();
 };
 
 /**
@@ -300,50 +296,62 @@ app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
     this._VIEW_CONTROLLER.addListeners(view);
     this.updateSizes();
 
-    goog.events.listen(view, goog.events.EventType.MOUSEENTER, function (e) {
-        var pieces = e.currentTarget.id.split('-');
-        this.setSelectedView(parseInt(pieces[1], 10), parseInt(pieces[2], 10));
-    }, true, this);
+    goog.events.listen(view, goog.events.EventType.MOUSEENTER,
+        /**
+         * @this {!app.SceneController}
+         * @param {!goog.events.BrowserEvent} e
+         */
+        function (e) {
+            var pieces = e.currentTarget.id.split('-');
+            this.setSelectedView(parseInt(pieces[1], 10), parseInt(pieces[2], 10));
+        }, true, this);
 
-    goog.events.listen(view, goog.events.EventType.MOUSEDOWN, function (e) {
-        var pieces = e.currentTarget.id.split('-');
-        this.setSelectedView(parseInt(pieces[1], 10), parseInt(pieces[2], 10));
-        if (this._isAddNewComponent) { // pridani nove
-            this.addComponent(e.offsetX, e.offsetY);
-        } else if (this.isIntersection(e)) { // vyber komponenty
-            this._componentMoveActive = true;
-            this._mouseCursorPoint = [e.offsetX, e.offsetY];
-            goog.events.listen(this._CANVAS_WRAPPER, [goog.events.EventType.MOUSEMOVE],
-                this.componentMoved, true, this);
-        } else { // muze byt posun platna
-            this._canvasMoveActive = true;
-            this._VIEW_CONTROLLER.addCanvasMove(view, [e.offsetX, e.offsetY]);
-        }
-    }, true, this);
+    goog.events.listen(view, goog.events.EventType.MOUSEDOWN,
+        /**
+         * @this {!app.SceneController}
+         * @param {!goog.events.BrowserEvent} e
+         */
+        function (e) {
+            var pieces = e.currentTarget.id.split('-');
+            this.setSelectedView(parseInt(pieces[1], 10), parseInt(pieces[2], 10));
+            if (this._isAddNewComponent) { // pridani nove
+                this.addComponent(e.offsetX, e.offsetY);
+            } else if (this.isIntersection(e)) { // vyber komponenty
+                this._componentMoveActive = true;
+                this._mouseCursorPoint = [e.offsetX, e.offsetY];
+                goog.events.listen(this._CANVAS_WRAPPER, [goog.events.EventType.MOUSEMOVE],
+                    this.componentMoved, true, this);
+            } else { // muze byt posun platna
+                this._canvasMoveActive = true;
+                this._VIEW_CONTROLLER.addCanvasMove(view, [e.offsetX, e.offsetY]);
+            }
+        }, true, this);
 
     // mouse up events
-    goog.events.listen(view, goog.events.EventType.MOUSEUP, function (e) {
-        if (this._isAddNewComponent) {
-            this._isAddNewComponent = false;
-            this.hideCross();
-        } else if (this._componentMoveActive && this._componentMoved) {
-            this._componentMoveActive = false;
-            this._componentMoved = false;
-            this._componentController.removeSelected();
-            this.redrawAll();
-            goog.events.unlisten(this._CANVAS_WRAPPER, goog.events.EventType.MOUSEMOVE,
-                this.componentMoved, true, this);
-        } else if (this._componentMoveActive && !this._componentMoved) {
-            this._componentMoveActive = false;
-            this._componentController.removeSelected();
-            this._componentController.showComponentControlPanel(this);
-            goog.events.unlisten(this._CANVAS_WRAPPER, goog.events.EventType.MOUSEMOVE,
-                this.componentMoved, true, this);
-        } else if (this._canvasMoveActive) {
-            this._canvasMoveActive = false;
-            this._VIEW_CONTROLLER.removeCanvasMove(view);
-        }
-    }, true, this);
+    goog.events.listen(view, goog.events.EventType.MOUSEUP,
+        /** @this {app.SceneController} */
+        function () {
+            if (this._isAddNewComponent) {
+                this._isAddNewComponent = false;
+                this.hideCross();
+            } else if (this._componentMoveActive && this._componentMoved) {
+                this._componentMoveActive = false;
+                this._componentMoved = false;
+                this._componentController.removeSelected();
+                this.redrawAll();
+                goog.events.unlisten(this._CANVAS_WRAPPER, goog.events.EventType.MOUSEMOVE,
+                    this.componentMoved, true, this);
+            } else if (this._componentMoveActive && !this._componentMoved) {
+                this._componentMoveActive = false;
+                this._componentController.removeSelected();
+                this._componentController.showComponentControlPanel(this);
+                goog.events.unlisten(this._CANVAS_WRAPPER, goog.events.EventType.MOUSEMOVE,
+                    this.componentMoved, true, this);
+            } else if (this._canvasMoveActive) {
+                this._canvasMoveActive = false;
+                this._VIEW_CONTROLLER.removeCanvasMove(view);
+            }
+        }, true, this);
 
     return canvas;
 };
@@ -532,14 +540,8 @@ app.SceneController.prototype.componentMoved = function (e) {
  * @private
  */
 app.SceneController.prototype.addListeners = function () {
-    var newViewDialog = this.newViewDialog,
-        newTableDialog = this.newTableDialog,
-        editViewDialog = this.editViewDialog,
-        editTableDialog = this.editTableDialog,
-        dbClick = 0;
-
     // add new table
-    goog.events.listen(newTableDialog, goog.ui.Dialog.EventType.SELECT,
+    goog.events.listen(this._newTableDialog, goog.ui.Dialog.EventType.SELECT,
         /**
          * @this {!app.SceneController}
          * @param {!goog.ui.Dialog.Event} e
@@ -554,12 +556,20 @@ app.SceneController.prototype.addListeners = function () {
     goog.events.listen(goog.dom.getElement('add-new-table'), goog.events.EventType.CLICK,
         /** @this {!app.SceneController} */
         function () {
-            newTableDialog.setVisible(true);
+            this._newTableDialog.setTitle(app.translation['new-table']);
+            var buttonsSet = new goog.ui.Dialog.ButtonSet();
+            buttonsSet.addButton({key: 'ok', caption: 'Ok'}, true);
+            buttonsSet.addButton({key: 'cancel', caption: app.translation['cancel-btn']}, false, true);
+            this._newTableDialog.setButtonSet(buttonsSet);
+            this._newTableDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['table-name'],
+                goog.html.SafeHtml.create('input', {'type': 'text', 'id': 'new-table-name', 'name': 'new-table-name'})]
+            ));
+            this._newTableDialog.setVisible(true);
         }
     );
 
     // edit table
-    goog.events.listen(editTableDialog, goog.ui.Dialog.EventType.SELECT,
+    goog.events.listen(this._editTableDialog, goog.ui.Dialog.EventType.SELECT,
         /**
          * @this {!app.SceneController}
          * @param {!goog.ui.Dialog.Event} e
@@ -579,7 +589,14 @@ app.SceneController.prototype.addListeners = function () {
          * @param {!goog.events.BrowserEvent} e
          */
         function (e) {
-            editTableDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['edit-name'],
+            this._editTableDialog.setTitle(app.translation['edit-table']);
+            var buttonSet = new goog.ui.Dialog.ButtonSet();
+            buttonSet.addButton({key: 'save', caption: app.translation['save-table']}, true);
+            buttonSet.addButton({key: 'remove', caption: app.translation['remove-table']}, true);
+            buttonSet.addButton({key: 'cancel', caption: app.translation['cancel-btn']}, false, true);
+            this._editTableDialog.setButtonSet(buttonSet);
+
+            this._editTableDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['edit-name'],
                 goog.html.SafeHtml.create('input', {
                     'type': 'text',
                     'id': 'edit-table-name',
@@ -587,12 +604,12 @@ app.SceneController.prototype.addListeners = function () {
                     'value': e.target.innerText
                 })]
             ));
-            editTableDialog.setVisible(true);
+            this._editTableDialog.setVisible(true);
         },
         false, this);
 
     // add new view
-    goog.events.listen(newViewDialog, goog.ui.Dialog.EventType.SELECT,
+    goog.events.listen(this._newViewDialog, goog.ui.Dialog.EventType.SELECT,
         /**
          * @this {!app.SceneController}
          * @param {!goog.ui.Dialog.Event} e
@@ -602,12 +619,22 @@ app.SceneController.prototype.addListeners = function () {
         },
         false, this);
 
-    goog.events.listen(goog.dom.getElement('add-new-view'), goog.events.EventType.CLICK, function (e) {
-        newViewDialog.setVisible(true);
-    });
+    goog.events.listen(goog.dom.getElement('add-new-view'), goog.events.EventType.CLICK,
+        /** @this {!app.SceneController} */
+        function () {
+            this._newViewDialog.setTitle(app.translation['new-view']);
+            this._newViewDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['view-name'],
+                goog.html.SafeHtml.create('input', {'type': 'text', 'id': 'new-view-name', 'name': 'new-view-name'})]
+            ));
+            var buttonsSet = new goog.ui.Dialog.ButtonSet();
+            buttonsSet.addButton({key: 'ok', caption: 'Ok'}, true);
+            buttonsSet.addButton({key: 'cancel', caption: app.translation['cancel-btn']}, false, true);
+            this._newViewDialog.setButtonSet(buttonsSet);
+            this._newViewDialog.setVisible(true);
+        });
 
     // edit view
-    goog.events.listen(editViewDialog, goog.ui.Dialog.EventType.SELECT,
+    goog.events.listen(this._editViewDialog, goog.ui.Dialog.EventType.SELECT,
         /**
          * @this {!app.SceneController}
          * @param {!goog.ui.Dialog.Event} e
@@ -627,7 +654,13 @@ app.SceneController.prototype.addListeners = function () {
          * @param {!goog.events.BrowserEvent} e
          */
         function (e) {
-            editViewDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['edit-name'],
+            this._editViewDialog.setTitle(app.translation['edit-view']);
+            var buttonSet = new goog.ui.Dialog.ButtonSet();
+            buttonSet.addButton({key: 'save', caption: app.translation['save-view']}, true);
+            buttonSet.addButton({key: 'remove', caption: app.translation['remove-view']}, true);
+            buttonSet.addButton({key: 'cancel', caption: app.translation['cancel-btn']}, false, true);
+            this._editViewDialog.setButtonSet(buttonSet);
+            this._editViewDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['edit-name'],
                 goog.html.SafeHtml.create('input', {
                     'type': 'text',
                     'id': 'edit-view-name',
@@ -635,11 +668,12 @@ app.SceneController.prototype.addListeners = function () {
                     'value': e.target.innerText
                 })]
             ));
-            editViewDialog.setVisible(true);
+            this._editViewDialog.setVisible(true);
         },
         false, this);
 
     // set active table
+    var dbClick = 0;
     goog.events.listen(goog.dom.getElement('tables'), goog.events.EventType.CLICK,
         /**
          * @this {!app.SceneController}
@@ -697,7 +731,7 @@ app.SceneController.prototype.addListeners = function () {
         /** @this {!app.SceneController} */
         function () {
             var componentID = this._componentController.removeActiveComponent();
-            this._tables[this._activeTableID].removeComponent(componentID);
+            this._tables[this._activeTableID].removeComponent(componentID); // TODO proverit jestli opravdu funguje
             this.hideComponentControlPanel();
             this.redrawAll();
         }, false, this);
@@ -705,25 +739,26 @@ app.SceneController.prototype.addListeners = function () {
     goog.events.listen(goog.dom.getElement('com-copy-btn'), goog.events.EventType.CLICK,
         /** @this {!app.SceneController} */
         function () {
-            var copyButtons = new goog.ui.Dialog.ButtonSet(),
+            var buttonSet = new goog.ui.Dialog.ButtonSet(),
                 list = this.getInactiveTablesList(),
-                /** @type {!Array<!goog.html.SafeHtml>} */ options = [];
+                /**@type{!Array<!goog.html.SafeHtml>}*/ options = [];
 
+            this._copyDialog.setTitle(app.translation['copy-title']);
             if (list.length > 0) {
-                copyButtons.addButton({key: 'copy', caption: 'Copy'}, true);
-                copyButtons.addButton({key: 'close', caption: 'Close'}, true);
+                buttonSet.addButton({key: 'copy', caption: app.translation['copy-btn']}, true);
+                buttonSet.addButton({key: 'cancel', caption: app.translation['cancel-btn']}, false, true);
                 for (var i = 0; i < list.length; i++) {
                     options.push(goog.html.SafeHtml.create('option', {'value': list[i]['id']}, list[i]['name']));
                 }
-                this.copyDialog.setSafeHtmlContent(goog.html.SafeHtml.create('select', {'id': 'copy-to-table'}, options));
+                this._copyDialog.setSafeHtmlContent(goog.html.SafeHtml.create('select', {'id': 'copy-to-table'}, options));
             } else {
-                copyButtons.addButton({key: 'close', caption: 'Close'}, true);
-                this.copyDialog.setTextContent(app.translation['copy-no-tables']);
+                buttonSet.addButton({key: 'cancel', caption: app.translation['cancel-btn']}, false, true);
+                this._copyDialog.setTextContent(app.translation['copy-no-tables']);
             }
-            this.copyDialog.setVisible(true);
+            this._copyDialog.setVisible(true);
         }, false, this);
 
-    goog.events.listen(this.copyDialog, goog.ui.Dialog.EventType.SELECT,
+    goog.events.listen(this._copyDialog, goog.ui.Dialog.EventType.SELECT,
         /**
          * @this {!app.SceneController}
          * @param {!goog.ui.Dialog.Event} e

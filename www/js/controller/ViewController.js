@@ -15,89 +15,118 @@ goog.require('app.SplitterController');
 goog.require('app.WallController');
 
 /**
+ * @final
  * @constructor
  */
 app.ViewController = function () {
+    /**
+     * @type {!number}
+     * @private
+     */
     this._reflectionsCount = 4;
-
-    this.model = null;
-
+    /**
+     * @type {app.model.View}
+     * @private
+     */
+    this._model = null;
+    /**
+     * @type {!Array<app.model.Component>}
+     * @private
+     */
     this._components = [];
-
+    /**
+     * @type {!Array<Array<!number>>}
+     * @private
+     */
     this._rays = [];
-
+    /**
+     * @type {!Array<!number>}
+     * @private
+     */
     this._mouseCursorPoint = [];
 };
 
-app.ViewController.prototype.addCanvasMove = function(view, coords) {
-    this._mouseCursorPoint = coords;
-    goog.events.listen(view, goog.events.EventType.MOUSEMOVE, this.canvasMoved, true, this);
+/**
+ * @param {Element} view
+ * @param {!Array<number>} coordinates
+ * @public
+ */
+app.ViewController.prototype.addCanvasMove = function (view, coordinates) {
+    this._mouseCursorPoint = coordinates;
+    goog.events.listen(view, goog.events.EventType.MOUSEMOVE, this._canvasMoved, true, this);
 };
 
-app.ViewController.prototype.removeCanvasMove = function(view) {
-    goog.events.unlisten(view, goog.events.EventType.MOUSEMOVE, this.canvasMoved, true, this);
+/**
+ * @param {Element} view
+ * @public
+ */
+app.ViewController.prototype.removeCanvasMove = function (view) {
+    goog.events.unlisten(view, goog.events.EventType.MOUSEMOVE, this._canvasMoved, true, this);
 };
 
+/**
+ * @param {Element} view
+ * @public
+ */
 app.ViewController.prototype.addListeners = function (view) {
-    var classThis = this;
-
     // coordinates update
-    goog.events.listen(view, goog.events.EventType.MOUSEMOVE, classThis.updateCoordinates, false, this);
+    goog.events.listen(view, goog.events.EventType.MOUSEMOVE, this._updateCoordinates, false, this);
 
-    //// mouse down events
-    //goog.events.listen(view, goog.events.EventType.MOUSEDOWN, function (e) {
-    //    if (this._canvasMoveActive) {
-    //        this._mouseCursorPoint = [e.offsetX, e.offsetY];
-    //    }
-    //}, false, this);
+    goog.events.listen(goog.dom.getElementByClass('zoom', view), goog.events.EventType.CLICK,
+        /**
+         * @this {!app.ViewController}
+         * @param {!goog.events.BrowserEvent} e
+         */
+        function (e) {
+            if (e.target.className === 'zoom-in') {
+                this._model.scaleUp();
+            } else {
+                this._model.scaleDown();
+            }
+            this.draw();
+        }, false, this);
 
-    //// mouse up events
-    //goog.events.listen(view, goog.events.EventType.MOUSEUP, function (e) {
-    //    if (this._canvasMoveActive) {
-    //        this._canvasMoveActive = false;
-    //        goog.events.unlisten(view, goog.events.EventType.MOUSEMOVE, this.canvasMoved, true, this);
-    //    }
-    //}, false, this);
-
-    goog.events.listen(goog.dom.getElementByClass('zoom', view), goog.events.EventType.CLICK, function (e) {
-        if (e.target.className === 'zoom-in') {
-            this.model.scaleUp();
-        } else {
-            this.model.scaleDown();
-        }
-        this.draw();
-    }, false, this);
-
-    goog.events.listen(goog.dom.getElementByClass('move-control', view), goog.events.EventType.CLICK, function (e) {
-        switch (e.target.className) {
-            case 'wide-top-move-control':
-                this.model.moveUp();
-                break;
-            case 'left-side-move-control':
-                this.model.moveLeft();
-                break;
-            case 'right-side-move-control':
-                this.model.moveRight();
-                break;
-            case 'wide-bottom-move-control':
-                this.model.moveDown();
-                break;
-        }
-        this.draw();
-    }, false, this);
+    goog.events.listen(goog.dom.getElementByClass('move-control', view), goog.events.EventType.CLICK,
+        /**
+         * @this {!app.ViewController}
+         * @param {!goog.events.BrowserEvent} e
+         */
+        function (e) {
+            switch (e.target.className) {
+                case 'wide-top-move-control':
+                    this._model.moveUp();
+                    break;
+                case 'left-side-move-control':
+                    this._model.moveLeft();
+                    break;
+                case 'right-side-move-control':
+                    this._model.moveRight();
+                    break;
+                case 'wide-bottom-move-control':
+                    this._model.moveDown();
+                    break;
+            }
+            this.draw();
+        }, false, this);
 };
 
-app.ViewController.prototype.updateCoordinates = function (e) {
-    var coordinates = e.currentTarget.childNodes[1];
-
-    var xCm, yCm, zoom;
-    xCm = (e.offsetX - this.model.getAppliedTranslationX()) / app.PIXEL_ON_CM;
-    yCm = (e.offsetY - this.model.getAppliedTranslationY()) / app.PIXEL_ON_CM;
-    zoom = Math.floor(100 * this.model.getZoom());
+/**
+ * @param {!goog.events.BrowserEvent} e
+ * @private
+ */
+app.ViewController.prototype._updateCoordinates = function (e) {
+    var coordinates = e.currentTarget.childNodes[1], xCm, yCm, zoom;
+    xCm = (e.offsetX - this._model.getAppliedTranslationX()) / app.PIXEL_ON_CM;
+    yCm = (e.offsetY - this._model.getAppliedTranslationY()) / app.PIXEL_ON_CM;
+    zoom = Math.floor(100 * this._model.getZoom());
     goog.dom.setTextContent(coordinates, 'x: ' + xCm.toFixed(2) + ' cm, y: ' + yCm.toFixed(2) + ' cm, zoom: ' + zoom + ' %');
 };
 
-app.ViewController.prototype.canvasMoved = function (e) {
+/**
+ * @param {!goog.events.BrowserEvent} e
+ * @private
+ */
+app.ViewController.prototype._canvasMoved = function (e) {
     var diffX, diffY;
 
     diffX = e.offsetX - this._mouseCursorPoint[0];
@@ -106,48 +135,78 @@ app.ViewController.prototype.canvasMoved = function (e) {
     this._mouseCursorPoint[0] = e.offsetX;
     this._mouseCursorPoint[1] = e.offsetY;
 
-    this.model.translate(diffX, diffY);
+    this._model.translate(diffX, diffY);
     this.draw();
 };
 
+/**
+ * @param {!Array<!number>} point
+ * @public
+ */
 app.ViewController.prototype.reverseTransformPoint = function (point) {
-    return this.model.reverseTransformPoint(point);
+    return this._model.reverseTransformPoint(point);
 };
 
-app.ViewController.prototype.reverseScale = function(point) {
-    return this.model.reverseScale(point);
+/**
+ * @param {!Array<!number>} point
+ * @public
+ */
+app.ViewController.prototype.reverseScale = function (point) {
+    return this._model.reverseScale(point);
 };
 
+/**
+ * @param {!app.model.View} view
+ * @public
+ */
 app.ViewController.prototype.setViewModel = function (view) {
-    this.model = view;
+    this._model = view;
 };
 
+/**
+ * @return {!number}
+ * @public
+ */
 app.ViewController.prototype.getReflectionsCount = function () {
     return this._reflectionsCount;
 };
 
+/**
+ * @param {!number} count
+ * @public
+ */
 app.ViewController.prototype.setReflectionsCount = function (count) {
     this._reflectionsCount = count;
 };
 
-app.ViewController.prototype.setComponents = function(components) {
+/**
+ * @param {!Array<app.model.Component>} components
+ * @public
+ */
+app.ViewController.prototype.setComponents = function (components) {
     this._components = components;
 };
 
+/**
+ * @param {!Array<number>} ray
+ * @public
+ */
 app.ViewController.prototype.addRay = function (ray) {
     this._rays.push(ray);
 };
 
+/**
+ * @public
+ */
 app.ViewController.prototype.draw = function () {
-    var ctx = this.model.getGraphicsContext(),
-        i, j, rayLength, newRayLength, endPoint, ray, componentID, callback = this.addRay.bind(this);
+    var ctx = this._model.getGraphicsContext(),
+        i, j, rayLength, newRayLength, endPoint, ray, componentID, callback = this.addRay.bind(this); // todo vylepsit?
 
     // clean canvas
-    var area = this.model.getVisibleArea();
+    var area = this._model.getVisibleArea();
     ctx.clearRect(area[0], area[1], area[2], area[3]);
-
     for (i = 0; i < this._components.length; i++) {
-        this._components[i].draw(ctx, callback);
+        this._components[i].draw(ctx, /**@type{!function(Array<number>)}*/(callback));
     }
 
     ctx.beginPath();
@@ -159,7 +218,7 @@ app.ViewController.prototype.draw = function () {
             rayLength = Infinity;
             ray = this._rays.shift();
             for (j = 0; j < this._components.length; j++) {
-                newRayLength = this._components[j].isIntersection(ray);
+                newRayLength = this._components[j].isIntersection(/**@type{!Array<number>}*/(ray));
                 if (newRayLength < rayLength) {
                     rayLength = newRayLength;
                     componentID = j;
@@ -167,7 +226,7 @@ app.ViewController.prototype.draw = function () {
             }
 
             if (rayLength != Infinity) {
-                endPoint = this._components[componentID].intersect(this._rays, ray);
+                endPoint = this._components[/**@type{!number}*/(componentID)].intersect(this._rays, ray);
                 ctx.moveTo(ray[0], ray[1]);
                 ctx.lineTo(endPoint[0], endPoint[1]);
             } // TODO else let him to hit wall
@@ -177,10 +236,8 @@ app.ViewController.prototype.draw = function () {
             generateRays = false;
         }
     }
-
     // delete remaining rays
     this._rays = [];
-
     // draw everything
     ctx.stroke();
 };

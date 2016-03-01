@@ -210,10 +210,10 @@ app.model.HolographicPlate.prototype._getAngle = function () {
  * @private
  */
 app.model.HolographicPlate.prototype._createRecord = function () {
-    var i = 0, refRaySourceID, raySourceID, rays = [], group = {}, errors = [], bottomLimit, topLimit, errorDiff;
+    var i, refRaySourceID, raySourceID, rays = [], group = {}, errors = [], bottomLimit, topLimit, errorDiff;
 
     if (this._allRefLights) {
-        for (i; i < this._recordedRays.length; i++) {
+        for (i = 0; i < this._recordedRays.length; i++) {
             if (this._recordedRays[i] !== undefined) {
                 group = {};
                 for (refRaySourceID in this._recordedRays[i]) {
@@ -236,7 +236,7 @@ app.model.HolographicPlate.prototype._createRecord = function () {
             }
         }
     } else { // single ref light
-        for (i; i < this._recordedRays.length; i++) {
+        for (i = 0; i < this._recordedRays.length; i++) {
             if (this._recordedRays[i] !== undefined) {
                 if (this._recordedRays[i].hasOwnProperty(this._refLightID)) {
                     rays = [];
