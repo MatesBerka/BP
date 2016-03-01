@@ -63,7 +63,7 @@ app.translate = function() {
 // todo tablet
 // TODO ON/OFF light switch
 // todo remove http link in comments (@see)
-// TODO prelozit popisky, a bude preklad fungovat?, ne nefunguje opravit!!! line 127 sceneController
 // TODO opravdu holograficka deska deli skupiny dobre?
+// TODO record transformations View.js
 //ray [[x,y,z],[x,y,z], lightID, rayLength];
 //_intersectionRay and ray in intersect()

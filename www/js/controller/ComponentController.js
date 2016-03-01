@@ -13,7 +13,6 @@ app.ComponentController = function () {
      */
     this.model = null;
     /**
-     * TODO is modelID used? remove?
      * currently selected component model ID
      * @type {!number}
      * @protected
@@ -150,8 +149,10 @@ app.ComponentController.prototype.addPanelListeners = function (sceneController)
  * @public
  */
 app.ComponentController.prototype.removeActiveComponent = function () {
+    var modelID = this.modelID;
     this.model = null;
     this.modelID = -1;
+    return modelID;
 };
 
 /**
