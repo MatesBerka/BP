@@ -565,8 +565,8 @@ app.SceneController.prototype.addListeners = function () {
                 goog.html.SafeHtml.create('input', {'type': 'text', 'id': 'new-table-name', 'name': 'new-table-name'})]
             ));
             this._newTableDialog.setVisible(true);
-        }
-    );
+        },
+        false, this);
 
     // edit table
     goog.events.listen(this._editTableDialog, goog.ui.Dialog.EventType.SELECT,
@@ -631,7 +631,8 @@ app.SceneController.prototype.addListeners = function () {
             buttonsSet.addButton({key: 'cancel', caption: app.translation['cancel-btn']}, false, true);
             this._newViewDialog.setButtonSet(buttonsSet);
             this._newViewDialog.setVisible(true);
-        });
+        },
+        false, this);
 
     // edit view
     goog.events.listen(this._editViewDialog, goog.ui.Dialog.EventType.SELECT,
