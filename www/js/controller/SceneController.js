@@ -146,11 +146,10 @@ app.SceneController.prototype.createDialogs = function () {
  * @private
  */
 app.SceneController.prototype.updateSizes = function () {
-    var height = Math.max(document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.offsetHeight),
-        width = this._CANVAS_WRAPPER.clientWidth,
+    var width = this._CANVAS_WRAPPER.clientWidth,
         views = goog.dom.getElementsByClass('active-view', goog.dom.getElement('table-' + this._activeTableID));
 
-    height = height - 144;
+    var height = window.innerHeight - 134;
     this._CANVAS_WRAPPER.style.height = height + 'px';
 
     height = height / this._tables[this._activeTableID].getActiveViewsCount();
@@ -256,6 +255,9 @@ app.SceneController.prototype.addTableToGUI = function (tableID, tableName) {
         'class': 'button-table',
         'id': 'button-table-' + tableID
     }, tableName));
+
+    // '✎'
+
     views.appendChild(goog.dom.createDom('div', {'id': 'table-' + tableID + '-views'}, ''));
     this._CANVAS_WRAPPER.appendChild(table);
 };
@@ -314,7 +316,7 @@ app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
         function (e) {
             var coords = [];
             coords[0] = (e.clientX - this._CANVAS_WRAPPER.offsetLeft);
-            coords[1] = (e.clientY - this._CANVAS_WRAPPER.offsetTop);
+            coords[1] = (e.clientY - e.currentTarget.offsetTop - this._CANVAS_WRAPPER.offsetTop);
             var pieces = e.currentTarget.id.split('-');
             this.setSelectedView(parseInt(pieces[1], 10), parseInt(pieces[2], 10));
             if (this._isAddNewComponent) { // pridani nove
@@ -322,18 +324,21 @@ app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
             } else if (this.isIntersection(coords)) { // vyber komponenty
                 this._componentMoveActive = true;
                 this._mouseCursorPoint = coords;
-                goog.events.listen(this._CANVAS_WRAPPER, app.MOUSE_MOVE_EVENT,
-                    this.componentMoved, true, this);
+                goog.events.listen(view, app.MOUSE_MOVE_EVENT, this.componentMoved, true, this);
             } else { // muze byt posun platna
                 this._canvasMoveActive = true;
                 this._VIEW_CONTROLLER.addCanvasMove(view, coords);
             }
+            e.stopPropagation();
         }, true, this);
 
     // mouse up events
     goog.events.listen(view, app.MOUSE_UP_EVENT,
-        /** @this {app.SceneController} */
-        function () {
+        /**
+         * @this {!app.SceneController}
+         * @param {!goog.events.BrowserEvent} e
+         */
+        function (e) {
             if (this._isAddNewComponent) {
                 this._isAddNewComponent = false;
                 this.hideCross();
@@ -348,12 +353,12 @@ app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
                 this._componentMoveActive = false;
                 this._componentController.removeSelected();
                 this._componentController.showComponentControlPanel(this);
-                goog.events.unlisten(this._CANVAS_WRAPPER, app.MOUSE_MOVE_EVENT,
-                    this.componentMoved, true, this);
+                goog.events.unlisten(view, app.MOUSE_MOVE_EVENT, this.componentMoved, true, this);
             } else if (this._canvasMoveActive) {
                 this._canvasMoveActive = false;
                 this._VIEW_CONTROLLER.removeCanvasMove(view);
             }
+            e.stopPropagation();
         }, true, this);
 
     return canvas;
@@ -527,7 +532,7 @@ app.SceneController.prototype.componentMoved = function (e) {
     var diffX, diffY, move = [];
 
     move[0] = (e.clientX - this._CANVAS_WRAPPER.offsetLeft);
-    move[1] = (e.clientY - this._CANVAS_WRAPPER.offsetTop);
+    move[1] = (e.clientY - e.currentTarget.offsetTop - this._CANVAS_WRAPPER.offsetTop);
 
     diffX = move[0] - this._mouseCursorPoint[0];
     diffY = move[1] - this._mouseCursorPoint[1];
@@ -538,6 +543,7 @@ app.SceneController.prototype.componentMoved = function (e) {
     this._componentMoved = true;
     this._componentController.updatePosition(point[0], point[1]);
     this.redrawAll();
+    e.stopPropagation();
 };
 
 /**

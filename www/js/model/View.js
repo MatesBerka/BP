@@ -177,12 +177,13 @@ app.model.View.prototype.translate = function (x, y) {
  * @public
  */
 app.model.View.prototype.reverseTransformPoint = function (point) {
-    point[0] -= this._appliedTranslationX;
-    point[1] -= this._appliedTranslationY;
+    var result = point.slice();
+    result[0] -= this._appliedTranslationX;
+    result[1] -= this._appliedTranslationY;
 
-    point[0] = Math.round(point[0] / this._appliedScale);
-    point[1] = Math.round(point[1] / this._appliedScale);
-    return point;
+    result[0] = Math.round(result[0] / this._appliedScale);
+    result[1] = Math.round(result[1] / this._appliedScale);
+    return result;
 };
 
 /**
@@ -191,9 +192,10 @@ app.model.View.prototype.reverseTransformPoint = function (point) {
  * @public
  */
 app.model.View.prototype.reverseScale = function (point) {
-    point[0] = Math.round(point[0] / this._appliedScale);
-    point[1] = Math.round(point[1] / this._appliedScale);
-    return point;
+    var result = point.slice();
+    result[0] = Math.round(result[0] / this._appliedScale);
+    result[1] = Math.round(result[1] / this._appliedScale);
+    return result;
 };
 
 /**

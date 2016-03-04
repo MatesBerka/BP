@@ -124,7 +124,7 @@ app.ViewController.prototype.addListeners = function (view) {
 app.ViewController.prototype._updateCoordinates = function (e) {
     var coordinates = e.currentTarget.childNodes[1], xCm, yCm, zoom;
     xCm = (e.clientX - this._CANVAS_WRAPPER.offsetLeft - this._model.getAppliedTranslationX()) / app.PIXEL_ON_CM;
-    yCm = (e.clientY - this._CANVAS_WRAPPER.offsetTop - this._model.getAppliedTranslationY()) / app.PIXEL_ON_CM;
+    yCm = (e.clientY - e.currentTarget.offsetTop - this._CANVAS_WRAPPER.offsetTop - this._model.getAppliedTranslationY()) / app.PIXEL_ON_CM;
     zoom = Math.floor(100 * this._model.getZoom());
     goog.dom.setTextContent(coordinates, 'x: ' + xCm.toFixed(2) + ' cm, y: ' + yCm.toFixed(2) + ' cm, zoom: ' + zoom + ' %');
 };
@@ -137,15 +137,17 @@ app.ViewController.prototype._canvasMoved = function (e) {
     var diffX, diffY, move = [];
 
     move[0] = (e.clientX - this._CANVAS_WRAPPER.offsetLeft);
-    move[1] = (e.clientY - this._CANVAS_WRAPPER.offsetTop);
+    move[1] = (e.clientY - e.currentTarget.offsetTop - this._CANVAS_WRAPPER.offsetTop);
 
     diffX = move[0] - this._mouseCursorPoint[0];
     diffY = move[1] - this._mouseCursorPoint[1];
 
-    console.log(diffX, diffY);
     this._mouseCursorPoint = move;
-    this._model.translate(diffX, diffY);
+
+    var point = this.reverseScale([diffX, diffY]);
+    this._model.translate(point[0], point[1]);
     this.draw();
+    e.stopPropagation();
 };
 
 /**

@@ -126,7 +126,6 @@ app.MenuController.prototype._addListeners = function () {
                  */
                 function (e) {
                     var child = goog.dom.getLastElementChild(/**@type{Node}*/(e.currentTarget));
-                    console.log('leave');
                     if(child.className.indexOf('nested-items') !== -1) {
                         child.style.display = 'none';
                     }
