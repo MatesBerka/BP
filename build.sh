@@ -13,7 +13,8 @@ JS_CLOSURE_LIB_DIR="www/js-closure/closure/goog"
 JS_CLOSURE_THIRD_PARTY_DIR="www/js-closure/third_party/closure/goog"
 
 TEMPLATE_DIR="www/js"
-URL_APP="../../../www/js"
+URL_APP="../../../../www/js"
+
 LOCALE="cs_CZ"
 
 compile() {
@@ -41,10 +42,10 @@ deps() {
 
 case $1 in
 	build)
-	    info "Building deps"
+	    echo "Building deps"
 	    deps
 
-		info "Compiling JS"
+		echo "Compiling JS"
 		compile
 		;;
 

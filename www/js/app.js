@@ -5,14 +5,16 @@ goog.require('goog.events');
 goog.require('app.SceneController');
 goog.require('app.MenuController');
 goog.require('app.locales');
+goog.require('goog.labs.userAgent.device');
 
 app.LOCALE = 'en_US';
+
 /**
  * Make {@code app.start} accessible after {@code ADVANCED_OPTIMIZATIONS}.
  * @export
  */
 app.start = function() {
-    app.PIXEL_ON_CM = goog.dom.getElement('cm-box').clientWidth;
+    app.init();
 
     app.utils.translate();
 
@@ -27,6 +29,30 @@ app.start = function() {
     //    app.loadSimulation();
     //}
 };
+
+app.init = function() {
+    /**
+     * @const
+     * @type {number}
+     */
+    app.PIXEL_ON_CM = goog.dom.getElement('cm-box').clientWidth;
+
+    if(goog.labs.userAgent.device.isDesktop()) {
+        /** @type {goog.events.EventType|string} */
+        app.MOUSE_DOWN_EVENT = goog.events.EventType.MOUSEDOWN;
+        /** @type {goog.events.EventType|string} */
+        app.MOUSE_UP_EVENT = goog.events.EventType.MOUSEUP;
+        /** @type {goog.events.EventType|string} */
+        app.MOUSE_MOVE_EVENT = goog.events.EventType.MOUSEMOVE;
+    } else {
+        /** @type {goog.events.EventType|string} */
+        app.MOUSE_DOWN_EVENT = goog.events.EventType.TOUCHSTART;
+        /** @type {goog.events.EventType|string} */
+        app.MOUSE_UP_EVENT = goog.events.EventType.TOUCHEND;
+        /** @type {goog.events.EventType|string} */
+        app.MOUSE_MOVE_EVENT = goog.events.EventType.TOUCHMOVE;
+    }
+}
 
 app.utils.translate = function() {
     app.translation = app.TRANSLATION[app.LOCALE];
@@ -51,6 +77,7 @@ app.utils.translate = function() {
 //http://www.itnetwork.cz/maturitni-otazka-fyzika-zobrazeni-cocky-zrcadla-pristroje
 //https://cs.wikipedia.org/wiki/Rozptyln%C3%A1_%C4%8Do%C4%8Dka
 //http://stackoverflow.com/questions/9705123/how-can-i-get-sin-cos-and-tan-to-use-degrees-instead-of-radians
+//https://google.github.io/closure-library/api/
 
 // TODO  light ID - muzou dojit
 // TODO  view ID - problem budou se spatne generovat
@@ -60,9 +87,13 @@ app.utils.translate = function() {
 // TODO mrizka
 // todo save
 // todo tablet
+// todo wheel event
+// todo tab index
 // TODO ON/OFF light switch
 // todo remove http link in comments (@see)
+// TODO vylepsi pridavani komponent do menu, automaticky cyklus?
 // TODO opravdu holograficka deska deli skupiny dobre?
+// TODO add favicon http://www.freefavicon.com/freefavicons/objects/iconinfo/graduation-hat-152-193065.html
 
 // ray [[x,y,z],[x,y,z], lightID, rayLength];
 // _intersectionRay and ray in intersect()

@@ -108,15 +108,15 @@ app.model.Lens.prototype.draw = function(ctx, callback) {
     // top arrow
     ctx.moveTo(this.transformedPoints[4][0], this.transformedPoints[4][1]);
     ctx.lineTo(this.transformedPoints[0][0], this.transformedPoints[0][1]);
-    ctx.moveTo(this.transformedPoints[5][0], this.transformedPoints[5][1]);
-    ctx.lineTo(this.transformedPoints[0][0], this.transformedPoints[0][1]);
+    ctx.lineTo(this.transformedPoints[5][0], this.transformedPoints[5][1]);
+    ctx.moveTo(this.transformedPoints[0][0], this.transformedPoints[0][1]);
 
     ctx.lineTo(this.transformedPoints[1][0], this.transformedPoints[1][1]);
     // bottom arrow
     ctx.moveTo(this.transformedPoints[6][0], this.transformedPoints[6][1]);
     ctx.lineTo(this.transformedPoints[1][0], this.transformedPoints[1][1]);
-    ctx.moveTo(this.transformedPoints[7][0], this.transformedPoints[7][1]);
-    ctx.lineTo(this.transformedPoints[1][0], this.transformedPoints[1][1]);
+    ctx.lineTo(this.transformedPoints[7][0], this.transformedPoints[7][1]);
+    ctx.lineJoin = 'round';
     ctx.stroke();
 
     if (this.isComponentSelected)

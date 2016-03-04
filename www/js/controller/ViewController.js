@@ -15,10 +15,17 @@ goog.require('app.SplitterController');
 goog.require('app.WallController');
 
 /**
+ * @param {Element} canvasWrapper
  * @final
  * @constructor
  */
-app.ViewController = function () {
+app.ViewController = function (canvasWrapper) {
+    /**
+     * @const
+     * @type {Element}
+     * @private
+     */
+    this._CANVAS_WRAPPER = canvasWrapper;
     /**
      * @type {!number}
      * @private
@@ -53,7 +60,7 @@ app.ViewController = function () {
  */
 app.ViewController.prototype.addCanvasMove = function (view, coordinates) {
     this._mouseCursorPoint = coordinates;
-    goog.events.listen(view, goog.events.EventType.MOUSEMOVE, this._canvasMoved, true, this);
+    goog.events.listen(view, app.MOUSE_MOVE_EVENT, this._canvasMoved, true, this);
 };
 
 /**
@@ -61,7 +68,7 @@ app.ViewController.prototype.addCanvasMove = function (view, coordinates) {
  * @public
  */
 app.ViewController.prototype.removeCanvasMove = function (view) {
-    goog.events.unlisten(view, goog.events.EventType.MOUSEMOVE, this._canvasMoved, true, this);
+    goog.events.unlisten(view, app.MOUSE_MOVE_EVENT, this._canvasMoved, true, this);
 };
 
 /**
@@ -70,7 +77,7 @@ app.ViewController.prototype.removeCanvasMove = function (view) {
  */
 app.ViewController.prototype.addListeners = function (view) {
     // coordinates update
-    goog.events.listen(view, goog.events.EventType.MOUSEMOVE, this._updateCoordinates, false, this);
+    goog.events.listen(view, app.MOUSE_MOVE_EVENT, this._updateCoordinates, false, this);
 
     goog.events.listen(goog.dom.getElementByClass('zoom', view), goog.events.EventType.CLICK,
         /**
@@ -116,8 +123,8 @@ app.ViewController.prototype.addListeners = function (view) {
  */
 app.ViewController.prototype._updateCoordinates = function (e) {
     var coordinates = e.currentTarget.childNodes[1], xCm, yCm, zoom;
-    xCm = (e.offsetX - this._model.getAppliedTranslationX()) / app.PIXEL_ON_CM;
-    yCm = (e.offsetY - this._model.getAppliedTranslationY()) / app.PIXEL_ON_CM;
+    xCm = (e.clientX - this._CANVAS_WRAPPER.offsetLeft - this._model.getAppliedTranslationX()) / app.PIXEL_ON_CM;
+    yCm = (e.clientY - this._CANVAS_WRAPPER.offsetTop - this._model.getAppliedTranslationY()) / app.PIXEL_ON_CM;
     zoom = Math.floor(100 * this._model.getZoom());
     goog.dom.setTextContent(coordinates, 'x: ' + xCm.toFixed(2) + ' cm, y: ' + yCm.toFixed(2) + ' cm, zoom: ' + zoom + ' %');
 };
@@ -127,14 +134,16 @@ app.ViewController.prototype._updateCoordinates = function (e) {
  * @private
  */
 app.ViewController.prototype._canvasMoved = function (e) {
-    var diffX, diffY;
+    var diffX, diffY, move = [];
 
-    diffX = e.offsetX - this._mouseCursorPoint[0];
-    diffY = e.offsetY - this._mouseCursorPoint[1];
+    move[0] = (e.clientX - this._CANVAS_WRAPPER.offsetLeft);
+    move[1] = (e.clientY - this._CANVAS_WRAPPER.offsetTop);
 
-    this._mouseCursorPoint[0] = e.offsetX;
-    this._mouseCursorPoint[1] = e.offsetY;
+    diffX = move[0] - this._mouseCursorPoint[0];
+    diffY = move[1] - this._mouseCursorPoint[1];
 
+    console.log(diffX, diffY);
+    this._mouseCursorPoint = move;
     this._model.translate(diffX, diffY);
     this.draw();
 };

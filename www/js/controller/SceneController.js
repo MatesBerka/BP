@@ -13,10 +13,16 @@ goog.require('app.model.View');
 app.SceneController = function (newSimulation) {
     /**
      * @const
+     * @type {Element}
+     * @private
+     */
+    this._CANVAS_WRAPPER = goog.dom.getElement('canvas-wrapper');
+    /**
+     * @const
      * @type {!app.ViewController}
      * @private
      */
-    this._VIEW_CONTROLLER = new app.ViewController();
+    this._VIEW_CONTROLLER = new app.ViewController(this._CANVAS_WRAPPER);
     /**
      * @type {app.ComponentController}
      * @private
@@ -27,12 +33,6 @@ app.SceneController = function (newSimulation) {
      * @private
      */
     this._newComponentType = '';
-    /**
-     * @const
-     * @type {Element}
-     * @private
-     */
-    this._CANVAS_WRAPPER = goog.dom.getElement('canvas-wrapper');
     /**
      * @type {!Array<app.model.Table>}
      * @private
@@ -86,7 +86,7 @@ app.SceneController.prototype.init = function () {
     newTable.addView(newView);
     newView.setCanvas(this.addViewToGUI(viewID, 'View 1'));
 
-    this.addListeners();
+    this._addListeners();
 
     var tableButton = goog.dom.getElement('button-table-' + tableID);
     this.setActiveTable(tableID, tableButton);
@@ -150,7 +150,7 @@ app.SceneController.prototype.updateSizes = function () {
         width = this._CANVAS_WRAPPER.clientWidth,
         views = goog.dom.getElementsByClass('active-view', goog.dom.getElement('table-' + this._activeTableID));
 
-    height = height - 184;
+    height = height - 144;
     this._CANVAS_WRAPPER.style.height = height + 'px';
 
     height = height / this._tables[this._activeTableID].getActiveViewsCount();
@@ -306,29 +306,32 @@ app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
             this.setSelectedView(parseInt(pieces[1], 10), parseInt(pieces[2], 10));
         }, true, this);
 
-    goog.events.listen(view, goog.events.EventType.MOUSEDOWN,
+    goog.events.listen(view, app.MOUSE_DOWN_EVENT,
         /**
          * @this {!app.SceneController}
          * @param {!goog.events.BrowserEvent} e
          */
         function (e) {
+            var coords = [];
+            coords[0] = (e.clientX - this._CANVAS_WRAPPER.offsetLeft);
+            coords[1] = (e.clientY - this._CANVAS_WRAPPER.offsetTop);
             var pieces = e.currentTarget.id.split('-');
             this.setSelectedView(parseInt(pieces[1], 10), parseInt(pieces[2], 10));
             if (this._isAddNewComponent) { // pridani nove
-                this.addComponent(e.offsetX, e.offsetY);
-            } else if (this.isIntersection(e)) { // vyber komponenty
+                this.addComponent(coords);
+            } else if (this.isIntersection(coords)) { // vyber komponenty
                 this._componentMoveActive = true;
-                this._mouseCursorPoint = [e.offsetX, e.offsetY];
-                goog.events.listen(this._CANVAS_WRAPPER, [goog.events.EventType.MOUSEMOVE],
+                this._mouseCursorPoint = coords;
+                goog.events.listen(this._CANVAS_WRAPPER, app.MOUSE_MOVE_EVENT,
                     this.componentMoved, true, this);
             } else { // muze byt posun platna
                 this._canvasMoveActive = true;
-                this._VIEW_CONTROLLER.addCanvasMove(view, [e.offsetX, e.offsetY]);
+                this._VIEW_CONTROLLER.addCanvasMove(view, coords);
             }
         }, true, this);
 
     // mouse up events
-    goog.events.listen(view, goog.events.EventType.MOUSEUP,
+    goog.events.listen(view, app.MOUSE_UP_EVENT,
         /** @this {app.SceneController} */
         function () {
             if (this._isAddNewComponent) {
@@ -339,13 +342,13 @@ app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
                 this._componentMoved = false;
                 this._componentController.removeSelected();
                 this.redrawAll();
-                goog.events.unlisten(this._CANVAS_WRAPPER, goog.events.EventType.MOUSEMOVE,
+                goog.events.unlisten(this._CANVAS_WRAPPER, app.MOUSE_MOVE_EVENT,
                     this.componentMoved, true, this);
             } else if (this._componentMoveActive && !this._componentMoved) {
                 this._componentMoveActive = false;
                 this._componentController.removeSelected();
                 this._componentController.showComponentControlPanel(this);
-                goog.events.unlisten(this._CANVAS_WRAPPER, goog.events.EventType.MOUSEMOVE,
+                goog.events.unlisten(this._CANVAS_WRAPPER, app.MOUSE_MOVE_EVENT,
                     this.componentMoved, true, this);
             } else if (this._canvasMoveActive) {
                 this._canvasMoveActive = false;
@@ -499,12 +502,12 @@ app.SceneController.prototype.setSelectedComponent = function (componentModel, c
 };
 
 /**
- * @param {goog.events.BrowserEvent} e
+ * @param {!Array<!number>} selectedPoint
  * @return {!boolean}
  * @private
  */
-app.SceneController.prototype.isIntersection = function (e) {
-    var point = this._VIEW_CONTROLLER.reverseTransformPoint([e.offsetX, e.offsetY]),
+app.SceneController.prototype.isIntersection = function (selectedPoint) {
+    var point = this._VIEW_CONTROLLER.reverseTransformPoint(selectedPoint),
         components = this._tables[this._activeTableID].getComponents();
 
     for (var i = 0; i < components.length; i++) {
@@ -521,14 +524,15 @@ app.SceneController.prototype.isIntersection = function (e) {
  * @private
  */
 app.SceneController.prototype.componentMoved = function (e) {
-    var diffX, diffY;
+    var diffX, diffY, move = [];
 
-    diffX = e.offsetX - this._mouseCursorPoint[0];
-    diffY = e.offsetY - this._mouseCursorPoint[1];
+    move[0] = (e.clientX - this._CANVAS_WRAPPER.offsetLeft);
+    move[1] = (e.clientY - this._CANVAS_WRAPPER.offsetTop);
 
-    this._mouseCursorPoint[0] = e.offsetX;
-    this._mouseCursorPoint[1] = e.offsetY;
+    diffX = move[0] - this._mouseCursorPoint[0];
+    diffY = move[1] - this._mouseCursorPoint[1];
 
+    this._mouseCursorPoint = move;
     var point = this._VIEW_CONTROLLER.reverseScale([diffX, diffY]);
 
     this._componentMoved = true;
@@ -539,7 +543,7 @@ app.SceneController.prototype.componentMoved = function (e) {
 /**
  * @private
  */
-app.SceneController.prototype.addListeners = function () {
+app.SceneController.prototype._addListeners = function () {
     // add new table
     goog.events.listen(this._newTableDialog, goog.ui.Dialog.EventType.SELECT,
         /**
@@ -813,12 +817,11 @@ app.SceneController.prototype.redrawAll = function () {
 };
 
 /**
- * @param {!number} coordX
- * @param {!number} coordY
+ * @param {!Array<number>} selectedPoint
  * @private
  */
-app.SceneController.prototype.addComponent = function (coordX, coordY) {
-    var model = null, modelID, coords = this._VIEW_CONTROLLER.reverseTransformPoint([coordX, coordY]);
+app.SceneController.prototype.addComponent = function (selectedPoint) {
+    var model = null, modelID, coords = this._VIEW_CONTROLLER.reverseTransformPoint(selectedPoint);
 
     switch (this._newComponentType) {
         case 'MIRROR':

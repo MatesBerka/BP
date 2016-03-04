@@ -63,7 +63,7 @@ select {
     color: white;
     font-size: 16px;
     line-height: 24px;
-    height: 50px;
+    height: 40px;
     background-color: #d2eba5;
     border-bottom: 1px solid #9C9C9C;
     margin-bottom: 5px;
@@ -87,12 +87,21 @@ select {
     filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#4C4949', endColorstr='#000000',GradientType=0);
 }
 #logo, li.menu-item {
-    height: 50px;
+    min-height: 40px;
     padding: 10px;
-    line-height: 30px;
+    line-height: 20px;
     float: left;
     position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
+
+li.menu-item {
+    cursor: pointer;
+}
+
 li.menu-item,
 li.menu-item a {
     color: #333333;
@@ -103,7 +112,7 @@ ul.nested-items {
     background: #d2eba5;
     left: -1px;
     border: 1px solid #9C9C9C;
-    top: 49px;
+    top: 39px;
     display: none;
     z-index: 99;
     cursor: pointer;
@@ -117,7 +126,7 @@ ul.nested-items li:first-child {
 }
 ul.nested-items > li {
     width: 100%;
-    height: 40px;
+    min-height: 40px;
     line-height: 20px;
     border-top: 1px solid #9C9C9C;
 }
@@ -165,17 +174,17 @@ ul#top-items > li {
     font-size: 14px;
     background-color: #ededed;
     border-right: 1px solid #dddddd;
-    padding: 10px;
+    padding: 7px 10px;
     cursor: pointer;
 }
 #tables-section #add-new-table, #views-section #add-new-view {
-    font-size: 19px;
+    font-size: 16px;
     font-weight: 800;
-    line-height: 24px;
+    line-height: 20px;
     text-align: center;
-    height: 26px;
-    width: 26px;
-    margin: 4px;
+    height: 22px;
+    width: 22px;
+    margin: 3px 5px;
     background: white;
     border: 1px solid #BFBFBF;
     border-radius: 100%;
@@ -504,4 +513,20 @@ button:active {
     border-bottom: 1px solid #dddddd;
     line-height: 16px;
     font-size: 12px;
+}
+
+#add-com-popup {
+    position: fixed;
+    top: -100px;
+    left: -200px;
+    visibility: hidden;
+    padding: 15px;
+    background-color: #EBBCA5;
+    border-radius: 6px;
+    color: black;
+    font-weight: 800;
+    border: 1px solid #FFF;
+    webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.19),0 0 0 1px rgba(0,0,0,0.07);
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,.19),0 0 0 1px rgba(0,0,0,.07);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.19),0 0 0 1px rgba(0,0,0,0.07);
 }

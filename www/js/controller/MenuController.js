@@ -1,6 +1,8 @@
 goog.provide('app.MenuController');
 
 goog.require('goog.ui.Dialog');
+goog.require('goog.ui.Popup');
+goog.require('goog.labs.userAgent.device');
 goog.require('app.SceneController');
 
 /**
@@ -28,6 +30,55 @@ app.MenuController = function (sceneController) {
     this._addListeners();
 };
 
+/**
+ * @param {!goog.events.BrowserEvent} e
+ * @param {Element} child
+ * @private
+ */
+app.MenuController.prototype._toggleSubMenu = function (e, child) {
+    if(child.className.indexOf('nested-items') !== -1) {
+        var display = 'block';
+        if(child.style.display === 'block') { display = 'none'; }
+
+        if(child.parentNode.className.indexOf('top-item') !== -1) {
+            var li = goog.dom.getElementsByTagNameAndClass('li', 'top-item'), i;
+            for (i = 0; i < li.length; i++) {
+                this._hideSubMenus(li[i]);
+            }
+        }
+        child.style.display = display;
+    }
+    e.stopPropagation();
+};
+
+/**
+ * @param {Element} element
+ * @private
+ */
+app.MenuController.prototype._hideSubMenus = function(element) {
+    var subMenus = goog.dom.getElementsByClass('nested-items', element);
+    for(var i = 0; i < subMenus.length; i++) {
+        subMenus[i].style.display = 'none';
+    }
+};
+
+/**
+ * @param {!goog.events.BrowserEvent} e
+ * @param {!string} type
+ * @private
+ */
+app.MenuController.prototype._addComponent = function (e, type) {
+    var popup = new goog.ui.Popup(goog.dom.getElement('add-com-popup'));
+    popup.setHideOnEscape(true);
+    popup.setAutoHide(true);
+    popup.setPinnedCorner(goog.positioning.Corner.TOP_RIGHT);
+    popup.setMargin(new goog.math.Box(20, 30, 20, 20));
+    popup.setPosition(new goog.positioning.AnchoredViewportPosition(document.body,
+        goog.positioning.Corner.TOP_RIGHT));
+    popup.setVisible(true);
+    this._toggleSubMenu(e, /**@type{Element}*/(e.currentTarget.parentNode));
+    this._sceneController.showCross(type);
+};
 
 /**
  * @private
@@ -36,36 +87,63 @@ app.MenuController.prototype._addListeners = function () {
     // HOVER EFFECT
     var li = goog.dom.getElementsByTagNameAndClass('li', 'menu-item'), i;
     for (i = 0; i < li.length; i++) {
-        goog.events.listen(li[i], goog.events.EventType.MOUSEENTER,
+        goog.events.listen(li[i], goog.events.EventType.CLICK,
             /**
              * @this {!app.MenuController}
              * @param {!goog.events.BrowserEvent} e
              */
             function (e) {
-                var child = goog.dom.getLastElementChild(/**@type{Node}*/(e.currentTarget)), j;
-                for (j = 0; j < child.classList.length; j++) {
-                    if (child.classList[j] == 'nested-items') {
+                this._toggleSubMenu(e, goog.dom.getLastElementChild(/**@type{Node}*/(e.currentTarget)));
+            },
+            false, this);
+
+        if(goog.labs.userAgent.device.isDesktop()) {
+            goog.events.listen(li[i], goog.events.EventType.MOUSEENTER,
+                /**
+                 * @this {!app.MenuController}
+                 * @param {!goog.events.BrowserEvent} e
+                 */
+                function (e) {
+                    var child = goog.dom.getLastElementChild(/**@type{Node}*/(e.currentTarget));
+                    if(child.className.indexOf('nested-items') !== -1) {
+                        if(child.parentNode.className.indexOf('top-item') !== -1) {
+                            var li = goog.dom.getElementsByTagNameAndClass('li', 'top-item'), i;
+                            for (i = 0; i < li.length; i++) {
+                                this._hideSubMenus(li[i]);
+                            }
+                        }
                         child.style.display = 'block';
                     }
-                }
-                e.stopPropagation();
-            });
+                    e.stopPropagation();
 
-        goog.events.listen(li[i], goog.events.EventType.MOUSELEAVE,
-            /**
-             * @this {!app.MenuController}
-             * @param {!goog.events.BrowserEvent} e
-             */
-            function (e) {
-                var child = goog.dom.getLastElementChild(/**@type{Node}*/(e.currentTarget)), j;
-                for (j = 0; j < child.classList.length; j++) {
-                    if (child.classList[j] == 'nested-items') {
+                },
+                false, this);
+
+            goog.events.listen(li[i], goog.events.EventType.MOUSELEAVE,
+                /**
+                 * @this {!app.MenuController}
+                 * @param {!goog.events.BrowserEvent} e
+                 */
+                function (e) {
+                    var child = goog.dom.getLastElementChild(/**@type{Node}*/(e.currentTarget));
+                    console.log('leave');
+                    if(child.className.indexOf('nested-items') !== -1) {
                         child.style.display = 'none';
                     }
-                }
-                e.stopPropagation();
-            });
+                    e.stopPropagation();
+                },
+                false, this);
+        }
     }
+
+    goog.events.listen(document.body, goog.events.EventType.CLICK,
+        /**
+         * @this {!app.MenuController}
+         */
+        function () {
+            this._hideSubMenus(goog.dom.getElement('top-items'));
+        },
+        false, this);
 
     // simulation/settings/count of reflection
     goog.events.listen(this._refDialog, goog.ui.Dialog.EventType.SELECT,
@@ -83,11 +161,18 @@ app.MenuController.prototype._addListeners = function () {
                     this._sceneController.setReflectionsCount(input.value);
                 }
             }
-        }, false, this);
+        },
+        false, this);
 
     goog.events.listen(goog.dom.getElement('reflections-count'), goog.events.EventType.CLICK,
-        /** @this {!app.MenuController} */
-        function () {
+        /**
+         * @this {!app.MenuController}
+         * @param {!goog.events.BrowserEvent} e
+         */
+        function (e) {
+            this._hideSubMenus(goog.dom.getElement('top-items'));
+            e.stopPropagation();
+
             this._refDialog.setTitle(app.translation['reflections-count']);
             var buttonsSet = new goog.ui.Dialog.ButtonSet();
             buttonsSet.addButton({key: 'ok', caption: 'Ok'}, true);
@@ -95,11 +180,14 @@ app.MenuController.prototype._addListeners = function () {
             this._refDialog.setButtonSet(buttonsSet);
             var count = this._sceneController.getReflectionsCount();
             this._refDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['ref-count'],
-                goog.html.SafeHtml.create('input', {'type': 'text', 'id': 'reflection-count-input',
-                'name': 'reflection-count-input', 'value': count})]
+                goog.html.SafeHtml.create('input', {
+                    'type': 'text', 'id': 'reflection-count-input',
+                    'name': 'reflection-count-input', 'value': count
+                })]
             ));
             this._refDialog.setVisible(true);
-        }, false, this);
+        },
+        true, this);
 
     // simulation/settings/language
     goog.events.listen(goog.dom.getElementByClass('language-switch'), goog.events.EventType.CLICK,
@@ -108,6 +196,9 @@ app.MenuController.prototype._addListeners = function () {
          * @param {!goog.events.BrowserEvent} e
          */
         function (e) {
+            this._hideSubMenus(goog.dom.getElement('top-items'));
+            e.stopPropagation();
+
             // TODO save into cookies?
             if (e.target.id == "lang-en-us") {
                 app.LOCALE = 'en_US';
@@ -115,7 +206,8 @@ app.MenuController.prototype._addListeners = function () {
                 app.LOCALE = 'cs_CZ';
             }
             app.utils.translate();
-        });
+        },
+        true, this);
 
     // simulation/save simulation
     goog.events.listen(goog.dom.getElement('logo'), goog.events.EventType.CLICK,
@@ -124,8 +216,11 @@ app.MenuController.prototype._addListeners = function () {
          * @param {!goog.events.BrowserEvent} e
          */
         function (e) {
+            this._hideSubMenus(goog.dom.getElement('top-items'));
+            e.stopPropagation();
             // todo
-        });
+        },
+        false, this);
 
     // simulation/export simulation
     goog.events.listen(goog.dom.getElement('logo'), goog.events.EventType.CLICK,
@@ -134,9 +229,12 @@ app.MenuController.prototype._addListeners = function () {
          * @param {!goog.events.BrowserEvent} e
          */
         function (e) {
+            this._hideSubMenus(goog.dom.getElement('top-items'));
+            e.stopPropagation();
             // todo
             // into svg
-        });
+        },
+        false, this);
 
     // simulation/reset simulation
     goog.events.listen(goog.dom.getElement('reset-menu-msg'), goog.events.EventType.CLICK,
@@ -147,45 +245,62 @@ app.MenuController.prototype._addListeners = function () {
 
     // components/add mirror
     goog.events.listen(goog.dom.getElement('add-mirror'), goog.events.EventType.CLICK,
-        /** @this {!app.MenuController} */
-        function () {
-            this._sceneController.showCross('MIRROR');
-        }, false, this);
+        /**
+         * @this {!app.MenuController}
+         * @param {!goog.events.BrowserEvent} e
+         */
+        function (e) {
+            this._addComponent(e, 'MIRROR');
+        },
+        false, this);
 
     // components/add lens
     goog.events.listen(goog.dom.getElement('add-lens'), goog.events.EventType.CLICK,
-        /** @this {!app.MenuController} */
-        function () {
-            this._sceneController.showCross('LENS');
+        /**
+         * @this {!app.MenuController}
+         * @param {!goog.events.BrowserEvent} e
+         */
+        function (e) {
+            this._addComponent(e, 'LENS');
         }, false, this);
 
     // components/add holographic plate
     goog.events.listen(goog.dom.getElement('add-holo-plate'), goog.events.EventType.CLICK,
         /**
          * @this {!app.MenuController}
+         * @param {!goog.events.BrowserEvent} e
          */
-        function () {
-            this._sceneController.showCross('HOLO-PLATE');
+        function (e) {
+            this._addComponent(e, 'HOLO-PLATE');
         }, false, this);
 
     // components/add wall
     goog.events.listen(goog.dom.getElement('add-wall'), goog.events.EventType.CLICK,
-        /** @this {!app.MenuController} */
-        function () {
-            this._sceneController.showCross('WALL');
+        /**
+         * @this {!app.MenuController}
+         * @param {!goog.events.BrowserEvent} e
+         */
+        function (e) {
+            this._addComponent(e, 'WALL');
         }, false, this);
 
     // components/add light
     goog.events.listen(goog.dom.getElement('add-light'), goog.events.EventType.CLICK,
-        /** @this {!app.MenuController} */
-        function () {
-            this._sceneController.showCross('LIGHT');
+        /**
+         * @this {!app.MenuController}
+         * @param {!goog.events.BrowserEvent} e
+         */
+        function (e) {
+            this._addComponent(e, 'LIGHT');
         }, false, this);
-
+    // components/add splitter
     goog.events.listen(goog.dom.getElement('add-splitter'), goog.events.EventType.CLICK,
-        /** @this {!app.MenuController} */
-        function () {
-            this._sceneController.showCross('SPLITTER');
+        /**
+         * @this {!app.MenuController}
+         * @param {!goog.events.BrowserEvent} e
+         */
+        function (e) {
+            this._addComponent(e, 'SPLITTER');
         }, false, this);
 
     // help
