@@ -188,6 +188,18 @@ app.model.Lens.prototype.copyArguments = function(rotation, height, focusType, f
 };
 
 /**
+ * @param {!Object} componentModel
+ * @public
+ */
+app.model.Lens.prototype.importComponentData = function (componentModel) {
+    this.appliedRotation = componentModel.appliedRotation;
+    this.height = componentModel.height;
+    this._focusType = componentModel._focusType;
+    this._focusOffset = componentModel._focusOffset;
+    this.transformPoints();
+};
+
+/**
  * @override
  */
 app.model.Lens.prototype.copy = function () {

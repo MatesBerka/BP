@@ -26,7 +26,7 @@ app.model.Splitter.prototype.intersect = function (rays, ray) {
 
     var point = this.reverseTransformPoint([this._intersectionRay[0], this._intersectionRay[1]]);
     var intersectionPoint = this.reverseTransformPoint([this.intersectionPoint[0], this.intersectionPoint[1]]);
-    point[1] = (-1*point[1]) + (2*intersectionPoint[1]);
+    point[1] = (-1 * point[1]) + (2 * intersectionPoint[1]);
     var k = this.transformPoint(point);
 
     dVec[0] = k[0] - this.intersectionPoint[0];
@@ -49,8 +49,17 @@ app.model.Splitter.prototype.intersect = function (rays, ray) {
  * @param {!number} height
  * @override
  */
-app.model.Splitter.prototype.copyArguments = function(height) {
+app.model.Splitter.prototype.copyArguments = function (height) {
     this.height = height;
+    this.transformPoints();
+};
+
+/**
+ * @param {!Object} componentModel
+ * @public
+ */
+app.model.Splitter.prototype.importComponentData = function (componentModel) {
+    this.height = componentModel.height;
     this.transformPoints();
 };
 

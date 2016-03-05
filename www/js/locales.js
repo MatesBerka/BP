@@ -6,7 +6,8 @@ app.TRANSLATION = {
         // menu
         'simulation-menu-msg': 'Simulace',
         'settings-menu-msg': 'Nastavení',
-        'save-menu-msg': 'Uložit simulaci',
+        'import-menu-msg': 'Importovat simulaci',
+        'export-menu-msg': 'Exportovat simulaci',
         'reset-menu-msg': 'Začít znovu',
         'components-menu-msg': 'Komponenty',
         'help-menu-msg': 'Nápověda',
@@ -68,7 +69,7 @@ app.TRANSLATION = {
         'com-light-radius': 'Rádius: ',
         'com-plate-settings': 'Nastavení plátna',
         'com-plate-resolution': 'Rozlišení: ',
-        'com-plate-tolerance': 'Odchylka: ', // todo vylepsit
+        'com-plate-tolerance': 'Odchylka: ',
         'pick-ref-light': 'Výběr referenčního světla',
         'ref-light': 'Světlo: ',
         'pick-light': 'Vyber',
@@ -79,7 +80,8 @@ app.TRANSLATION = {
         // menu
         'simulation-menu-msg': 'Simulation',
         'settings-menu-msg': 'Settings',
-        'save-menu-msg': 'Save simulation',
+        'import-menu-msg': 'Import simulation',
+        'export-menu-msg': 'Export simulation',
         'reset-menu-msg': 'Reset simulation',
         'components-menu-msg': 'Components',
         'help-menu-msg': 'Help',
@@ -89,7 +91,7 @@ app.TRANSLATION = {
         'lang-en-us': 'English',
         'mirror-menu-msg': 'Add mirror',
         'splitter-menu-msg': 'Add splitter',
-        'mlens-menu-msg': '>Add lens',
+        'lens-menu-msg': 'Add lens',
         'holo-menu-msg': 'Add holographic plate',
         'wall-menu-msg': 'Add wall',
         'light-menu-msg': 'Add light',

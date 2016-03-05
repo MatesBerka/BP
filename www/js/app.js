@@ -14,23 +14,25 @@ app.LOCALE = 'en_US';
  * @export
  */
 app.start = function() {
-    app.init();
+    app._init();
 
     app.utils.translate();
-
-    var sceneController = new app.SceneController(true);
-    var menuController = new app.MenuController(sceneController);
-
-    //if(true) { // TODO check url
-    //    // if url empty init default settings
-    //    app.init();
-    //} else {
-    //    // else load data
-    //    app.loadSimulation();
-    //}
+    /**
+     * @const
+     * @private
+     */
+    app.SCENECONTROLLER = new app.SceneController(true);
+    /**
+     * @const
+     * @private
+     */
+    app.MENUCONTROLLER = new app.MenuController(app.SCENECONTROLLER);
 };
 
-app.init = function() {
+/**
+ * @private
+ */
+app._init = function() {
     /**
      * @const
      * @type {number}
@@ -95,6 +97,7 @@ app.utils.translate = function() {
 
 // TODO add to renema to table.js 427 SceneController.js
 // TODO x: 36.97 cm, y: NaN cm, zoom: 100 %
+// TODO problem s metodami jako addComponent
 
 // ray [[x,y,z],[x,y,z], lightID, rayLength];
 // _intersectionRay and ray in intersect()
@@ -109,3 +112,6 @@ app.utils.translate = function() {
 //· Energie (pro kadou vlnovou délku)
 //· Cílovŭ optickŭ prvek (po nalezení)
 //· Cílová pozice(x,y,z) (po nalezení)
+
+//normalize2DVector
+//http://forum.matematika.cz/viewtopic.php?id=5845

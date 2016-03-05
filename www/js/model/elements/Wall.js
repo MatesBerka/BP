@@ -9,7 +9,7 @@ goog.require('app.model.RectangleShapeComponent');
  * @constructor
  * @extends {app.model.RectangleShapeComponent}
  */
-app.model.Wall = function(coordX, coordY) {
+app.model.Wall = function (coordX, coordY) {
     app.model.Wall.base(this, 'constructor', coordX, coordY); // call parent constructor
 
     this.type = 'WALL';
@@ -25,10 +25,21 @@ goog.inherits(app.model.Wall, app.model.RectangleShapeComponent);
  * @param {!number} height
  * @override
  */
-app.model.Wall.prototype.copyArguments = function(rotation, width, height) {
+app.model.Wall.prototype.copyArguments = function (rotation, width, height) {
     this.appliedRotation = rotation;
     this.width = width;
     this.height = height;
+    this.transformPoints();
+};
+
+/**
+ * @param {!Object} componentModel
+ * @public
+ */
+app.model.Wall.prototype.importComponentData = function (componentModel) {
+    this.appliedRotation = componentModel.appliedRotation;
+    this.width = componentModel.width;
+    this.height = componentModel.height;
     this.transformPoints();
 };
 

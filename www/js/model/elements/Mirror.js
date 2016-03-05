@@ -52,6 +52,15 @@ app.model.Mirror.prototype.copyArguments = function(height) {
 };
 
 /**
+ * @param {!Object} componentModel
+ * @public
+ */
+app.model.Mirror.prototype.importComponentData = function (componentModel) {
+    this.height = componentModel.height;
+    this.transformPoints();
+};
+
+/**
  * @override
  */
 app.model.Mirror.prototype.copy = function () {

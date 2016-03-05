@@ -200,3 +200,13 @@ app.model.View.prototype.reverseScale = function (point) {
 app.model.View.prototype.getZoom = function () {
     return this._appliedScale;
 };
+
+/**
+ *
+ * @param {!Object} viewModel
+ */
+app.model.View.prototype.importView = function (viewModel) {
+    this._height = viewModel._height;
+    this._width = viewModel._width;
+    this._appliedScale = viewModel._appliedScale;
+};

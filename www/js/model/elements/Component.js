@@ -108,6 +108,11 @@ app.model.Component.prototype.generateShapePoints = goog.abstractMethod;
 app.model.Component.prototype.copyArguments = goog.abstractMethod;
 
 /**
+ * @protected
+ */
+app.model.Component.prototype.importComponentData = goog.abstractMethod;
+
+/**
  * @return {app.model.Component}
  * @public
  */
@@ -143,8 +148,6 @@ app.model.Component.prototype.transformPoints = function () {
 };
 
 /**
- * TODO should be static
- * Source: http://forum.matematika.cz/viewtopic.php?id=5845
  * @param {!Array<number>} vec
  * @return {!Array<number>} vec
  * @protected
@@ -158,7 +161,6 @@ app.model.Component.prototype.normalize2DVector = function (vec) {
 };
 
 /**
- * TODO should be static
  * @param {!Array<number>} point
  * @param {!number} radians
  * @return {!Array<number>} result
@@ -231,7 +233,6 @@ app.model.Component.prototype.applyTranslation = function (moveX, moveY) {
  * @public
  */
 app.model.Component.prototype.updateTranslationX = function (x) {
-    console.dir(this);
     this.appliedTranslationX = Math.round(x * app.PIXEL_ON_CM);
     this.transformPoints();
 };

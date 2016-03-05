@@ -27,6 +27,16 @@ app.MenuController = function (sceneController) {
      * @private
      */
     this._helpDialog = new goog.ui.Dialog('wide-dialog');
+    /**
+     * @type {goog.ui.Dialog}
+     * @private
+     */
+    this._dataOutputDialog = new goog.ui.Dialog();
+    /**
+     * @type {goog.ui.Dialog}
+     * @private
+     */
+    this._dataInputDialog = new goog.ui.Dialog();
 
     this._addListeners();
 };
@@ -37,11 +47,13 @@ app.MenuController = function (sceneController) {
  * @private
  */
 app.MenuController.prototype._toggleSubMenu = function (e, child) {
-    if(child.className.indexOf('nested-items') !== -1) {
+    if (child.className.indexOf('nested-items') !== -1) {
         var display = 'block';
-        if(child.style.display === 'block') { display = 'none'; }
+        if (child.style.display === 'block') {
+            display = 'none';
+        }
 
-        if(child.parentNode.className.indexOf('top-item') !== -1) {
+        if (child.parentNode.className.indexOf('top-item') !== -1) {
             var li = goog.dom.getElementsByTagNameAndClass('li', 'top-item'), i;
             for (i = 0; i < li.length; i++) {
                 this._hideSubMenus(li[i]);
@@ -56,9 +68,9 @@ app.MenuController.prototype._toggleSubMenu = function (e, child) {
  * @param {Element} element
  * @private
  */
-app.MenuController.prototype._hideSubMenus = function(element) {
+app.MenuController.prototype._hideSubMenus = function (element) {
     var subMenus = goog.dom.getElementsByClass('nested-items', element);
-    for(var i = 0; i < subMenus.length; i++) {
+    for (var i = 0; i < subMenus.length; i++) {
         subMenus[i].style.display = 'none';
     }
 };
@@ -98,7 +110,7 @@ app.MenuController.prototype._addListeners = function () {
             },
             false, this);
 
-        if(goog.labs.userAgent.device.isDesktop()) {
+        if (goog.labs.userAgent.device.isDesktop()) {
             goog.events.listen(li[i], goog.events.EventType.MOUSEENTER,
                 /**
                  * @this {!app.MenuController}
@@ -106,8 +118,8 @@ app.MenuController.prototype._addListeners = function () {
                  */
                 function (e) {
                     var child = goog.dom.getLastElementChild(/**@type{Node}*/(e.currentTarget));
-                    if(child.className.indexOf('nested-items') !== -1) {
-                        if(child.parentNode.className.indexOf('top-item') !== -1) {
+                    if (child.className.indexOf('nested-items') !== -1) {
+                        if (child.parentNode.className.indexOf('top-item') !== -1) {
                             var li = goog.dom.getElementsByTagNameAndClass('li', 'top-item'), i;
                             for (i = 0; i < li.length; i++) {
                                 this._hideSubMenus(li[i]);
@@ -127,7 +139,7 @@ app.MenuController.prototype._addListeners = function () {
                  */
                 function (e) {
                     var child = goog.dom.getLastElementChild(/**@type{Node}*/(e.currentTarget));
-                    if(child.className.indexOf('nested-items') !== -1) {
+                    if (child.className.indexOf('nested-items') !== -1) {
                         child.style.display = 'none';
                     }
                     e.stopPropagation();
@@ -181,6 +193,7 @@ app.MenuController.prototype._addListeners = function () {
             var count = this._SCENECONTROLLER.getReflectionsCount();
             this._refDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['ref-count'],
                 goog.html.SafeHtml.create('input', {
+                    'tabindex': 1,
                     'type': 'text', 'id': 'reflection-count-input',
                     'name': 'reflection-count-input', 'value': count
                 })]
@@ -198,8 +211,6 @@ app.MenuController.prototype._addListeners = function () {
         function (e) {
             this._hideSubMenus(goog.dom.getElement('top-items'));
             e.stopPropagation();
-
-            // TODO save into cookies?
             if (e.target.id == "lang-en-us") {
                 app.LOCALE = 'en_US';
             } else if (e.target.id == "lang-cs-cz") {
@@ -209,15 +220,77 @@ app.MenuController.prototype._addListeners = function () {
         },
         true, this);
 
-    // simulation/save simulation
-    goog.events.listen(goog.dom.getElement('save-menu-msg'), goog.events.EventType.CLICK,
+    // import simulation dialog
+    goog.events.listen(this._dataInputDialog, goog.ui.Dialog.EventType.SELECT,
+        /**
+         * @this {!app.MenuController}
+         * @param {!goog.ui.Dialog.Event} e
+         */
+        function (e) {
+            if (e.key == 'ok') {
+                var textArea = goog.dom.getElement('import-simulation-data');
+                try {
+                    this._SCENECONTROLLER.importData(JSON.parse(textArea.value));
+                } catch (err) {
+                    e.preventDefault();
+                    textArea.style.background = '#FF0000';
+                    goog.dom.removeNode(goog.dom.getElement('import-popup-error'));
+                    goog.dom.appendChild(goog.dom.getElement('import-popup'),
+                        goog.dom.createDom('div', {'id': 'import-popup-error'}, ('[' + err.name + '] ' + err.message))
+                    );
+                    setTimeout(function(textArea) {
+                        textArea.style.background = '#FFFFFF';
+                    }, 500, textArea);
+                }
+            }
+        },
+        false, this);
+
+    // simulation/import simulation
+    goog.events.listen(goog.dom.getElement('import-menu-msg'), goog.events.EventType.CLICK,
         /**
          * @this {!app.MenuController}
          * @param {!goog.events.BrowserEvent} e
          */
         function (e) {
             this._hideSubMenus(goog.dom.getElement('top-items'));
-            //this._SCENECONTROLLER.exportData();
+            var data = this._SCENECONTROLLER.exportData();
+            this._dataInputDialog.setTitle(app.translation['import-menu-msg']);
+            var buttonSet = new goog.ui.Dialog.ButtonSet();
+            buttonSet.addButton({key: 'ok', caption: 'Ok'}, true);
+            buttonSet.addButton({key: 'cancel', caption: app.translation['cancel-btn']}, false, true);
+            this._dataInputDialog.setButtonSet(buttonSet);
+            this._dataInputDialog.setSafeHtmlContent(goog.html.SafeHtml.create('div', {'id': 'import-popup'},
+                goog.html.SafeHtml.create('textarea', {
+                    'tabindex': 1,
+                    'id': 'import-simulation-data',
+                    'name': 'import-simulation-data'
+                })
+            ));
+            goog.dom.removeNode(goog.dom.getElement('import-popup-error'));
+            this._dataInputDialog.setVisible(true);
+            e.stopPropagation();
+        },
+        false, this);
+
+    // simulation/export simulation
+    goog.events.listen(goog.dom.getElement('export-menu-msg'), goog.events.EventType.CLICK,
+        /**
+         * @this {!app.MenuController}
+         * @param {!goog.events.BrowserEvent} e
+         */
+        function (e) {
+            this._hideSubMenus(goog.dom.getElement('top-items'));
+            this._dataOutputDialog.setTitle(app.translation['export-menu-msg']);
+            var buttonSet = new goog.ui.Dialog.ButtonSet();
+            buttonSet.addButton({key: 'ok', caption: 'Ok'}, true, true);
+            this._dataOutputDialog.setButtonSet(buttonSet);
+            this._dataOutputDialog.setSafeHtmlContent(goog.html.SafeHtml.create('textarea', {
+                    'tabindex': 1,
+                    'id': 'export-simulation-data',
+                    'name': 'export-simulation-data'
+                }, this._SCENECONTROLLER.exportData()));
+            this._dataOutputDialog.setVisible(true);
             e.stopPropagation();
         },
         false, this);
@@ -299,11 +372,30 @@ app.MenuController.prototype._addListeners = function () {
             helpButton.addButton({key: 'ok', caption: 'Ok'}, true);
             this._helpDialog.setButtonSet(helpButton);
             // TODO ADD TEXT
-            this._helpDialog.setTextContent("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc volutpat tincidunt lectus, ut sagittis enim egestas ut. Donec sed luctus odio. Mauris finibus laoreet magna, vitae rhoncus tortor eleifend aliquet. Curabitur mattis pretium mauris. Etiam finibus nunc laoreet magna scelerisque dictum. Integer id viverra lacus. Sed posuere odio tortor, eget scelerisque quam viverra in. Morbi et turpis laoreet, pharetra libero porttitor, convallis nunc. " +
-                "Aliquam erat volutpat. Nam quis varius lectus, vitae tincidunt nisi. Vivamus consectetur consectetur nunc in consectetur. Suspendisse vehicula malesuada volutpat. Donec imperdiet sodales sagittis. Aliquam congue risus sed consequat tincidunt. Quisque ullamcorper ut libero sed rutrum. Sed eu malesuada risus. Nunc eget enim congue, vulputate arcu non, luctus tortor. Morbi porttitor turpis elit, elementum fermentum arcu ullamcorper nec. Nam luctus tincidunt quam ac iaculis. Nulla facilisi. Ut in elit tellus. " +
-                "Morbi at maximus nisl, sit amet laoreet turpis. Proin egestas ullamcorper arcu ac suscipit. Morbi sapien felis, vehicula ut metus a, vehicula luctus dolor. Nullam mollis egestas justo et suscipit. Aliquam erat volutpat. Maecenas vel ex nulla. Vestibulum imperdiet hendrerit ipsum sit amet vulputate. Cras eu turpis vel nisi sodales tempor. Morbi eu neque congue, gravida diam in, auctor lorem. Vivamus ornare, felis ac porta dapibus, lacus enim blandit ex, posuere tempus libero nisl at nisl. Suspendisse potenti. Mauris ornare consectetur ullamcorper. Nam vulputate nunc sed elit luctus, eu accumsan nibh lacinia. " +
-                "Nunc id neque non turpis hendrerit dictum id eu nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut congue mattis leo, quis laoreet dolor. Mauris justo felis, maximus et neque ut, elementum malesuada metus. Nunc dapibus efficitur dolor et aliquet. Sed lacus purus, semper quis libero ac, porta lacinia tellus. Aenean enim enim, lacinia id dapibus in, condimentum vel metus. " +
-                "Nunc at auctor justo, quis lobortis massa. Sed a urna id sapien ornare consectetur. Integer porta nisl nulla, vel vestibulum lectus ornare vel. Pellentesque malesuada aliquam porttitor. In fermentum mi sit amet velit facilisis, at fringilla lectus ultricies. Donec porttitor, nunc et bibendum cursus, mi tortor cursus magna, efficitur varius dui tellus non nibh. Suspendisse risus justo, eleifend at fringilla in, volutpat at sem. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque vehicula id orci vitae congue. Cras fermentum ullamcorper dolor a bibendum. Praesent at sem pretium, mollis tellus ut, venenatis quam. Ut a facilisis orci, non volutpat est. Praesent metus arcu, iaculis non pellentesque vitae,");
+            this._helpDialog.setSafeHtmlContent(goog.html.SafeHtml.create('div', {'id': 'help-popup-wrapper'},
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc volutpat tincidunt lectus, ut sagittis enim" +
+                " egestas ut. Donec sed luctus odio. Mauris finibus laoreet magna, vitae rhoncus tortor eleifend aliquet." +
+                " Curabitur mattis pretium mauris. Etiam finibus nunc laoreet magna scelerisque dictum. Integer id viverra" +
+                " lacus. Sed posuere odio tortor, eget scelerisque quam viverra in. Morbi et turpis laoreet, pharetra libero" +
+                " porttitor, convallis nunc. Aliquam erat volutpat. Nam quis varius lectus, vitae tincidunt nisi. Vivamus" +
+                " consectetur consectetur nunc in consectetur. Suspendisse vehicula malesuada volutpat. Donec imperdiet" +
+                " sodales sagittis. Aliquam congue risus sed consequat tincidunt. Quisque ullamcorper ut libero sed rutrum." +
+                " Sed eu malesuada risus. Nunc eget enim congue, vulputate arcu non, luctus tortor. Morbi porttitor turpis" +
+                " Sed eu malesuada risus. Nunc eget enim congue, vulputate arcu non, luctus tortor. Morbi porttitor turpis" +
+                " Sed eu malesuada risus. Nunc eget enim congue, vulputate arcu non, luctus tortor. Morbi porttitor turpis" +
+                " Sed eu malesuada risus. Nunc eget enim congue, vulputate arcu non, luctus tortor. Morbi porttitor turpis" +
+                " Sed eu malesuada risus. Nunc eget enim congue, vulputate arcu non, luctus tortor. Morbi porttitor turpis" +
+                " Sed eu malesuada risus. Nunc eget enim congue, vulputate arcu non, luctus tortor. Morbi porttitor turpis" +
+                " Sed eu malesuada risus. Nunc eget enim congue, vulputate arcu non, luctus tortor. Morbi porttitor turpis" +
+                " Sed eu malesuada risus. Nunc eget enim congue, vulputate arcu non, luctus tortor. Morbi porttitor turpis" +
+                " elit, elementum fermentum arcu ullamcorper nec. Nam luctus tincidunt quam ac iaculis. Nulla facilisi. Ut" +
+                " in elit tellus. Morbi at maximus nisl, sit amet laoreet turpis. Proin egestas ullamcorper arcu ac suscipit." +
+                " Morbi sapien felis, vehicula ut metus a, vehicula luctus dolor. Nullam mollis egestas justo et suscipit." +
+                " Aliquam erat volutpat. Maecenas vel ex nulla. Vestibulum imperdiet hendrerit ipsum sit amet vulputate." +
+                " Cras eu turpis vel nisi sodales tempor. Morbi eu neque congue, gravida diam in, auctor lorem. Vivamus" +
+                " ornare, felis ac porta dapibus, lacus enim blandit ex, posuere tempus libero nisl at nisl. Suspendisse" +
+                " potenti. Mauris ornare consectetur ullamcorper. Nam vulputate nunc sed elit luctus, eu accumsan lacinia."
+            ));
             this._helpDialog.setVisible(true);
         }, true, this);
 };

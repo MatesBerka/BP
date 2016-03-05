@@ -164,3 +164,11 @@ app.model.Table.prototype.removeView = function (viewID) {
     this._views.splice(viewID, 1);
     this._activeViewsCount--;
 };
+
+/**
+ * @param {!Object} tableModel
+ * @public
+ */
+app.model.Table.prototype.importTable = function(tableModel) {
+    this._highestLightID = tableModel._highestLightID;
+};

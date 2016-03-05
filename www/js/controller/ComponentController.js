@@ -75,7 +75,7 @@ app.ComponentController.prototype.showComponentControlPanel = function (sceneCon
             goog.dom.createDom('span', {'class': 'com-left-side'}, 'X: '),
             goog.dom.createDom('span', {'class': 'com-right-side'},
                 goog.dom.createDom('input', {
-                    'type': 'text', 'name': 'com-pos-x', 'class': 'input-min', 'id': 'com-pos-x',
+                    'type': 'text', 'name': 'com-pos-x', 'class': 'input-min', 'id': 'com-pos-x', 'tabindex': 2,
                     'value': this.model.getPosX()
                 })
             )
@@ -86,7 +86,7 @@ app.ComponentController.prototype.showComponentControlPanel = function (sceneCon
             goog.dom.createDom('span', {'class': 'com-left-side'}, 'Y: '),
             goog.dom.createDom('span', {'class': 'com-right-side'},
                 goog.dom.createDom('input', {
-                    'type': 'text', 'name': 'com-pos-y', 'class': 'input-min', 'id': 'com-pos-y',
+                    'type': 'text', 'name': 'com-pos-y', 'class': 'input-min', 'id': 'com-pos-y', 'tabindex': 3,
                     'value': this.model.getPosY()
                 })
             )
@@ -102,7 +102,7 @@ app.ComponentController.prototype.showComponentControlPanel = function (sceneCon
             goog.dom.createDom('span', {'class': 'com-left-side'}, 'XY: '),
             goog.dom.createDom('span', {'class': 'com-right-side'},
                 goog.dom.createDom('input', {
-                    'type': 'text', 'name': 'com-rotate', 'class': 'input-min', 'id': 'com-rotate',
+                    'type': 'text', 'name': 'com-rotate', 'class': 'input-min', 'id': 'com-rotate', 'tabindex': 4,
                     'value': this.model.getRotation()
                 })
             )

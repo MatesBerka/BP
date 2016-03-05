@@ -261,116 +261,8 @@ app.SceneController.prototype.addTableToGUI = function (tableID, tableName) {
         }, '✎')
     ));
 
-    views.appendChild(goog.dom.createDom('div', {'id': 'table-' + tableID + '-views'}, ''));
+    views.appendChild(goog.dom.createDom('div', {'id': 'table-' + tableID + '-views', 'class': 'table-buttons'}, ''));
     this._CANVAS_WRAPPER.appendChild(table);
-};
-
-/**
- * @param {!number} viewID
- * @param {!string} viewName
- * @private
- */
-app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
-    var canvasName = 'canvas-' + this._activeTableID + '-' + viewID,
-        viewWrapperName = 'view-' + this._activeTableID + '-' + viewID,
-        buttonID = 'button-view-' + this._activeTableID + '-' + viewID;
-
-    var tableElement = goog.dom.getElement('table-' + this._activeTableID);
-    var view = goog.dom.createDom('div', {'id': viewWrapperName, 'class': 'view-wrapper active-view'}),
-        canvas = goog.dom.createDom('canvas', {'id': canvasName}),
-        views = goog.dom.getElement('table-' + this._activeTableID + '-views'),
-        coordinates = goog.dom.createDom('div', {'class': 'mouse-coordinates'}, 'x: 0 cm, y: 0 cm, zoom: 100%'),
-        zoomIn = goog.dom.createDom('div', {'class': 'zoom-in'}, '+'),
-        zoomOut = goog.dom.createDom('div', {'class': 'zoom-out'}, '-'),
-        zoom = goog.dom.createDom('div', {'class': 'zoom'}, zoomIn, zoomOut),
-        moveTop = goog.dom.createDom('div', {'class': 'wide-top-move-control'}, String.fromCharCode(8673)),
-        moveRight = goog.dom.createDom('div', {'class': 'right-side-move-control'}, String.fromCharCode(8674)),
-        moveLeft = goog.dom.createDom('div', {'class': 'left-side-move-control'}, String.fromCharCode(8672)),
-        moveBottom = goog.dom.createDom('div', {'class': 'wide-bottom-move-control'}, String.fromCharCode(8675)),
-        move = goog.dom.createDom('div', {'class': 'move-control'}, moveTop, moveRight, moveLeft, moveBottom),
-        button = goog.dom.createDom('div', {'class': 'button-wrapper'},
-            goog.dom.createDom('div', {
-                'class': 'button-view',
-                'id': buttonID
-            }, viewName),
-            goog.dom.createDom('div', {
-                'class': 'edit-button'
-            }, '✎')
-        );
-
-    views.appendChild(button);
-
-    view.appendChild(canvas);
-    view.appendChild(coordinates);
-    view.appendChild(zoom);
-    view.appendChild(move);
-    tableElement.appendChild(view);
-
-    this.showView(this._activeTableID + '-' + viewID, button);
-    this._VIEW_CONTROLLER.addListeners(view);
-    this.updateSizes();
-
-    goog.events.listen(view, goog.events.EventType.MOUSEENTER,
-        /**
-         * @this {!app.SceneController}
-         * @param {!goog.events.BrowserEvent} e
-         */
-        function (e) {
-            var pieces = e.currentTarget.id.split('-');
-            this.setSelectedView(parseInt(pieces[1], 10), parseInt(pieces[2], 10));
-        }, true, this);
-
-    goog.events.listen(view, app.MOUSE_DOWN_EVENT,
-        /**
-         * @this {!app.SceneController}
-         * @param {!goog.events.BrowserEvent} e
-         */
-        function (e) {
-            var coords = [];
-            coords[0] = (e.clientX - this._CANVAS_WRAPPER.offsetLeft);
-            coords[1] = (e.clientY - e.currentTarget.offsetTop - this._CANVAS_WRAPPER.offsetTop);
-            var pieces = e.currentTarget.id.split('-');
-            this.setSelectedView(parseInt(pieces[1], 10), parseInt(pieces[2], 10));
-            if (this._isAddNewComponent) { // pridani nove
-                this.addComponent(coords);
-            } else if (this.isIntersection(coords)) { // vyber komponenty
-                this._componentMoveActive = true;
-                this._mouseCursorPoint = coords;
-                goog.events.listen(view, app.MOUSE_MOVE_EVENT, this.componentMoved, true, this);
-            } else { // muze byt posun platna
-                this._canvasMoveActive = true;
-                this._VIEW_CONTROLLER.addCanvasMove(view, coords);
-            }
-        }, true, this);
-
-    // mouse up events
-    goog.events.listen(view, app.MOUSE_UP_EVENT,
-        /**
-         * @this {!app.SceneController}
-         * @param {!goog.events.BrowserEvent} e
-         */
-        function (e) {
-            if (this._isAddNewComponent) {
-                this._isAddNewComponent = false;
-                this.hideCross();
-            } else if (this._componentMoveActive && this._componentMoved) {
-                this._componentMoveActive = false;
-                this._componentMoved = false;
-                this._componentController.removeSelected();
-                this.redrawAll();
-                goog.events.unlisten(view, app.MOUSE_MOVE_EVENT, this.componentMoved, true, this);
-            } else if (this._componentMoveActive && !this._componentMoved) {
-                this._componentMoveActive = false;
-                this._componentController.removeSelected();
-                this._componentController.showComponentControlPanel(this);
-                goog.events.unlisten(view, app.MOUSE_MOVE_EVENT, this.componentMoved, true, this);
-            } else if (this._canvasMoveActive) {
-                this._canvasMoveActive = false;
-                this._VIEW_CONTROLLER.removeCanvasMove(view);
-            }
-        }, true, this);
-
-    return canvas;
 };
 
 /**
@@ -457,6 +349,113 @@ app.SceneController.prototype.createView = function () {
 };
 
 /**
+ * @param {!number} viewID
+ * @param {!string} viewName
+ * @private
+ */
+app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
+    var canvasName = 'canvas-' + this._activeTableID + '-' + viewID,
+        viewWrapperName = 'view-' + this._activeTableID + '-' + viewID,
+        buttonID = 'button-view-' + this._activeTableID + '-' + viewID;
+
+    var tableElement = goog.dom.getElement('table-' + this._activeTableID);
+    var view = goog.dom.createDom('div', {'id': viewWrapperName, 'class': 'view-wrapper active-view'}),
+        canvas = goog.dom.createDom('canvas', {'id': canvasName}),
+        views = goog.dom.getElement('table-' + this._activeTableID + '-views'),
+        coordinates = goog.dom.createDom('div', {'class': 'mouse-coordinates'}, 'x: 0 cm, y: 0 cm, zoom: 100%'),
+        zoomIn = goog.dom.createDom('div', {'class': 'zoom-in'}, '+'),
+        zoomOut = goog.dom.createDom('div', {'class': 'zoom-out'}, '-'),
+        zoom = goog.dom.createDom('div', {'class': 'zoom'}, zoomIn, zoomOut),
+        moveTop = goog.dom.createDom('div', {'class': 'wide-top-move-control'}, String.fromCharCode(8673)),
+        moveRight = goog.dom.createDom('div', {'class': 'right-side-move-control'}, String.fromCharCode(8674)),
+        moveLeft = goog.dom.createDom('div', {'class': 'left-side-move-control'}, String.fromCharCode(8672)),
+        moveBottom = goog.dom.createDom('div', {'class': 'wide-bottom-move-control'}, String.fromCharCode(8675)),
+        move = goog.dom.createDom('div', {'class': 'move-control'}, moveTop, moveRight, moveLeft, moveBottom),
+        button = goog.dom.createDom('div', {'class': 'button-wrapper'},
+            goog.dom.createDom('div', {
+                'class': 'button-view',
+                'id': buttonID
+            }, viewName),
+            goog.dom.createDom('div', {
+                'class': 'edit-button'
+            }, '✎')
+        );
+
+    views.appendChild(button);
+
+    view.appendChild(canvas);
+    view.appendChild(coordinates);
+    view.appendChild(zoom);
+    view.appendChild(move);
+    tableElement.appendChild(view);
+
+    this.showView(this._activeTableID + '-' + viewID, button);
+    this._VIEW_CONTROLLER.addListeners(view);
+    this.updateSizes();
+
+    goog.events.listen(view, goog.events.EventType.MOUSEENTER,
+        /**
+         * @this {!app.SceneController}
+         * @param {!goog.events.BrowserEvent} e
+         */
+        function (e) {
+            var pieces = e.currentTarget.id.split('-');
+            this.setSelectedView(parseInt(pieces[1], 10), parseInt(pieces[2], 10));
+        }, true, this);
+
+    goog.events.listen(view, app.MOUSE_DOWN_EVENT,
+        /**
+         * @this {!app.SceneController}
+         * @param {!goog.events.BrowserEvent} e
+         */
+        function (e) {
+            var coords = [];
+            coords[0] = (e.clientX - this._CANVAS_WRAPPER.offsetLeft);
+            coords[1] = (e.clientY - e.currentTarget.offsetTop - this._CANVAS_WRAPPER.offsetTop);
+            var pieces = e.currentTarget.id.split('-');
+            this.setSelectedView(parseInt(pieces[1], 10), parseInt(pieces[2], 10));
+            if (this._isAddNewComponent) { // pridani nove
+                this.addComponent(coords);
+            } else if (this.isIntersection(coords)) { // vyber komponenty
+                this._componentMoveActive = true;
+                this._mouseCursorPoint = coords;
+                goog.events.listen(view, app.MOUSE_MOVE_EVENT, this.componentMoved, true, this);
+            } else { // muze byt posun platna
+                this._canvasMoveActive = true;
+                this._VIEW_CONTROLLER.addCanvasMove(view, coords);
+            }
+        }, true, this);
+
+    // mouse up events
+    goog.events.listen(view, app.MOUSE_UP_EVENT,
+        /**
+         * @this {!app.SceneController}
+         */
+        function () {
+            if (this._isAddNewComponent) {
+                this._isAddNewComponent = false;
+                this.hideCross();
+            } else if (this._componentMoveActive && this._componentMoved) {
+                this._componentMoveActive = false;
+                this._componentMoved = false;
+                this._componentController.removeSelected();
+                this.redrawAll();
+                goog.events.unlisten(view, app.MOUSE_MOVE_EVENT, this.componentMoved, true, this);
+            } else if (this._componentMoveActive && !this._componentMoved) {
+                this._componentMoveActive = false;
+                this._componentController.removeSelected();
+                this._componentController.showComponentControlPanel(this);
+                goog.events.unlisten(view, app.MOUSE_MOVE_EVENT, this.componentMoved, true, this);
+            } else if (this._canvasMoveActive) {
+                this._canvasMoveActive = false;
+                this._VIEW_CONTROLLER.removeCanvasMove(view);
+            }
+        }, true, this);
+
+    return canvas;
+};
+
+/**
  * @param {!string} elementID
  * @private
  */
@@ -506,34 +505,6 @@ app.SceneController.prototype.renameView = function () {
 
     this._tables[this._activeTableID].updateViewName(viewID, input.value);
     viewButton.innerText = input.value;
-};
-
-/**
- * @param {!app.model.Component} componentModel
- * @param {!number} componentID
- * @private
- */
-app.SceneController.prototype.setSelectedComponent = function (componentModel, componentID) {
-    switch (componentModel.getType()) {
-        case 'MIRROR':
-            this._componentController = new app.MirrorController(/**@type{!app.model.Mirror}*/(componentModel), componentID);
-            break;
-        case 'LENS':
-            this._componentController = new app.LensController(/**@type{!app.model.Lens}*/(componentModel), componentID);
-            break;
-        case 'HOLO-PLATE':
-            this._componentController = new app.HolographicPlateController(/**@type{!app.model.HolographicPlate}*/(componentModel), componentID);
-            break;
-        case 'WALL':
-            this._componentController = new app.WallController(/**@type{!app.model.Wall}*/(componentModel), componentID);
-            break;
-        case 'SPLITTER':
-            this._componentController = new app.SplitterController(/**@type{!app.model.Splitter}*/(componentModel), componentID);
-            break;
-        case 'LIGHT':
-            this._componentController = new app.LightController(/**@type{!app.model.Light}*/(componentModel), componentID);
-            break;
-    }
 };
 
 /**
@@ -741,7 +712,7 @@ app.SceneController.prototype._addListeners = function () {
         /** @this {!app.SceneController} */
         function () {
             var componentID = this._componentController.removeActiveComponent();
-            this._tables[this._activeTableID].removeComponent(componentID); // TODO proverit jestli opravdu funguje
+            this._tables[this._activeTableID].removeComponent(componentID);
             this.hideComponentControlPanel();
             this.redrawAll();
         }, false, this);
@@ -822,45 +793,65 @@ app.SceneController.prototype.redrawAll = function () {
 };
 
 /**
+ * @param {!app.model.Component} componentModel
+ * @param {!number} componentID
+ * @private
+ */
+app.SceneController.prototype.setSelectedComponent = function (componentModel, componentID) {
+    switch (componentModel.getType()) {
+        case 'MIRROR':
+            this._componentController = new app.MirrorController(/**@type{!app.model.Mirror}*/(componentModel), componentID);
+            break;
+        case 'LENS':
+            this._componentController = new app.LensController(/**@type{!app.model.Lens}*/(componentModel), componentID);
+            break;
+        case 'HOLO-PLATE':
+            this._componentController = new app.HolographicPlateController(/**@type{!app.model.HolographicPlate}*/(componentModel), componentID);
+            break;
+        case 'WALL':
+            this._componentController = new app.WallController(/**@type{!app.model.Wall}*/(componentModel), componentID);
+            break;
+        case 'SPLITTER':
+            this._componentController = new app.SplitterController(/**@type{!app.model.Splitter}*/(componentModel), componentID);
+            break;
+        case 'LIGHT':
+            this._componentController = new app.LightController(/**@type{!app.model.Light}*/(componentModel), componentID);
+            break;
+    }
+};
+
+app.SceneController.prototype.createComponentModel = function (type, coordX, coordY) {
+    switch (type) {
+        case 'MIRROR':
+            return new app.model.Mirror(coordX, coordY);
+            break;
+        case 'LENS':
+            return new app.model.Lens(coordX, coordY);
+            break;
+        case 'HOLO-PLATE':
+            return new app.model.HolographicPlate(coordX, coordY);
+            break;
+        case 'WALL':
+            return new app.model.Wall(coordX, coordY);
+            break;
+        case 'SPLITTER':
+            return new app.model.Splitter(coordX, coordY);
+            break;
+        case 'LIGHT':
+            return new app.model.Light(coordX, coordY);
+            break;
+    }
+};
+
+/**
  * @param {!Array<number>} selectedPoint
  * @private
  */
 app.SceneController.prototype.addComponent = function (selectedPoint) {
-    var model = null, modelID, coords = this._VIEW_CONTROLLER.reverseTransformPoint(selectedPoint);
-
-    switch (this._newComponentType) {
-        case 'MIRROR':
-            model = new app.model.Mirror(coords[0], coords[1]);
-            modelID = this._tables[this._activeTableID].addComponent(model);
-            this._componentController = new app.MirrorController(model, modelID);
-            break;
-        case 'LENS':
-            model = new app.model.Lens(coords[0], coords[1]);
-            modelID = this._tables[this._activeTableID].addComponent(model);
-            this._componentController = new app.LensController(model, modelID);
-            break;
-        case 'HOLO-PLATE':
-            model = new app.model.HolographicPlate(coords[0], coords[1]);
-            modelID = this._tables[this._activeTableID].addComponent(model);
-            this._componentController = new app.HolographicPlateController(model, modelID);
-            break;
-        case 'WALL':
-            model = new app.model.Wall(coords[0], coords[1]);
-            modelID = this._tables[this._activeTableID].addComponent(model);
-            this._componentController = new app.WallController(model, modelID);
-            break;
-        case 'SPLITTER':
-            model = new app.model.Splitter(coords[0], coords[1]);
-            modelID = this._tables[this._activeTableID].addComponent(model);
-            this._componentController = new app.SplitterController(model, modelID);
-            break;
-        case 'LIGHT':
-            model = new app.model.Light(coords[0], coords[1]);
-            modelID = this._tables[this._activeTableID].addComponent(model);
-            this._componentController = new app.LightController(model, modelID);
-            break;
-    }
-
+    var model, modelID, coords = this._VIEW_CONTROLLER.reverseTransformPoint(selectedPoint);
+    model = this.createComponentModel(this._newComponentType, coords[0], coords[1]);
+    modelID = this._tables[this._activeTableID].addComponent(model);
+    this.setSelectedComponent(model, modelID);
     this._componentController.showComponentControlPanel(this);
     this.redrawAll();
 };
@@ -882,4 +873,65 @@ app.SceneController.prototype.getInactiveTablesList = function () {
     }
 
     return list;
+};
+
+/**
+ * @return {!string}
+ * @public
+ */
+app.SceneController.prototype.exportData = function () {
+    return JSON.stringify(this._tables);
+};
+
+app.SceneController.prototype._deleteCurrentSimulation = function () {
+    var tables, tableButtons, viewButtons, i;
+    this._tables = [];
+
+    tables = goog.dom.getElementsByClass('table-wrapper', this._CANVAS_WRAPPER);
+    for(i = 0; i < tables.length; i++) {
+        goog.dom.removeNode(tables[i]);
+    }
+    tableButtons = goog.dom.getElementsByClass('button-wrapper', goog.dom.getElement('tables'));
+    for(i = 0; i < tableButtons.length; i++) {
+        goog.dom.removeNode(tableButtons[i]);
+    }
+    viewButtons = goog.dom.getElementsByClass('table-buttons', goog.dom.getElement('views'));
+    for(i = 0; i < viewButtons.length; i++) {
+        goog.dom.removeNode(viewButtons[i]);
+    }
+};
+
+/**
+ * @param {!Object} dataModel
+ * @public
+ */
+app.SceneController.prototype.importData = function (dataModel) {
+    this._tables = [];
+    this._deleteCurrentSimulation();
+
+    for (var i = 0; i < dataModel.length; i++) {
+        var table = new app.model.Table(dataModel[i]._tableName);
+        table.importTable(dataModel[i]);
+        this._tables.push(table);
+        this._activeTableID = i;
+        this.addTableToGUI(i, dataModel[i]._tableName);
+        this.setActiveTable(i, goog.dom.getElement('button-table-' + i));
+
+        for (var j = 0; j < dataModel[i]._views.length; j++) {
+            var view = new app.model.View(dataModel[i]._views[j]._viewName, dataModel[i]._views[j]._appliedTranslationX,
+                dataModel[i]._views[j]._appliedTranslationY);
+
+            view.importView(dataModel[i]._views[j]);
+            table.addView(view);
+            view.setCanvas(this.addViewToGUI(j, dataModel[i]._views[j]._viewName));
+        }
+
+        for (var k = 0; k < dataModel[i]._components.length; k++) {
+            var component = this.createComponentModel(dataModel[i]._components[k].type,
+            dataModel[i]._components[k].appliedTranslationX, dataModel[i]._components[k].appliedTranslationY);
+            component.importComponentData(dataModel[i]._components[k]);
+            table.addComponent(component);
+        }
+    }
+    this.redrawAll();
 };

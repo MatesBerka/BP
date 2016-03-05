@@ -361,14 +361,26 @@ app.model.HolographicPlate.prototype.draw = function (ctx, callback) {
  * @param {!number} rotation
  * @param {!number} height
  * @param {!number} groupSize
- * @param {!number} angleErrorTolerance
+ * @param {!number} tolerance
  * @override
  */
-app.model.HolographicPlate.prototype.copyArguments = function (rotation, height, groupSize, angleErrorTolerance) {
+app.model.HolographicPlate.prototype.copyArguments = function (rotation, height, groupSize, tolerance) {
     this.appliedRotation = rotation;
     this.height = height;
     this._groupSize = groupSize;
-    this._tolerance = angleErrorTolerance;
+    this._tolerance = tolerance;
+    this.transformPoints();
+};
+
+/**
+ * @param {!Object} componentModel
+ * @public
+ */
+app.model.HolographicPlate.prototype.importComponentData = function (componentModel) {
+    this.appliedRotation = componentModel.appliedRotation;
+    this.height = componentModel.height;
+    this._groupSize = componentModel._groupSize;
+    this._tolerance = componentModel._tolerance;
     this.transformPoints();
 };
 

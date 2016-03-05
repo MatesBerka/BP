@@ -301,6 +301,19 @@ app.model.Light.prototype.copyArguments = function (rotation, size, lightType, g
 };
 
 /**
+ * @param {!Object} componentModel
+ * @public
+ */
+app.model.Light.prototype.importComponentData = function (componentModel) {
+    this.appliedRotation = componentModel.appliedRotation;
+    this._size = componentModel._size;
+    this._lightType = componentModel._lightType;
+    this._generatedRaysCount = componentModel._generatedRaysCount;
+    this._lightRadius = componentModel._lightRadius;
+    this.transformPoints();
+};
+
+/**
  * @override
  */
 app.model.Light.prototype.copy = function () {
@@ -386,7 +399,6 @@ app.model.Light.prototype.setLightID = function (lightID) {
 };
 
 /**
- * TODO will be used by holographicPlate?
  * @return {!number}
  * @public
  */
