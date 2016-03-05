@@ -8,7 +8,7 @@ goog.require('app.ComponentController');
  * @constructor
  * @extends {app.ComponentController}
  */
-app.SplitterController = function(model, modelID) {
+app.SplitterController = function (model, modelID) {
     app.SplitterController.base(this, 'constructor');
     /**
      * Points to currently selected component model
@@ -28,12 +28,15 @@ goog.inherits(app.SplitterController, app.ComponentController);
  * @override
  * @param sceneController
  */
-app.SplitterController.prototype.showComponentControlPanel = function(sceneController) {
+app.SplitterController.prototype.showComponentControlPanel = function (sceneController) {
     app.SplitterController.base(this, 'showComponentControlPanel', sceneController);
 
     goog.dom.appendChild(this.componentConfigurationPanel,
         goog.dom.createDom('div', {'class': 'input-field'},
-            goog.dom.createDom('span', {'class': 'com-left-side', 'id': 'com-height-title'}, app.translation['com-height-title']),
+            goog.dom.createDom('span', {
+                'class': 'com-left-side',
+                'id': 'com-height-title'
+            }, app.translation['com-height-title']),
             goog.dom.createDom('span', {'class': 'com-right-side'},
                 goog.dom.createDom('input', {
                     'type': 'text', 'name': 'com-height', 'class': 'input-min', 'id': 'com-height',
@@ -50,11 +53,16 @@ app.SplitterController.prototype.showComponentControlPanel = function(sceneContr
  * @override
  * @param sceneController
  */
-app.SplitterController.prototype.addPanelListeners = function(sceneController) {
+app.SplitterController.prototype.addPanelListeners = function (sceneController) {
     app.SplitterController.base(this, 'addPanelListeners', sceneController);
 
-    goog.events.listen(goog.dom.getElement('com-height'), goog.events.EventType.KEYUP, function (e) {
-        app.ComponentController.validateFloatInput(e, this.model.setHeight, this.model);
-        sceneController.redrawAll();
-    }, true, this);
+    goog.events.listen(goog.dom.getElement('com-height'), goog.events.EventType.KEYUP,
+        /**
+         * @this {!app.SplitterController}
+         * @param {goog.events.BrowserEvent} e
+         */
+        function (e) {
+            app.ComponentController.validateFloatInput(e, this.model.setHeight, this.model);
+            sceneController.redrawAll();
+        }, true, this);
 };
