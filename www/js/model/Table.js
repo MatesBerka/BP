@@ -1,18 +1,11 @@
 goog.provide('app.model.Table');
 
 /**
- * @param {!number} tableID
  * @param {!string} tableName
  * @final
  * @constructor
  */
-app.model.Table = function(tableID, tableName) {
-    /**
-     * TODO is it used?
-     * @type {!number}
-     * @private
-     */
-    this._tableID = tableID;
+app.model.Table = function (tableName) {
     /**
      * @type {!string}
      * @private
@@ -44,15 +37,32 @@ app.model.Table = function(tableID, tableName) {
  * @returns {!string}
  * @public
  */
-app.model.Table.prototype.getName = function() {
+app.model.Table.prototype.getName = function () {
     return this._tableName;
+};
+
+/**
+ * @param {!string} name
+ * @public
+ */
+app.model.Table.prototype.changeName = function (name) {
+    this._tableName = name;
+};
+
+/**
+ * @param {!number} viewID
+ * @param {!string} name
+ * @public
+ */
+app.model.Table.prototype.updateViewName = function (viewID, name) {
+    this._views[viewID].changeName(name);
 };
 
 /**
  * @returns {!number}
  * @public
  */
-app.model.Table.prototype.getNextViewID = function() {
+app.model.Table.prototype.getNextViewID = function () {
     return this._views.length;
 };
 
@@ -60,7 +70,7 @@ app.model.Table.prototype.getNextViewID = function() {
  * @param {!app.model.View} view
  * @public
  */
-app.model.Table.prototype.addView = function(view) {
+app.model.Table.prototype.addView = function (view) {
     this._views.push(view);
 };
 
@@ -69,7 +79,7 @@ app.model.Table.prototype.addView = function(view) {
  * @return {!app.model.View}
  * @public
  */
-app.model.Table.prototype.getView = function(viewID) {
+app.model.Table.prototype.getView = function (viewID) {
     return this._views[viewID];
 };
 
@@ -77,7 +87,7 @@ app.model.Table.prototype.getView = function(viewID) {
  * @return {!Array<!app.model.View>}
  * @public
  */
-app.model.Table.prototype.getViews = function() {
+app.model.Table.prototype.getViews = function () {
     return this._views;
 };
 
@@ -87,21 +97,21 @@ app.model.Table.prototype.getViews = function() {
  * @param {!number} height
  * @public
  */
-app.model.Table.prototype.updateViewSize = function(viewID, width, height) {
+app.model.Table.prototype.updateViewSize = function (viewID, width, height) {
     this._views[viewID].updateSize(width, height);
 };
 
 /**
  * @public
  */
-app.model.Table.prototype.increaseActiveViewsCount = function() {
+app.model.Table.prototype.increaseActiveViewsCount = function () {
     this._activeViewsCount++;
 };
 
 /**
  * @public
  */
-app.model.Table.prototype.decreaseActiveViewsCount = function() {
+app.model.Table.prototype.decreaseActiveViewsCount = function () {
     this._activeViewsCount--;
 };
 
@@ -109,7 +119,7 @@ app.model.Table.prototype.decreaseActiveViewsCount = function() {
  * @return {!number}
  * @public
  */
-app.model.Table.prototype.getActiveViewsCount = function() {
+app.model.Table.prototype.getActiveViewsCount = function () {
     return this._activeViewsCount;
 };
 
@@ -117,7 +127,7 @@ app.model.Table.prototype.getActiveViewsCount = function() {
  * @return {!Array<!app.model.Component>}
  * @public
  */
-app.model.Table.prototype.getComponents = function() {
+app.model.Table.prototype.getComponents = function () {
     return this._components;
 };
 
@@ -126,8 +136,8 @@ app.model.Table.prototype.getComponents = function() {
  * @return {!number}
  * @public
  */
-app.model.Table.prototype.addComponent = function(model) {
-    if(model.getType() === 'LIGHT') {
+app.model.Table.prototype.addComponent = function (model) {
+    if (model.getType() === 'LIGHT') {
         this._highestLightID++;
         /**@suppress {checkTypes}*/model.setLightID(this._highestLightID);
         this._components.push(model);
@@ -142,7 +152,7 @@ app.model.Table.prototype.addComponent = function(model) {
  * @param {!number} componentID
  * @public
  */
-app.model.Table.prototype.removeComponent = function(componentID) {
+app.model.Table.prototype.removeComponent = function (componentID) {
     this._components.splice(componentID, 1);
 };
 
@@ -150,7 +160,7 @@ app.model.Table.prototype.removeComponent = function(componentID) {
  * @param {!number} viewID
  * @public
  */
-app.model.Table.prototype.removeView = function(viewID) {
+app.model.Table.prototype.removeView = function (viewID) {
     this._views.splice(viewID, 1);
     this._activeViewsCount--;
 };

@@ -77,7 +77,14 @@ app.ViewController.prototype.removeCanvasMove = function (view) {
  */
 app.ViewController.prototype.addListeners = function (view) {
     // coordinates update
-    goog.events.listen(view, app.MOUSE_MOVE_EVENT, this._updateCoordinates, false, this);
+    goog.events.listen(view, app.MOUSE_MOVE_EVENT,
+        /**
+         * @this {!app.ViewController}
+         * @param {!goog.events.BrowserEvent} e
+         */
+        function (e) {
+            this._updateCoordinates(e, e.currentTarget.childNodes[1]);
+        }, true, this);
 
     goog.events.listen(goog.dom.getElementByClass('zoom', view), goog.events.EventType.CLICK,
         /**
@@ -90,6 +97,7 @@ app.ViewController.prototype.addListeners = function (view) {
             } else {
                 this._model.scaleDown();
             }
+            this._updateCoordinates(e, e.currentTarget.parentNode.childNodes[1]);
             this.draw();
         }, false, this);
 
@@ -113,16 +121,18 @@ app.ViewController.prototype.addListeners = function (view) {
                     this._model.moveDown();
                     break;
             }
+            this._updateCoordinates(e, e.currentTarget.parentNode.childNodes[1]);
             this.draw();
         }, false, this);
 };
 
 /**
  * @param {!goog.events.BrowserEvent} e
- * @private
+ * @param {!Node} coordinates
+ * @public
  */
-app.ViewController.prototype._updateCoordinates = function (e) {
-    var coordinates = e.currentTarget.childNodes[1], xCm, yCm, zoom;
+app.ViewController.prototype._updateCoordinates = function (e, coordinates) {
+    var xCm, yCm, zoom;
     xCm = (e.clientX - this._CANVAS_WRAPPER.offsetLeft - this._model.getAppliedTranslationX()) / app.PIXEL_ON_CM;
     yCm = (e.clientY - e.currentTarget.offsetTop - this._CANVAS_WRAPPER.offsetTop - this._model.getAppliedTranslationY()) / app.PIXEL_ON_CM;
     zoom = Math.floor(100 * this._model.getZoom());
@@ -143,9 +153,7 @@ app.ViewController.prototype._canvasMoved = function (e) {
     diffY = move[1] - this._mouseCursorPoint[1];
 
     this._mouseCursorPoint = move;
-
-    var point = this.reverseScale([diffX, diffY]);
-    this._model.translate(point[0], point[1]);
+    this._model.translate(diffX, diffY);
     this.draw();
     e.stopPropagation();
 };

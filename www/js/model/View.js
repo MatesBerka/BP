@@ -1,26 +1,13 @@
 goog.provide('app.model.View');
 
 /**
- * @param {!number} tableID
- * @param {!number} viewID
  * @param {!string} viewName
  * @param {!number} offsetX
  * @param {!number} offsetY
  * @final
  * @constructor
  */
-app.model.View = function (tableID, viewID, viewName, offsetX, offsetY) {
-    /**
-     * TODO not used?
-     * @type {!number}
-     * @private
-     */
-    this._tableID = tableID;
-    /**
-     * @type {!number}
-     * @private
-     */
-    this._viewID = viewID;
+app.model.View = function (viewName, offsetX, offsetY) {
     /**
      * @type {!string}
      * @private
@@ -78,6 +65,14 @@ app.model.View.prototype.getGraphicsContext = function () {
 };
 
 /**
+ * @param {!string} name
+ * @public
+ */
+app.model.View.prototype.changeName = function (name) {
+    this._viewName = name;
+};
+
+/**
  * @param {!number} width
  * @param {!number} height
  * @public
@@ -93,10 +88,10 @@ app.model.View.prototype.updateSize = function (width, height) {
  */
 app.model.View.prototype.getVisibleArea = function () {
     var area = [];
-    area[2] = (this._width + app.model.View.CLEAR_OFFSET)/this._appliedScale;
-    area[3] = (this._height + app.model.View.CLEAR_OFFSET)/this._appliedScale;
-    area[0] = (-this._appliedTranslationX - app.model.View.CLEAR_OFFSET)/this._appliedScale;
-    area[1] = (-this._appliedTranslationY - app.model.View.CLEAR_OFFSET)/this._appliedScale;
+    area[2] = (this._width + app.model.View.CLEAR_OFFSET) / this._appliedScale;
+    area[3] = (this._height + app.model.View.CLEAR_OFFSET) / this._appliedScale;
+    area[0] = (-this._appliedTranslationX - app.model.View.CLEAR_OFFSET) / this._appliedScale;
+    area[1] = (-this._appliedTranslationY - app.model.View.CLEAR_OFFSET) / this._appliedScale;
 
     return area;
 };

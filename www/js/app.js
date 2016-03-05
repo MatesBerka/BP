@@ -52,7 +52,7 @@ app.init = function() {
         /** @type {goog.events.EventType|string} */
         app.MOUSE_MOVE_EVENT = goog.events.EventType.TOUCHMOVE;
     }
-}
+};
 
 app.utils.translate = function() {
     app.translation = app.TRANSLATION[app.LOCALE];
@@ -79,8 +79,6 @@ app.utils.translate = function() {
 //http://stackoverflow.com/questions/9705123/how-can-i-get-sin-cos-and-tan-to-use-degrees-instead-of-radians
 //https://google.github.io/closure-library/api/
 
-// TODO  light ID - muzou dojit
-// TODO  view ID - problem budou se spatne generovat
 // TODO spatny prevod centimetru
 // TODO klavesove skratky pro pridavani komponent
 // TODO pravitko
@@ -94,6 +92,9 @@ app.utils.translate = function() {
 // TODO vylepsi pridavani komponent do menu, automaticky cyklus?
 // TODO opravdu holograficka deska deli skupiny dobre?
 // TODO add favicon http://www.freefavicon.com/freefavicons/objects/iconinfo/graduation-hat-152-193065.html
+
+// TODO add to renema to table.js 427 SceneController.js
+// TODO x: 36.97 cm, y: NaN cm, zoom: 100 %
 
 // ray [[x,y,z],[x,y,z], lightID, rayLength];
 // _intersectionRay and ray in intersect()

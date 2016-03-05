@@ -12,10 +12,11 @@ goog.require('app.SceneController');
  */
 app.MenuController = function (sceneController) {
     /**
+     * @const
      * @type {!app.SceneController}
      * @private
      */
-    this._sceneController = sceneController;
+    this._SCENECONTROLLER = sceneController;
     /**
      * @type {goog.ui.Dialog}
      * @private
@@ -77,7 +78,7 @@ app.MenuController.prototype._addComponent = function (e, type) {
         goog.positioning.Corner.TOP_RIGHT));
     popup.setVisible(true);
     this._toggleSubMenu(e, /**@type{Element}*/(e.currentTarget.parentNode));
-    this._sceneController.showCross(type);
+    this._SCENECONTROLLER.showCross(type);
 };
 
 /**
@@ -157,7 +158,7 @@ app.MenuController.prototype._addListeners = function () {
                     input.style.backgroundColor = "red";
                     e.preventDefault();
                 } else {
-                    this._sceneController.setReflectionsCount(input.value);
+                    this._SCENECONTROLLER.setReflectionsCount(input.value);
                 }
             }
         },
@@ -177,7 +178,7 @@ app.MenuController.prototype._addListeners = function () {
             buttonsSet.addButton({key: 'ok', caption: 'Ok'}, true);
             buttonsSet.addButton({key: 'cancel', caption: app.translation['cancel-btn']}, false, true);
             this._refDialog.setButtonSet(buttonsSet);
-            var count = this._sceneController.getReflectionsCount();
+            var count = this._SCENECONTROLLER.getReflectionsCount();
             this._refDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['ref-count'],
                 goog.html.SafeHtml.create('input', {
                     'type': 'text', 'id': 'reflection-count-input',
@@ -209,29 +210,15 @@ app.MenuController.prototype._addListeners = function () {
         true, this);
 
     // simulation/save simulation
-    goog.events.listen(goog.dom.getElement('logo'), goog.events.EventType.CLICK,
+    goog.events.listen(goog.dom.getElement('save-menu-msg'), goog.events.EventType.CLICK,
         /**
          * @this {!app.MenuController}
          * @param {!goog.events.BrowserEvent} e
          */
         function (e) {
             this._hideSubMenus(goog.dom.getElement('top-items'));
+            //this._SCENECONTROLLER.exportData();
             e.stopPropagation();
-            // todo
-        },
-        false, this);
-
-    // simulation/export simulation
-    goog.events.listen(goog.dom.getElement('logo'), goog.events.EventType.CLICK,
-        /**
-         * @this {!app.MenuController}
-         * @param {!goog.events.BrowserEvent} e
-         */
-        function (e) {
-            this._hideSubMenus(goog.dom.getElement('top-items'));
-            e.stopPropagation();
-            // todo
-            // into svg
         },
         false, this);
 
@@ -292,6 +279,7 @@ app.MenuController.prototype._addListeners = function () {
         function (e) {
             this._addComponent(e, 'LIGHT');
         }, false, this);
+
     // components/add splitter
     goog.events.listen(goog.dom.getElement('add-splitter'), goog.events.EventType.CLICK,
         /**
