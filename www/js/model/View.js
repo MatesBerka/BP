@@ -202,7 +202,6 @@ app.model.View.prototype.getZoom = function () {
 };
 
 /**
- *
  * @param {!Object} viewModel
  */
 app.model.View.prototype.importView = function (viewModel) {

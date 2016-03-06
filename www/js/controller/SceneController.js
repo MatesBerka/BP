@@ -902,7 +902,7 @@ app.SceneController.prototype._deleteCurrentSimulation = function () {
 };
 
 /**
- * @param {!Object} dataModel
+ * @param {*} dataModel
  * @public
  */
 app.SceneController.prototype.importData = function (dataModel) {

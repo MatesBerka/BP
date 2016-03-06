@@ -209,10 +209,6 @@ app.model.Light.prototype.isSelected = function (x, y) {
 };
 
 /**
- * Sources:
- * http://billmill.org/static/canvastutorial/ball.html
- * https://developer.mozilla.org/cs/docs/Canvas_tutori%C3%A1l/Kreslen%C3%AD_tvar%C5%AF
- * http://www.html5canvastutorials.com/tutorials/html5-canvas-circles/
  * @param {!CanvasRenderingContext2D} ctx
  * @private
  */

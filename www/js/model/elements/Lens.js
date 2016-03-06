@@ -7,10 +7,6 @@ goog.require('app.model.LineShapeComponent');
  * @final
  * @constructor
  * @extends {app.model.LineShapeComponent}
- * Sources:
- * https://www.google.cz/search?q=rozptylka&espv=2&biw=1920&bih=979&tbm=isch&source=lnms&sa=X&ved=0ahUKEwiX2MqH1_TKAhVDJ5oKHRzID6MQ_AUIBygB&dpr=1#imgrc=N_psa3FtWOpzFM%3A
- * https://www.youtube.com/watch?v=i20bzCUw464
- * https://www.khanacademy.org/science/physics/geometric-optics/mirrors-and-lenses/v/thin-lens-equation-and-problem-solving
  */
 app.model.Lens = function(coordX, coordY) {
     app.model.Lens.base(this, 'constructor', coordX, coordY); // call parent constructor

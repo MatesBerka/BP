@@ -18,7 +18,7 @@ app.TRANSLATION = {
         'mirror-menu-msg': 'Přidat zrcátko',
         'splitter-menu-msg': 'Přidat dělič',
         'lens-menu-msg': 'Přidat čočku',
-        'holo-menu-msg': 'Přidat holografickou desku',
+        'holo-menu-msg': 'Přidat holografické plátno',
         'wall-menu-msg': 'Přidat zeď',
         'light-menu-msg': 'Přidat světlo',
         // popups

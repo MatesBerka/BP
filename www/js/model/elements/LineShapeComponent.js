@@ -36,7 +36,6 @@ app.model.LineShapeComponent.prototype.generateShapePoints = function () {
 };
 
 /**
- * @see https://rootllama.wordpress.com/2014/06/20/ray-line-segment-intersection-test-in-2d/#comments
  * @override
  */
 app.model.LineShapeComponent.prototype.isIntersection = function (ray) {
@@ -102,7 +101,6 @@ app.model.LineShapeComponent.prototype.draw = function (ctx, callback) {
  * @public
  */
 app.model.LineShapeComponent.prototype.isSelected = function (x, y) {
-    //http://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-box-intersection
     var point = this.reverseTransformPoint([x, y]),
         xs = -5, ys = -Math.floor(this.height / 2), xe = 5, ye = Math.floor(this.height / 2);
 

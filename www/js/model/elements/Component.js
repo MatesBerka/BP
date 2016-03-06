@@ -108,7 +108,7 @@ app.model.Component.prototype.generateShapePoints = goog.abstractMethod;
 app.model.Component.prototype.copyArguments = goog.abstractMethod;
 
 /**
- * @protected
+ * @public
  */
 app.model.Component.prototype.importComponentData = goog.abstractMethod;
 

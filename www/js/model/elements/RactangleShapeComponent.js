@@ -58,7 +58,6 @@ app.model.RectangleShapeComponent.prototype.generateShapePoints = function() {
  * @override
  */
 app.model.RectangleShapeComponent.prototype.isIntersection = function(ray) {
-    //https://rootllama.wordpress.com/2014/06/20/ray-line-segment-intersection-test-in-2d/#comments
     var numerator, denominator, t1, t2, v1, v2, v3, ix, iy, a, aIndex, b, bIndex,
         length, rayLength = Infinity;
 
@@ -123,7 +122,6 @@ app.model.RectangleShapeComponent.prototype.draw = function(ctx, callback) {
  * @override
  */
 app.model.RectangleShapeComponent.prototype.isSelected = function(x, y) {
-    //http://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-box-intersection
     var point = this.reverseTransformPoint([x,y]),
         xs = -Math.floor(this.width/2), ys = -Math.floor(this.height/2), xe = Math.floor(this.width/2),
         ye = Math.floor(this.height/2);

@@ -1,3 +1,6 @@
+/**
+ * @author Matej Berka
+ */
 goog.provide('app.start');
 goog.provide('app.utils');
 
@@ -67,37 +70,14 @@ app.utils.translate = function() {
     }
 };
 
-//http://kingscalculator.com/cz/ostatni-kalkulacky/vypocet-hustoty-pixelu
-//https://cs.wikipedia.org/wiki/Body_na_palec
-//http://www.gymhol.cz/projekt/fyzika/09_difrakce/09_difrakce.htm
-//https://www.youtube.com/watch?v=i20bzCUw464
-//http://fyzika.jreichl.com/main.article/view/481-zobrazeni-tenkou-cockou
-//https://www.youtube.com/watch?v=i20bzCUw464
-//https://phet.colorado.edu/sims/geometric-optics/geometric-optics_cs.html
-//http://www.e-fyzika.cz/kapitoly/08-geometricka-optika.pdf
-//http://www.gymhol.cz/projekt/fyzika/05_cocky/05_cocky.htm
-//http://www.itnetwork.cz/maturitni-otazka-fyzika-zobrazeni-cocky-zrcadla-pristroje
-//https://cs.wikipedia.org/wiki/Rozptyln%C3%A1_%C4%8Do%C4%8Dka
-//http://stackoverflow.com/questions/9705123/how-can-i-get-sin-cos-and-tan-to-use-degrees-instead-of-radians
-//https://google.github.io/closure-library/api/
-
 // TODO spatny prevod centimetru
-// TODO klavesove skratky pro pridavani komponent
 // TODO pravitko
 // TODO mrizka
-// todo save
-// todo tablet
 // todo wheel event
 // todo tab index
 // TODO ON/OFF light switch
-// todo remove http link in comments (@see)
-// TODO vylepsi pridavani komponent do menu, automaticky cyklus?
 // TODO opravdu holograficka deska deli skupiny dobre?
-// TODO add favicon http://www.freefavicon.com/freefavicons/objects/iconinfo/graduation-hat-152-193065.html
-
-// TODO add to renema to table.js 427 SceneController.js
-// TODO x: 36.97 cm, y: NaN cm, zoom: 100 %
-// TODO problem s metodami jako addComponent
+// TODO http://www.freefavicon.com/freefavicons/objects/iconinfo/graduation-hat-152-193065.html
 
 // ray [[x,y,z],[x,y,z], lightID, rayLength];
 // _intersectionRay and ray in intersect()
@@ -113,5 +93,33 @@ app.utils.translate = function() {
 //· Cílovŭ optickŭ prvek (po nalezení)
 //· Cílová pozice(x,y,z) (po nalezení)
 
+//http://kingscalculator.com/cz/ostatni-kalkulacky/vypocet-hustoty-pixelu
+//https://cs.wikipedia.org/wiki/Body_na_palec
+//http://www.gymhol.cz/projekt/fyzika/09_difrakce/09_difrakce.htm
+//https://www.youtube.com/watch?v=i20bzCUw464
+//http://fyzika.jreichl.com/main.article/view/481-zobrazeni-tenkou-cockou
+//https://www.youtube.com/watch?v=i20bzCUw464
+//https://phet.colorado.edu/sims/geometric-optics/geometric-optics_cs.html
+//http://www.e-fyzika.cz/kapitoly/08-geometricka-optika.pdf
+//http://www.gymhol.cz/projekt/fyzika/05_cocky/05_cocky.htm
+//http://www.itnetwork.cz/maturitni-otazka-fyzika-zobrazeni-cocky-zrcadla-pristroje
+//https://cs.wikipedia.org/wiki/Rozptyln%C3%A1_%C4%8Do%C4%8Dka
+//http://stackoverflow.com/questions/9705123/how-can-i-get-sin-cos-and-tan-to-use-degrees-instead-of-radians
+
 //normalize2DVector
 //http://forum.matematika.cz/viewtopic.php?id=5845
+
+//Lens.js
+//https://www.google.cz/search?q=rozptylka&espv=2&biw=1920&bih=979&tbm=isch&source=lnms&sa=X&ved=0ahUKEwiX2MqH1_TKAhVDJ5oKHRzID6MQ_AUIBygB&dpr=1#imgrc=N_psa3FtWOpzFM%3A
+//https://www.youtube.com/watch?v=i20bzCUw464
+//https://www.khanacademy.org/science/physics/geometric-optics/mirrors-and-lenses/v/thin-lens-equation-and-problem-solving
+
+//_drawBall
+//http://billmill.org/static/canvastutorial/ball.html
+//https://developer.mozilla.org/cs/docs/Canvas_tutori%C3%A1l/Kreslen%C3%AD_tvar%C5%AF
+//http://www.html5canvastutorials.com/tutorials/html5-canvas-circles/
+
+//LineShapeComponent/isIntersection
+//https://rootllama.wordpress.com/2014/06/20/ray-line-segment-intersection-test-in-2d/#comments
+//LineShapeComponent/isSelected
+//http://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-box-intersection

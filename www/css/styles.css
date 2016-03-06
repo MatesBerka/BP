@@ -117,7 +117,7 @@ li.menu-item a {
 }
 
 ul.nested-items {
-    width: 185px;
+    width: 250px;
     position: absolute;
     background: #d2eba5;
     left: -1px;
@@ -130,7 +130,7 @@ ul.nested-items {
 
 ul.nested-nested-items {
     top: -1px;
-    left: 183px;
+    left: 248px;
 }
 
 ul.nested-items li:first-child {
@@ -578,6 +578,7 @@ button:active {
 #help-popup-wrapper {
     max-height: 300px;
     overflow-y: scroll;
+    line-height: 1.2;
 }
 
 #import-simulation-data,
@@ -585,3 +586,12 @@ button:active {
     resize: none;
 }
 
+.keystroke {
+    float: right;
+    font-size: 10px;
+    line-height: 20px;
+}
+
+#help-menu-msg {
+    padding-right: 10px;
+}
