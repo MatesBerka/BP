@@ -75,7 +75,30 @@ app.TRANSLATION = {
         'pick-ref-light': 'Výběr referenčního světla',
         'ref-light': 'Světlo: ',
         'pick-light': 'Vyber',
-        'pick-all-lights': 'Všechna'
+        'pick-all-lights': 'Všechna',
+        // help popup text
+        'how-to-title': 'Nápověda',
+        // language
+        'ht-change-lg-title': 'Změna jazyka',
+        'ht-change-lg-text': 'Jazyk lze změni na kartě Simulace/Mastavení/Jazyk.',
+        // count of reflections
+        'ht-change-cr-title': 'Změna počtu odrazů paprsku',
+        'ht-change-cr-text': 'Počet odrazů parsku lze změnit na kartě Simulace/Nastavení/Počet odrazů.',
+        // screen size
+        'ht-change-sz-title': 'Oprava vzdálenosti v CM',
+        'ht-change-sz-text': 'Vzdálenost lze upravit na kartě Simulace/Nastavení/Úhlopříčka displeje a zde zadat správnou úhlopříčku' +
+        'vašeho displeje v palcích.',
+        // export/import
+        'ht-change-xi-title': 'Jak sdílet',
+        'ht-change-xi-text': 'Vaše vytvořené experimenty můžete sdílet s práteli. Na kartě Simulace/Export simulace si lze nechat' +
+        ' vygeneratovat JSON objekt aktuálně sestaveného experimentu. ',
+        // components
+        'ht-change-cm-title': 'Komponenty',
+
+        'ht-change-cm-text': 'Dostupné komponenty lze přidávat na kartě komponenty. Každá komponenta má sadu nastavitelných' +
+        ' atributů, které mužete zobrazit kliknutím na přidanou komponentu. jednotlivé komponenty jsou spojeny se stolem a ' +
+        'zobrazovány v pohledech. Komponenty mouhou být také kopírovány na sousední stoly a to tlačítkem kopírovat na ' +
+        'konfiguračním panelu komponenty.'
     },
     'en_US': {
         'logo-msg': 'Diffractive optics simulator',
@@ -151,6 +174,27 @@ app.TRANSLATION = {
         'pick-ref-light': 'Pick reference light',
         'ref-light': 'Light: ',
         'pick-light': 'Pick',
-        'pick-all-lights': 'All'
+        'pick-all-lights': 'All',
+        // help popup text
+        'how-to-title': 'How to',
+        // language
+        'ht-change-lg-title': 'Change language',
+        'ht-change-lg-text': 'Go to Simulation/Settings/Language and pick preferred language.',
+        // count of reflections
+        'ht-change-cr-title': 'Increase number of light reflections',
+        'ht-change-cr-text': 'Go to Simulation/Settings and click on Count of reflections.',
+        // screen size
+        'ht-change-sz-title': 'Correct size in CM',
+        'ht-change-sz-text': 'Go to Simulation/Settings and click on Screen diagonal and insert correct display size in inches.',
+        // export/import
+        'ht-change-xi-title': 'How to share',
+        'ht-change-xi-text': 'If you want to share your experiment go to Simulation and click on Export simulation. ' +
+        'This will generate JSON object of your simulation which you can send to your friends.',
+        // components
+        'ht-change-cm-title': 'Components',
+        'ht-change-cm-text': 'To create experiment go to Components and pick component you want to add. Each component' +
+        'has own specific settings and you can display them by clicking on added component. Components are bind to a table' +
+        ' and can be viewed on views. You can share copy components between tables when you click on copy button in component' +
+        'configuration panel.'
     }
 };

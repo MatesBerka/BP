@@ -440,31 +440,25 @@ app.MenuController.prototype._showHelp = function () {
     var helpButton = new goog.ui.Dialog.ButtonSet();
     helpButton.addButton({key: 'ok', caption: 'Ok'}, true);
     this._helpDialog.setButtonSet(helpButton);
-    // TODO ADD TEXT
     this._helpDialog.setSafeHtmlContent(goog.html.SafeHtml.create('div', {'id': 'help-popup-wrapper'},
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc volutpat tincidunt lectus, ut sagittis enim" +
-        " egestas ut. Donec sed luctus odio. Mauris finibus laoreet magna, vitae rhoncus tortor eleifend aliquet." +
-        " Curabitur mattis pretium mauris. Etiam finibus nunc laoreet magna scelerisque dictum. Integer id viverra" +
-        " lacus. Sed posuere odio tortor, eget scelerisque quam viverra in. Morbi et turpis laoreet, pharetra libero" +
-        " porttitor, convallis nunc. Aliquam erat volutpat. Nam quis varius lectus, vitae tincidunt nisi. Vivamus" +
-        " consectetur consectetur nunc in consectetur. Suspendisse vehicula malesuada volutpat. Donec imperdiet" +
-        " sodales sagittis. Aliquam congue risus sed consequat tincidunt. Quisque ullamcorper ut libero sed rutrum." +
-        " Sed eu malesuada risus. Nunc eget enim congue, vulputate arcu non, luctus tortor. Morbi porttitor turpis" +
-        " Sed eu malesuada risus. Nunc eget enim congue, vulputate arcu non, luctus tortor. Morbi porttitor turpis" +
-        " Sed eu malesuada risus. Nunc eget enim congue, vulputate arcu non, luctus tortor. Morbi porttitor turpis" +
-        " Sed eu malesuada risus. Nunc eget enim congue, vulputate arcu non, luctus tortor. Morbi porttitor turpis" +
-        " Sed eu malesuada risus. Nunc eget enim congue, vulputate arcu non, luctus tortor. Morbi porttitor turpis" +
-        " Sed eu malesuada risus. Nunc eget enim congue, vulputate arcu non, luctus tortor. Morbi porttitor turpis" +
-        " Sed eu malesuada risus. Nunc eget enim congue, vulputate arcu non, luctus tortor. Morbi porttitor turpis" +
-        " Sed eu malesuada risus. Nunc eget enim congue, vulputate arcu non, luctus tortor. Morbi porttitor turpis" +
-        " elit, elementum fermentum arcu ullamcorper nec. Nam luctus tincidunt quam ac iaculis. Nulla facilisi. Ut" +
-        " in elit tellus. Morbi at maximus nisl, sit amet laoreet turpis. Proin egestas ullamcorper arcu ac suscipit." +
-        " Morbi sapien felis, vehicula ut metus a, vehicula luctus dolor. Nullam mollis egestas justo et suscipit." +
-        " Aliquam erat volutpat. Maecenas vel ex nulla. Vestibulum imperdiet hendrerit ipsum sit amet vulputate." +
-        " Cras eu turpis vel nisi sodales tempor. Morbi eu neque congue, gravida diam in, auctor lorem. Vivamus" +
-        " ornare, felis ac porta dapibus, lacus enim blandit ex, posuere tempus libero nisl at nisl. Suspendisse" +
-        " potenti. Mauris ornare consectetur ullamcorper. Nam vulputate nunc sed elit luctus, eu accumsan lacinia."
+        [goog.html.SafeHtml.create('h1', {}, app.translation['how-to-title']),
+        // language
+        goog.html.SafeHtml.create('h2', {}, app.translation['ht-change-lg-title']),
+        goog.html.SafeHtml.create('span', {}, app.translation['ht-change-lg-text']),
+        // count of reflections
+        goog.html.SafeHtml.create('h2', {}, app.translation['ht-change-cr-title']),
+        goog.html.SafeHtml.create('span', {}, app.translation['ht-change-cr-text']),
+        // screen size
+        goog.html.SafeHtml.create('h2', {}, app.translation['ht-change-sz-title']),
+        goog.html.SafeHtml.create('span', {}, app.translation['ht-change-sz-text']),
+        // export/import
+        goog.html.SafeHtml.create('h2', {}, app.translation['ht-change-xi-title']),
+        goog.html.SafeHtml.create('span', {}, app.translation['ht-change-xi-text']),
+        // components
+        goog.html.SafeHtml.create('h2', {}, app.translation['ht-change-cm-title']),
+        goog.html.SafeHtml.create('span', {}, app.translation['ht-change-cm-text'])]
     ));
+
     this._helpDialog.setVisible(true);
 };
 

@@ -32,6 +32,7 @@ footer, header, menu, nav, section {
 
 body {
     line-height: 1;
+    /* Background pattern from subtlepatterns.com */
     background-image: url(../img/confectionery.png);
 }
 
@@ -584,6 +585,24 @@ button:active {
     max-height: 300px;
     overflow-y: scroll;
     line-height: 1.2;
+}
+
+#help-popup-wrapper h1 {
+    line-height: 2;
+    font-size: 18px;
+    border-bottom: 1px solid #BFBFBF;
+}
+
+#help-popup-wrapper h2 {
+    line-height: 2;
+    font-size: 16px;
+    font-weight: 400;
+    margin-top: 5px;
+}
+
+#help-popup-wrapper span {
+    line-height: 1.4;
+    font-size: 12px;
 }
 
 #import-simulation-data,

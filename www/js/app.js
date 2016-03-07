@@ -119,8 +119,6 @@ app.utils.getScreenSize = function () {
 //· Cílovŭ optickŭ prvek (po nalezení)
 //· Cílová pozice(x,y,z) (po nalezení)
 
-//http://kingscalculator.com/cz/ostatni-kalkulacky/vypocet-hustoty-pixelu
-//https://cs.wikipedia.org/wiki/Body_na_palec
 //http://www.gymhol.cz/projekt/fyzika/09_difrakce/09_difrakce.htm
 //https://www.youtube.com/watch?v=i20bzCUw464
 //http://fyzika.jreichl.com/main.article/view/481-zobrazeni-tenkou-cockou
