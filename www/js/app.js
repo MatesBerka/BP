@@ -59,6 +59,10 @@ app._init = function() {
     }
 };
 
+
+/**
+ * @public
+ */
 app.utils.translate = function() {
     app.translation = app.TRANSLATION[app.LOCALE];
 
@@ -70,12 +74,13 @@ app.utils.translate = function() {
     }
 };
 
-// TODO spatny prevod centimetru
+// TODO ON/OFF light switch
 // TODO pravitko
 // TODO mrizka
-// todo wheel event
-// todo tab index
-// TODO ON/OFF light switch
+// todo AUTHOR HEADER
+// TODO redraw only active table?
+
+// TODO spatny prevod centimetru
 // TODO opravdu holograficka deska deli skupiny dobre?
 // TODO http://www.freefavicon.com/freefavicons/objects/iconinfo/graduation-hat-152-193065.html
 

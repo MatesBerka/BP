@@ -4,6 +4,7 @@ goog.require('goog.ui.Dialog');
 goog.require('goog.ui.Popup');
 goog.require('goog.ui.KeyboardShortcutHandler');
 goog.require('goog.labs.userAgent.device');
+goog.require('goog.json');
 goog.require('app.SceneController');
 
 /**
@@ -77,7 +78,7 @@ app.MenuController.prototype._hideSubMenus = function (element) {
 };
 
 /**
- * @param {!goog.events.BrowserEvent} e
+ * @param {!(goog.events.BrowserEvent|goog.ui.KeyboardShortcutEvent)} e
  * @param {!string} type
  * @private
  */
@@ -206,7 +207,7 @@ app.MenuController.prototype._addListeners = function () {
             if (e.key == 'ok') {
                 var textArea = goog.dom.getElement('import-simulation-data');
                 try {
-                    this._SCENECONTROLLER.importData(JSON.parse(textArea.value));
+                    var objectData = goog.json.parse(textArea.value);
                 } catch (err) {
                     e.preventDefault();
                     textArea.style.background = '#FF0000';
@@ -218,6 +219,7 @@ app.MenuController.prototype._addListeners = function () {
                         textArea.style.background = '#FFFFFF';
                     }, 500, textArea);
                 }
+                this._SCENECONTROLLER.importData(objectData);
             }
         },
         false, this);
@@ -310,34 +312,34 @@ app.MenuController.prototype._addListeners = function () {
 
     shortcutHandler.registerShortcut('CTRL_H', goog.events.KeyCodes.H, CTRL); // help popup
 
-    shortcutHandler.registerShortcut('CTRL_A M',
-        goog.events.KeyCodes.A, CTRL,
+    shortcutHandler.registerShortcut('CTRL_G M',
+        goog.events.KeyCodes.G, CTRL,
         goog.events.KeyCodes.M); // add mirror
 
-    shortcutHandler.registerShortcut('CTRL_A S',
-        goog.events.KeyCodes.A, CTRL,
+    shortcutHandler.registerShortcut('CTRL_G S',
+        goog.events.KeyCodes.G, CTRL,
         goog.events.KeyCodes.S); // add splitter
 
-    shortcutHandler.registerShortcut('CTRL_A E',
-        goog.events.KeyCodes.A, CTRL,
+    shortcutHandler.registerShortcut('CTRL_G E',
+        goog.events.KeyCodes.G, CTRL,
         goog.events.KeyCodes.E); // add lens
 
-    shortcutHandler.registerShortcut('CTRL_A H',
-        goog.events.KeyCodes.A, CTRL,
+    shortcutHandler.registerShortcut('CTRL_G H',
+        goog.events.KeyCodes.G, CTRL,
         goog.events.KeyCodes.H); // add holographic plate
 
-    shortcutHandler.registerShortcut('CTRL_A W',
-        goog.events.KeyCodes.A, CTRL,
+    shortcutHandler.registerShortcut('CTRL_G W',
+        goog.events.KeyCodes.G, CTRL,
         goog.events.KeyCodes.W); // add wall
 
-    shortcutHandler.registerShortcut('CTRL_A L',
-        goog.events.KeyCodes.A, CTRL,
+    shortcutHandler.registerShortcut('CTRL_G L',
+        goog.events.KeyCodes.G, CTRL,
         goog.events.KeyCodes.L); // add light
 
     shortcutHandler.registerShortcut('CTRL_I', goog.events.KeyCodes.I, CTRL); // simulation import
     shortcutHandler.registerShortcut('CTRL_X', goog.events.KeyCodes.X, CTRL); // simulation export
     shortcutHandler.registerShortcut('CTRL_R', goog.events.KeyCodes.R, CTRL); // simulation reset
-    shortcutHandler.registerShortcut('CTRL_C', goog.events.KeyCodes.C, CTRL); // settings/count of reflection
+    shortcutHandler.registerShortcut('CTRL_B', goog.events.KeyCodes.B, CTRL); // settings/count of reflection
 
     shortcutHandler.registerShortcut('CTRL_Q E',
         goog.events.KeyCodes.Q, CTRL,
@@ -353,40 +355,39 @@ app.MenuController.prototype._addListeners = function () {
          * @param {!goog.ui.KeyboardShortcutEvent} e
          */
         function (e) {
-            console.log(e.identifier);
             switch(e.identifier) {
                 case 'CTRL_H':
                     this._showHelp();
                     break;
-                case 'CTRL_A M':
-                    this._addComponent(/**@type{!goog.events.BrowserEvent}*/(e), 'MIRROR');
+                case 'CTRL_G M':
+                    this._addComponent(e, 'MIRROR');
                     break;
-                case 'CTRL_A S':
-                    this._addComponent(/**@type{!goog.events.BrowserEvent}*/(e), 'SPLITTER');
+                case 'CTRL_G S':
+                    this._addComponent(e, 'SPLITTER');
                     break;
-                case 'CTRL_A E':
-                    this._addComponent(/**@type{!goog.events.BrowserEvent}*/(e), 'LENS');
+                case 'CTRL_G E':
+                    this._addComponent(e, 'LENS');
                     break;
-                case 'CTRL_A H':
-                    this._addComponent(/**@type{!goog.events.BrowserEvent}*/(e), 'HOLO-PLATE');
+                case 'CTRL_G H':
+                    this._addComponent(e, 'HOLO-PLATE');
                     break;
-                case 'CTRL_A W':
-                    this._addComponent(/**@type{!goog.events.BrowserEvent}*/(e), 'WALL');
+                case 'CTRL_G W':
+                    this._addComponent(e, 'WALL');
                     break;
-                case 'CTRL_A L':
-                    this._addComponent(/**@type{!goog.events.BrowserEvent}*/(e), 'LIGHT');
+                case 'CTRL_G L':
+                    this._addComponent(e, 'LIGHT');
                     break;
                 case 'CTRL_I':
-                    this._import(/**@type{!goog.events.BrowserEvent}*/(e));
+                    this._import(e);
                     break;
                 case 'CTRL_X':
-                    this._export(/**@type{!goog.events.BrowserEvent}*/(e));
+                    this._export(e);
                     break;
                 case 'CTRL_R':
                     location.reload();
                     break;
-                case 'CTRL_C':
-                    this._reflectionCount(/**@type{!goog.events.BrowserEvent}*/(e));
+                case 'CTRL_B':
+                    this._reflectionCount(e);
                     break;
                 case 'CTRL_Q E':
                     app.LOCALE = 'en_US';
@@ -437,7 +438,7 @@ app.MenuController.prototype._showHelp = function () {
 };
 
 /**
- * @param {!goog.events.BrowserEvent} e
+ * @param {!(goog.events.BrowserEvent|goog.ui.KeyboardShortcutEvent)} e
  * @private
  */
 app.MenuController.prototype._export = function (e) {
@@ -456,9 +457,9 @@ app.MenuController.prototype._export = function (e) {
 };
 
 /**
- * @param {!goog.events.BrowserEvent} e
- * @private
- */
+ * @param {!(goog.events.BrowserEvent|goog.ui.KeyboardShortcutEvent)} e
+* @private
+*/
 app.MenuController.prototype._import = function (e) {
     this._hideSubMenus(goog.dom.getElement('top-items'));
     var data = this._SCENECONTROLLER.exportData();
@@ -480,7 +481,7 @@ app.MenuController.prototype._import = function (e) {
 };
 
 /**
- * @param {!goog.events.BrowserEvent} e
+ * @param {!(goog.events.BrowserEvent|goog.ui.KeyboardShortcutEvent)} e
  * @private
  */
 app.MenuController.prototype._reflectionCount = function (e) {

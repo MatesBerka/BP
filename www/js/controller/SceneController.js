@@ -4,6 +4,7 @@ goog.require('goog.dom');
 goog.require('app.ViewController');
 goog.require('app.model.Table');
 goog.require('app.model.View');
+goog.require('goog.json');
 
 /**
  * @param {!boolean} newSimulation
@@ -170,29 +171,26 @@ app.SceneController.prototype.updateSizes = function () {
  * @private
  */
 app.SceneController.prototype.setActiveTable = function (tableID, buttonElement) {
-    try {
-        // activate table button
-        var curActiveButton = goog.dom.getElement('button-table-' + this._activeTableID);
+    // activate table button
+    var curActiveButton = goog.dom.getElement('button-table-' + this._activeTableID);
 
-        goog.dom.classlist.remove(/**@type{Element}*/(curActiveButton.parentNode), 'active-table');
-        goog.dom.classlist.add(/**@type{Element}*/(buttonElement.parentNode), 'active-table');
+    goog.dom.classlist.remove(/**@type{Element}*/(curActiveButton.parentNode), 'active-table');
+    goog.dom.classlist.add(/**@type{Element}*/(buttonElement.parentNode), 'active-table');
 
-        // show table views
-        var curActiveTable = goog.dom.getElement('table-' + this._activeTableID),
-            newActiveTable = goog.dom.getElement('table-' + tableID);
+    // show table views
+    var curActiveTable = goog.dom.getElement('table-' + this._activeTableID),
+        newActiveTable = goog.dom.getElement('table-' + tableID);
 
-        goog.dom.classlist.remove(curActiveTable, 'active-table');
-        goog.dom.classlist.add(newActiveTable, 'active-table');
+    goog.dom.classlist.remove(curActiveTable, 'active-table');
+    goog.dom.classlist.add(newActiveTable, 'active-table');
 
-        // show table views (buttons)
-        var curActiveViews = goog.dom.getElement('table-' + this._activeTableID + '-views'),
-            newActiveViews = goog.dom.getElement('table-' + tableID + '-views');
+    // show table views (buttons)
+    var curActiveViews = goog.dom.getElement('table-' + this._activeTableID + '-views'),
+        newActiveViews = goog.dom.getElement('table-' + tableID + '-views');
 
-        goog.dom.classlist.remove(curActiveViews, 'active-table');
-        goog.dom.classlist.add(newActiveViews, 'active-table');
-    } catch (err) {
-        console.log(err);
-    }
+    goog.dom.classlist.remove(curActiveViews, 'active-table');
+    goog.dom.classlist.add(newActiveViews, 'active-table');
+
     this._activeTableID = tableID;
     this.redrawAll();
 };
@@ -213,15 +211,11 @@ app.SceneController.prototype.setSelectedView = function (tableID, viewID) {
  * @private
  */
 app.SceneController.prototype.showView = function (viewID, buttonElement) {
-    try {
-        this._tables[this._activeTableID].increaseActiveViewsCount();
-        goog.dom.classlist.add(buttonElement, 'active-view');
-        var view = goog.dom.getElement('view-' + viewID);
-        goog.dom.classlist.add(view, 'active-view');
-        this.updateSizes();
-    } catch (err) {
-        console.log(err);
-    }
+    this._tables[this._activeTableID].increaseActiveViewsCount();
+    goog.dom.classlist.add(buttonElement, 'active-view');
+    var view = goog.dom.getElement('view-' + viewID);
+    goog.dom.classlist.add(view, 'active-view');
+    this.updateSizes();
 };
 
 /**
@@ -230,15 +224,11 @@ app.SceneController.prototype.showView = function (viewID, buttonElement) {
  * @private
  */
 app.SceneController.prototype.hideView = function (viewID, buttonElement) {
-    try {
-        this._tables[this._activeTableID].decreaseActiveViewsCount();
-        goog.dom.classlist.remove(buttonElement, 'active-view');
-        var view = goog.dom.getElement('view-' + viewID);
-        goog.dom.classlist.remove(view, 'active-view');
-        this.updateSizes();
-    } catch (err) {
-        console.log(err);
-    }
+    this._tables[this._activeTableID].decreaseActiveViewsCount();
+    goog.dom.classlist.remove(buttonElement, 'active-view');
+    var view = goog.dom.getElement('view-' + viewID);
+    goog.dom.classlist.remove(view, 'active-view');
+    this.updateSizes();
 };
 
 /**
@@ -543,6 +533,8 @@ app.SceneController.prototype.componentMoved = function (e) {
 
     this._componentMoved = true;
     this._componentController.updatePosition(point[0], point[1]);
+    e.stopPropagation();
+    e.preventDefault();
     this.redrawAll();
 };
 
@@ -853,6 +845,7 @@ app.SceneController.prototype.addComponent = function (selectedPoint) {
     modelID = this._tables[this._activeTableID].addComponent(model);
     this.setSelectedComponent(model, modelID);
     this._componentController.showComponentControlPanel(this);
+    goog.dom.getElement('add-com-popup').style.visibility = 'hidden';
     this.redrawAll();
 };
 
@@ -880,7 +873,7 @@ app.SceneController.prototype.getInactiveTablesList = function () {
  * @public
  */
 app.SceneController.prototype.exportData = function () {
-    return JSON.stringify(this._tables);
+    return goog.json.serialize(this._tables);
 };
 
 app.SceneController.prototype._deleteCurrentSimulation = function () {
@@ -915,7 +908,6 @@ app.SceneController.prototype.importData = function (dataModel) {
         this._tables.push(table);
         this._activeTableID = i;
         this.addTableToGUI(i, dataModel[i]._tableName);
-        this.setActiveTable(i, goog.dom.getElement('button-table-' + i));
 
         for (var j = 0; j < dataModel[i]._views.length; j++) {
             var view = new app.model.View(dataModel[i]._views[j]._viewName, dataModel[i]._views[j]._appliedTranslationX,
@@ -933,5 +925,6 @@ app.SceneController.prototype.importData = function (dataModel) {
             table.addComponent(component);
         }
     }
+    this.setActiveTable((i - 1), goog.dom.getElement('button-table-' + (i - 1)));
     this.redrawAll();
 };

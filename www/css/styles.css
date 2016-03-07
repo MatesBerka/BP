@@ -117,20 +117,25 @@ li.menu-item a {
 }
 
 ul.nested-items {
-    width: 250px;
+    width: 180px;
     position: absolute;
     background: #d2eba5;
     left: -1px;
     border: 1px solid #9C9C9C;
     top: 39px;
     display: none;
+    font-size: 14px;
     z-index: 99;
     cursor: pointer;
 }
 
+ul.nested-items.components-list {
+    width: 250px;
+}
+
 ul.nested-nested-items {
     top: -1px;
-    left: 248px;
+    left: 178px;
 }
 
 ul.nested-items li:first-child {
@@ -594,4 +599,5 @@ button:active {
 
 #help-menu-msg {
     padding-right: 10px;
+    float: left;
 }

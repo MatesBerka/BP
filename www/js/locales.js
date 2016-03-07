@@ -42,8 +42,8 @@ app.TRANSLATION = {
         'hol-rec-err': 'Neuložené paprsky',
         'ref-errors': 'Chyby v následujících oddílech: ',
         'ref-err-sec': 'V oddílu ',
-        'ref-err-src': ', světelného zdroje ',
-        'ref-err-ray': ', paprsek překročil limit délky koherence o ',
+        'ref-err-src': ', parsek světelného zdroje ',
+        'ref-err-ray': ', překročil limit délky koherence o ',
         // component configuration popup
         'add-com-popup': 'Kliknutím na plátno přidáte komponentu',
         'com-conf-header': 'Konfigurace komponenty',
@@ -116,8 +116,8 @@ app.TRANSLATION = {
         'hol-rec-err': 'Unrecorded rays',
         'ref-errors': 'Errors in following sectors: ',
         'ref-err-sec': 'In sector ',
-        'ref-err-src': ', light source ',
-        'ref-err-ray': ', ray crossed coherence limit about ',
+        'ref-err-src': ',ray of light source ',
+        'ref-err-ray': ', crossed coherence limit about ',
         // component configuration popup
         'add-com-popup': 'Click to canvas adds the component',
         'com-conf-header': 'Component configuration',

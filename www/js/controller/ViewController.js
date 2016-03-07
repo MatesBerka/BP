@@ -154,8 +154,9 @@ app.ViewController.prototype._canvasMoved = function (e) {
 
     this._mouseCursorPoint = move;
     this._model.translate(diffX, diffY);
-    this.draw();
     e.stopPropagation();
+    e.preventDefault();
+    this.draw();
 };
 
 /**

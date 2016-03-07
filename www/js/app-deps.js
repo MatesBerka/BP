@@ -5,9 +5,9 @@ goog.addDependency('../../../../www/js/controller/ComponentController.js', ['app
 goog.addDependency('../../../../www/js/controller/HolographicPlateController.js', ['app.HolographicPlateController'], ['app.ComponentController'], false);
 goog.addDependency('../../../../www/js/controller/LensController.js', ['app.LensController'], ['app.ComponentController'], false);
 goog.addDependency('../../../../www/js/controller/LightController.js', ['app.LightController'], ['app.ComponentController', 'goog.ui.Select'], false);
-goog.addDependency('../../../../www/js/controller/MenuController.js', ['app.MenuController'], ['app.SceneController', 'goog.labs.userAgent.device', 'goog.ui.Dialog', 'goog.ui.Popup'], false);
+goog.addDependency('../../../../www/js/controller/MenuController.js', ['app.MenuController'], ['app.SceneController', 'goog.json', 'goog.labs.userAgent.device', 'goog.ui.Dialog', 'goog.ui.KeyboardShortcutHandler', 'goog.ui.Popup'], false);
 goog.addDependency('../../../../www/js/controller/MirrorController.js', ['app.MirrorController'], ['app.ComponentController'], false);
-goog.addDependency('../../../../www/js/controller/SceneController.js', ['app.SceneController'], ['app.ViewController', 'app.model.Table', 'app.model.View', 'goog.dom'], false);
+goog.addDependency('../../../../www/js/controller/SceneController.js', ['app.SceneController'], ['app.ViewController', 'app.model.Table', 'app.model.View', 'goog.dom', 'goog.json'], false);
 goog.addDependency('../../../../www/js/controller/SplitterController.js', ['app.SplitterController'], ['app.ComponentController'], false);
 goog.addDependency('../../../../www/js/controller/ViewController.js', ['app.ViewController'], ['app.HolographicPlateController', 'app.LensController', 'app.LightController', 'app.MirrorController', 'app.SplitterController', 'app.WallController', 'app.model.HolographicPlate', 'app.model.Lens', 'app.model.Light', 'app.model.Mirror', 'app.model.Splitter', 'app.model.Wall'], false);
 goog.addDependency('../../../../www/js/controller/WallController.js', ['app.WallController'], ['app.ComponentController'], false);
