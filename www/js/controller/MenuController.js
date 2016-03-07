@@ -28,6 +28,11 @@ app.MenuController = function (sceneController) {
      * @type {goog.ui.Dialog}
      * @private
      */
+    this._sizeDialog = new goog.ui.Dialog();
+    /**
+     * @type {goog.ui.Dialog}
+     * @private
+     */
     this._helpDialog = new goog.ui.Dialog('wide-dialog');
     /**
      * @type {goog.ui.Dialog}
@@ -179,6 +184,27 @@ app.MenuController.prototype._addListeners = function () {
 
     goog.events.listen(goog.dom.getElement('reflections-count'), goog.events.EventType.CLICK, this._reflectionCount, true, this);
 
+    // simulation/settings/screen size
+    goog.events.listen(this._sizeDialog, goog.ui.Dialog.EventType.SELECT,
+        /**
+         * @this {!app.MenuController}
+         * @param {!goog.ui.Dialog.Event} e
+         */
+        function (e) {
+            if (e.key == 'ok') {
+                var input = goog.dom.getElement('screen-size-input');
+                if (isNaN(input.value) || input.value < 1) {
+                    input.style.backgroundColor = "red";
+                    e.preventDefault();
+                } else {
+                    app.utils.updatePixelsPerCM(input.value);
+                }
+            }
+        },
+        false, this);
+
+    goog.events.listen(goog.dom.getElement('screen-size'), goog.events.EventType.CLICK, this._screenSize, true, this);
+
     // simulation/settings/language
     goog.events.listen(goog.dom.getElementByClass('language-switch'), goog.events.EventType.CLICK,
         /**
@@ -311,6 +337,7 @@ app.MenuController.prototype._addListeners = function () {
     var CTRL = goog.ui.KeyboardShortcutHandler.Modifiers.CTRL;
 
     shortcutHandler.registerShortcut('CTRL_H', goog.events.KeyCodes.H, CTRL); // help popup
+    shortcutHandler.registerShortcut('CTRL_L', goog.events.KeyCodes.L, CTRL); // screen size popup
 
     shortcutHandler.registerShortcut('CTRL_G M',
         goog.events.KeyCodes.G, CTRL,
@@ -355,6 +382,7 @@ app.MenuController.prototype._addListeners = function () {
          * @param {!goog.ui.KeyboardShortcutEvent} e
          */
         function (e) {
+            console.log(e.identifier);
             switch(e.identifier) {
                 case 'CTRL_H':
                     this._showHelp();
@@ -388,6 +416,9 @@ app.MenuController.prototype._addListeners = function () {
                     break;
                 case 'CTRL_B':
                     this._reflectionCount(e);
+                    break;
+                case 'CTRL_L':
+                    this._screenSize(e);
                     break;
                 case 'CTRL_Q E':
                     app.LOCALE = 'en_US';
@@ -502,4 +533,28 @@ app.MenuController.prototype._reflectionCount = function (e) {
         })]
     ));
     this._refDialog.setVisible(true);
+};
+
+/**
+ * @param {!(goog.events.BrowserEvent|goog.ui.KeyboardShortcutEvent)} e
+ * @private
+ */
+app.MenuController.prototype._screenSize = function (e) {
+    this._hideSubMenus(goog.dom.getElement('top-items'));
+    e.stopPropagation();
+
+    this._sizeDialog.setTitle(app.translation['screen-size']);
+    var buttonsSet = new goog.ui.Dialog.ButtonSet();
+    buttonsSet.addButton({key: 'ok', caption: 'Ok'}, true);
+    buttonsSet.addButton({key: 'cancel', caption: app.translation['cancel-btn']}, false, true);
+    this._sizeDialog.setButtonSet(buttonsSet);
+    var count = app.utils.getScreenSize();
+    this._sizeDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['set-screen-size'],
+        goog.html.SafeHtml.create('input', {
+            'tabindex': 1,
+            'type': 'text', 'id': 'screen-size-input',
+            'name': 'screen-size-input', 'value': count
+        })]
+    ));
+    this._sizeDialog.setVisible(true);
 };

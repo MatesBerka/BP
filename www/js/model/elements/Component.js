@@ -233,7 +233,7 @@ app.model.Component.prototype.applyTranslation = function (moveX, moveY) {
  * @public
  */
 app.model.Component.prototype.updateTranslationX = function (x) {
-    this.appliedTranslationX = Math.round(x * app.PIXEL_ON_CM);
+    this.appliedTranslationX = Math.round(x * app.PIXELS_ON_CM);
     this.transformPoints();
 };
 
@@ -242,7 +242,7 @@ app.model.Component.prototype.updateTranslationX = function (x) {
  * @public
  */
 app.model.Component.prototype.updateTranslationY = function (y) {
-    this.appliedTranslationY = Math.round(y * app.PIXEL_ON_CM);
+    this.appliedTranslationY = Math.round(y * app.PIXELS_ON_CM);
     this.transformPoints();
 };
 
@@ -251,7 +251,7 @@ app.model.Component.prototype.updateTranslationY = function (y) {
  * @public
  */
 app.model.Component.prototype.getPosX = function () {
-    return (this.appliedTranslationX / app.PIXEL_ON_CM).toFixed(2);
+    return (this.appliedTranslationX / app.PIXELS_ON_CM).toFixed(2);
 };
 
 /**
@@ -259,7 +259,7 @@ app.model.Component.prototype.getPosX = function () {
  * @public
  */
 app.model.Component.prototype.getPosY = function () {
-    return (this.appliedTranslationY / app.PIXEL_ON_CM).toFixed(2);
+    return (this.appliedTranslationY / app.PIXELS_ON_CM).toFixed(2);
 };
 
 /**

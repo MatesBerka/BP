@@ -133,8 +133,8 @@ app.ViewController.prototype.addListeners = function (view) {
  */
 app.ViewController.prototype._updateCoordinates = function (e, coordinates) {
     var xCm, yCm, zoom;
-    xCm = (e.clientX - this._CANVAS_WRAPPER.offsetLeft - this._model.getAppliedTranslationX()) / app.PIXEL_ON_CM;
-    yCm = (e.clientY - e.currentTarget.offsetTop - this._CANVAS_WRAPPER.offsetTop - this._model.getAppliedTranslationY()) / app.PIXEL_ON_CM;
+    xCm = (e.clientX - this._CANVAS_WRAPPER.offsetLeft - this._model.getAppliedTranslationX()) / app.PIXELS_ON_CM;
+    yCm = (e.clientY - e.currentTarget.offsetTop - this._CANVAS_WRAPPER.offsetTop - this._model.getAppliedTranslationY()) / app.PIXELS_ON_CM;
     zoom = Math.floor(100 * this._model.getZoom());
     goog.dom.setTextContent(coordinates, 'x: ' + xCm.toFixed(2) + ' cm, y: ' + yCm.toFixed(2) + ' cm, zoom: ' + zoom + ' %');
 };

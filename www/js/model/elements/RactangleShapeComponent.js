@@ -137,7 +137,7 @@ app.model.RectangleShapeComponent.prototype.isSelected = function(x, y) {
  * @public
  */
 app.model.RectangleShapeComponent.prototype.getHeight = function() {
-    return (this.height / app.PIXEL_ON_CM).toFixed(2);
+    return (this.height / app.PIXELS_ON_CM).toFixed(2);
 };
 
 /**
@@ -145,7 +145,7 @@ app.model.RectangleShapeComponent.prototype.getHeight = function() {
  * @public
  */
 app.model.RectangleShapeComponent.prototype.setHeight = function(height) {
-    this.height = Math.round(height * app.PIXEL_ON_CM);
+    this.height = Math.round(height * app.PIXELS_ON_CM);
     this.generateShapePoints();
     this.transformPoints();
 };
@@ -155,7 +155,7 @@ app.model.RectangleShapeComponent.prototype.setHeight = function(height) {
  * @public
  */
 app.model.RectangleShapeComponent.prototype.getWidth = function() {
-    return (this.width / app.PIXEL_ON_CM).toFixed(2);
+    return (this.width / app.PIXELS_ON_CM).toFixed(2);
 };
 
 /**
@@ -163,7 +163,7 @@ app.model.RectangleShapeComponent.prototype.getWidth = function() {
  * @public
  */
 app.model.RectangleShapeComponent.prototype.setWidth = function(width) {
-    this.width = Math.round(width * app.PIXEL_ON_CM);
+    this.width = Math.round(width * app.PIXELS_ON_CM);
     this.generateShapePoints();
     this.transformPoints();
 };

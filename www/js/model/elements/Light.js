@@ -323,7 +323,7 @@ app.model.Light.prototype.copy = function () {
  * @public
  */
 app.model.Light.prototype.getSize = function () {
-    return (this._size / app.PIXEL_ON_CM).toFixed(2);
+    return (this._size / app.PIXELS_ON_CM).toFixed(2);
 };
 
 /**
@@ -331,7 +331,7 @@ app.model.Light.prototype.getSize = function () {
  * @public
  */
 app.model.Light.prototype.setSize = function (size) {
-    this._size = Math.round(size * app.PIXEL_ON_CM);
+    this._size = Math.round(size * app.PIXELS_ON_CM);
     this.generateShapePoints();
     this.transformPoints();
 };

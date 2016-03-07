@@ -601,3 +601,7 @@ button:active {
     padding-right: 10px;
     float: left;
 }
+
+#screen-size-input {
+    width: 70px;
+}

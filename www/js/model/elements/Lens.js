@@ -55,14 +55,14 @@ app.model.Lens.prototype._generateLensPoints = function () {
  * @public
  */
 app.model.Lens.prototype.getFocusOffset = function() {
-    return (this._focusOffset / app.PIXEL_ON_CM).toFixed(2);
+    return (this._focusOffset / app.PIXELS_ON_CM).toFixed(2);
 };
 
 /**
  * @public
  */
 app.model.Lens.prototype.setFocusOffset = function(offset) {
-    this._focusOffset = Math.round(offset * app.PIXEL_ON_CM);
+    this._focusOffset = Math.round(offset * app.PIXELS_ON_CM);
     this.generateShapePoints();
     this._generateLensPoints();
     this.transformPoints();
@@ -89,7 +89,7 @@ app.model.Lens.prototype.setLensType = function(type) {
  * @override
  */
 app.model.Lens.prototype.setHeight = function(height) {
-    this.height = Math.round(height * app.PIXEL_ON_CM);
+    this.height = Math.round(height * app.PIXELS_ON_CM);
     this.generateShapePoints();
     this._generateLensPoints();
     this.transformPoints();

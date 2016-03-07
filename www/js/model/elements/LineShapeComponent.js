@@ -114,14 +114,14 @@ app.model.LineShapeComponent.prototype.isSelected = function (x, y) {
  * @public
  */
 app.model.LineShapeComponent.prototype.getHeight = function () {
-    return (this.height / app.PIXEL_ON_CM).toFixed(2);
+    return (this.height / app.PIXELS_ON_CM).toFixed(2);
 };
 
 /**
  * @public
  */
 app.model.LineShapeComponent.prototype.setHeight = function (height) {
-    this.height = Math.round(height * app.PIXEL_ON_CM);
+    this.height = Math.round(height * app.PIXELS_ON_CM);
     this.generateShapePoints();
     this.transformPoints();
 };

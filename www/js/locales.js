@@ -44,6 +44,8 @@ app.TRANSLATION = {
         'ref-err-sec': 'V oddílu ',
         'ref-err-src': ', parsek světelného zdroje ',
         'ref-err-ray': ', překročil limit délky koherence o ',
+        'screen-size': 'Úhlopříčka displeje',
+        'set-screen-size': 'Nastavit úhlopříčku (v palcích): ',
         // component configuration popup
         'add-com-popup': 'Kliknutím na plátno přidáte komponentu',
         'com-conf-header': 'Konfigurace komponenty',
@@ -118,6 +120,8 @@ app.TRANSLATION = {
         'ref-err-sec': 'In sector ',
         'ref-err-src': ',ray of light source ',
         'ref-err-ray': ', crossed coherence limit about ',
+        'screen-size': 'Screen diagonal',
+        'set-screen-size': 'Set diagonal (in inches): ',
         // component configuration popup
         'add-com-popup': 'Click to canvas adds the component',
         'com-conf-header': 'Component configuration',

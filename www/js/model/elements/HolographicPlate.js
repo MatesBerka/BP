@@ -101,14 +101,14 @@ app.model.HolographicPlate.prototype._generateGridPoints = function () {
  * @public
  */
 app.model.HolographicPlate.prototype.getPlateResolution = function () {
-    return (this._groupSize / app.PIXEL_ON_CM).toFixed(2);
+    return (this._groupSize / app.PIXELS_ON_CM).toFixed(2);
 };
 
 /**
  * @public
  */
 app.model.HolographicPlate.prototype.setHeight = function (height) {
-    this.height = Math.round(height * app.PIXEL_ON_CM);
+    this.height = Math.round(height * app.PIXELS_ON_CM);
     this._groupsCount = Math.floor(this.height / this._groupSize);
     this.generateShapePoints();
     this._generateGridPoints();
@@ -120,7 +120,7 @@ app.model.HolographicPlate.prototype.setHeight = function (height) {
  * @public
  */
 app.model.HolographicPlate.prototype.setPlateResolution = function (resolution) {
-    this._groupSize = Math.round(resolution * app.PIXEL_ON_CM);
+    this._groupSize = Math.round(resolution * app.PIXELS_ON_CM);
     this._groupsCount = Math.floor(this.height / this._groupSize);
     this.generateShapePoints();
     this._generateGridPoints();
@@ -132,14 +132,14 @@ app.model.HolographicPlate.prototype.setPlateResolution = function (resolution) 
  * @public
  */
 app.model.HolographicPlate.prototype.getTolerance = function () {
-    return (this._tolerance / app.PIXEL_ON_CM).toFixed(2);
+    return (this._tolerance / app.PIXELS_ON_CM).toFixed(2);
 };
 /**#
  * @param {!number} tolerance
  * @public
  */
 app.model.HolographicPlate.prototype.setTolerance = function (tolerance) {
-    this._tolerance = Math.round(tolerance * app.PIXEL_ON_CM);
+    this._tolerance = Math.round(tolerance * app.PIXELS_ON_CM);
 };
 
 /**
@@ -249,11 +249,11 @@ app.model.HolographicPlate.prototype._createRecord = function () {
                                 if (this._lightSources[raySourceID] <= topLimit) {
                                     rays.push(this._recordedRays[i][raySourceID]);
                                 } else {
-                                    errorDiff = -((this._lightSources[raySourceID] - bottomLimit) / app.PIXEL_ON_CM).toFixed(2);
+                                    errorDiff = -((this._lightSources[raySourceID] - bottomLimit) / app.PIXELS_ON_CM).toFixed(2);
                                     errors.push([i, raySourceID, errorDiff]);
                                 }
                             } else {
-                                errorDiff = -((this._lightSources[raySourceID] - topLimit) / app.PIXEL_ON_CM).toFixed(2);
+                                errorDiff = -((this._lightSources[raySourceID] - topLimit) / app.PIXELS_ON_CM).toFixed(2);
                                 errors.push([i, raySourceID, errorDiff]);
                             }
                             delete this._recordedRays[i][raySourceID];

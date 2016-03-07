@@ -16,7 +16,7 @@ app.LOCALE = 'en_US';
  * Make {@code app.start} accessible after {@code ADVANCED_OPTIMIZATIONS}.
  * @export
  */
-app.start = function() {
+app.start = function () {
     app._init();
 
     app.utils.translate();
@@ -35,14 +35,18 @@ app.start = function() {
 /**
  * @private
  */
-app._init = function() {
+app._init = function () {
+    /**
+     * @type {number}
+     */
+    app.PIXELS_ON_CM = goog.dom.getElement('cm-box').clientWidth;
     /**
      * @const
      * @type {number}
      */
-    app.PIXEL_ON_CM = goog.dom.getElement('cm-box').clientWidth;
+    app.INCH_TO_CM = 2.54;
 
-    if(goog.labs.userAgent.device.isDesktop()) {
+    if (goog.labs.userAgent.device.isDesktop()) {
         /** @type {goog.events.EventType|string} */
         app.MOUSE_DOWN_EVENT = goog.events.EventType.MOUSEDOWN;
         /** @type {goog.events.EventType|string} */
@@ -63,15 +67,33 @@ app._init = function() {
 /**
  * @public
  */
-app.utils.translate = function() {
+app.utils.translate = function () {
     app.translation = app.TRANSLATION[app.LOCALE];
 
     for (var key in app.translation) {
         var el = goog.dom.getElement(key);
-        if(el !== null) {
+        if (el !== null) {
             goog.dom.setTextContent(goog.dom.getElement(key), app.translation[key]);
         }
     }
+};
+
+/**
+ * @param {!number} screenSize
+ * @public
+ */
+app.utils.updatePixelsPerCM = function (screenSize) {
+    var diagonal = Math.sqrt(window.screen.height * window.screen.height + window.screen.width * window.screen.width);
+    app.PIXELS_ON_CM = diagonal/(screenSize*app.INCH_TO_CM);
+};
+
+/**
+ * @returns {string}
+ * @public
+ */
+app.utils.getScreenSize = function () {
+    var diagonal = Math.sqrt(window.screen.height * window.screen.height + window.screen.width * window.screen.width);
+    return (diagonal/(app.PIXELS_ON_CM*app.INCH_TO_CM)).toFixed(2);
 };
 
 // TODO ON/OFF light switch
@@ -80,7 +102,6 @@ app.utils.translate = function() {
 // todo AUTHOR HEADER
 // TODO redraw only active table?
 
-// TODO spatny prevod centimetru
 // TODO opravdu holograficka deska deli skupiny dobre?
 // TODO http://www.freefavicon.com/freefavicons/objects/iconinfo/graduation-hat-152-193065.html
 
