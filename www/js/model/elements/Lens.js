@@ -126,9 +126,11 @@ app.model.Lens.prototype.draw = function(ctx, callback) {
  * @private
  */
 app.model.Lens.prototype._getImagePosition = function(focus, obj) {
-    var imgDis = Math.round(1/(1/focus - 1/Math.abs(obj[0])));
-    var imgHeight = Math.round(Math.abs(obj[1])*(-imgDis/Math.abs(obj[0])));
+    var denominator = (1/focus - 1/Math.abs(obj[0]));
+    var imgDis = (denominator !== 0) ? Math.round(1/denominator) : Number.MAX_VALUE;
+    var imgHeight = Math.abs(obj[1])*(-imgDis/ Math.abs(obj[0]));
 
+    imgHeight = (imgHeight !== 0) ? imgHeight : Number.MAX_VALUE;
     imgDis = (obj[0] < 0) ? imgDis : -imgDis;
     imgHeight = (obj[1] < 0) ?  -imgHeight : imgHeight;
 

@@ -153,7 +153,9 @@ app.model.Component.prototype.transformPoints = function () {
  * @protected
  */
 app.model.Component.prototype.normalize2DVector = function (vec) {
-    var len = Math.sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
+    var len = Math.sqrt(Math.pow(vec[0],2) + Math.pow(vec[1], 2));
+    len = (len === Infinity) ? Number.MAX_VALUE : len;
+
     vec[0] = vec[0] / len;
     vec[1] = vec[1] / len;
 
