@@ -98,7 +98,15 @@ app.TRANSLATION = {
         'ht-change-cm-text': 'Dostupné komponenty lze přidávat na kartě komponenty. Každá komponenta má sadu nastavitelných' +
         ' atributů, které mužete zobrazit kliknutím na přidanou komponentu. jednotlivé komponenty jsou spojeny se stolem a ' +
         'zobrazovány v pohledech. Komponenty mouhou být také kopírovány na sousední stoly a to tlačítkem kopírovat na ' +
-        'konfiguračním panelu komponenty.'
+        'konfiguračním panelu komponenty.',
+        // comp types
+        'com-type': 'Typ: ',
+        'mirror-type': 'Zrcadlo',
+        'lens-type': 'Čočka',
+        'holo-plate-type': 'Holografické plátno',
+        'wall-type': 'Zeď',
+        'splitter-type': 'Dělič',
+        'light-type': 'Světlo'
     },
     'en_US': {
         'logo-msg': 'Diffractive optics simulator',
@@ -195,6 +203,14 @@ app.TRANSLATION = {
         'ht-change-cm-text': 'To create experiment go to Components and pick component you want to add. Each component' +
         'has own specific settings and you can display them by clicking on added component. Components are bind to a table' +
         ' and can be viewed on views. You can share copy components between tables when you click on copy button in component' +
-        'configuration panel.'
+        'configuration panel.',
+        // comp types
+        'com-type': 'Type: ',
+        'mirror-type': 'Mirror',
+        'lens-type': 'Lens',
+        'holo-plate-type': 'Holographic plate',
+        'wall-type': 'Wall',
+        'splitter-type': 'Splitter',
+        'light-type': 'Light'
     }
 };

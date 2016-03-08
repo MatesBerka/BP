@@ -188,7 +188,7 @@ app.ViewController.prototype.setViewModel = function (view) {
  * @public
  */
 app.ViewController.prototype.getViewModel = function () {
-    return this._model;
+    return /**@type{!app.model.View}*/(this._model);
 };
 
 /**

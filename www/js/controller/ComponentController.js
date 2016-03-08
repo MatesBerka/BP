@@ -59,12 +59,45 @@ app.ComponentController.validateIntInput = function (e, callback, scope) {
 };
 
 /**
+ * @public
+ */
+app.ComponentController.prototype._getComponentType = function () {
+    var type = '';
+    switch (this.model.getType()) {
+        case 'MIRROR':
+           type = app.translation['mirror-type'];
+            break;
+        case 'LENS':
+            type = app.translation['lens-type'];
+            break;
+        case 'HOLO-PLATE':
+            type = app.translation['holo-plate-type'];
+            break;
+        case 'WALL':
+            type = app.translation['wall-type'];
+            break;
+        case 'SPLITTER':
+            type = app.translation['splitter-type'];
+            break;
+        case 'LIGHT':
+            type = app.translation['light-type'];
+            break;
+    }
+    return type;
+};
+
+/**
  * @param {app.SceneController} sceneController
  * @public
  */
 app.ComponentController.prototype.showComponentControlPanel = function (sceneController) {
     goog.dom.removeChildren(this.componentConfigurationPanel);
     goog.dom.classlist.add(goog.dom.getElement('canvas-wrapper'), 'active-component-panel');
+
+    // component type
+    goog.dom.appendChild(this.componentConfigurationPanel,
+        goog.dom.createDom('div', {'id': 'com-type'}, app.translation["com-type"], this._getComponentType())
+    );
 
     // input x, y position
     goog.dom.appendChild(this.componentConfigurationPanel,

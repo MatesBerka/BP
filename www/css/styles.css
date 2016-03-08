@@ -624,3 +624,8 @@ button:active {
 #screen-size-input {
     width: 70px;
 }
+
+#com-type {
+    padding: 4px 0px;
+    font-size: 16px;
+}
