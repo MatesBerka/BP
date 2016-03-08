@@ -19,7 +19,6 @@ app.model.HolographicPlate = function (coordX, coordY) {
      */
     this._makeRecord = false;
     /**
-     * todo also add remove record?
      * @type {!boolean}
      * @private
      */
@@ -48,7 +47,6 @@ app.model.HolographicPlate = function (coordX, coordY) {
      */
     this._allRefLights = false;
     /**
-     * TODO not used now
      * ID of reference Light
      * @type {!number}
      * @private

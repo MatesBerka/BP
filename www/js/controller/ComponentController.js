@@ -33,8 +33,9 @@ app.ComponentController = function () {
  * @protected
  */
 app.ComponentController.validateFloatInput = function (e, callback, scope) {
-    var val = parseFloat(e.target.value);
-    if (isNaN(val)) {
+    var val = parseFloat(e.target.value.replace(/\,/g, '.'));
+    console.log(val);
+    if (isNaN(val) || val === 0) {
         e.target.style.backgroundColor = "red";
     } else {
         e.target.style.backgroundColor = "white";
@@ -49,8 +50,8 @@ app.ComponentController.validateFloatInput = function (e, callback, scope) {
  * @protected
  */
 app.ComponentController.validateIntInput = function (e, callback, scope) {
-    var val = parseFloat(e.target.value);
-    if (isNaN(val)) {
+    var val = parseInt(e.target.value, 10);
+    if (isNaN(val) || val === 0) {
         e.target.style.backgroundColor = "red";
     } else {
         e.target.style.backgroundColor = "white";
@@ -65,7 +66,7 @@ app.ComponentController.prototype._getComponentType = function () {
     var type = '';
     switch (this.model.getType()) {
         case 'MIRROR':
-           type = app.translation['mirror-type'];
+            type = app.translation['mirror-type'];
             break;
         case 'LENS':
             type = app.translation['lens-type'];

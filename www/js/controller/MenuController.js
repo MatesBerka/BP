@@ -172,11 +172,12 @@ app.MenuController.prototype._addListeners = function () {
         function (e) {
             if (e.key == 'ok') {
                 var input = goog.dom.getElement('reflection-count-input');
-                if (isNaN(input.value) || input.value < 1) {
+                var val = parseFloat(input.value.replace(/\,/g, '.'));
+                if (isNaN(val) || val < 1) {
                     input.style.backgroundColor = "red";
                     e.preventDefault();
                 } else {
-                    this._SCENECONTROLLER.setReflectionsCount(input.value);
+                    this._SCENECONTROLLER.setReflectionsCount(val);
                 }
             }
         },
@@ -193,11 +194,12 @@ app.MenuController.prototype._addListeners = function () {
         function (e) {
             if (e.key == 'ok') {
                 var input = goog.dom.getElement('screen-size-input');
-                if (isNaN(input.value) || input.value < 1) {
+                var val = parseFloat(input.value.replace(/\,/g, '.'));
+                if (isNaN(val) || val < 1) {
                     input.style.backgroundColor = "red";
                     e.preventDefault();
                 } else {
-                    app.utils.updatePixelsPerCM(input.value);
+                    app.utils.updatePixelsPerCM(val);
                 }
             }
         },
