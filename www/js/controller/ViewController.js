@@ -184,6 +184,14 @@ app.ViewController.prototype.setViewModel = function (view) {
 };
 
 /**
+ * @return {!app.model.View}
+ * @public
+ */
+app.ViewController.prototype.getViewModel = function () {
+    return this._model;
+};
+
+/**
  * @return {!number}
  * @public
  */
@@ -205,6 +213,14 @@ app.ViewController.prototype.setReflectionsCount = function (count) {
  */
 app.ViewController.prototype.setComponents = function (components) {
     this._components = components;
+};
+
+/**
+ * @return {!Array<app.model.Component>}
+ * @public
+ */
+app.ViewController.prototype.getComponents = function () {
+    return this._components;
 };
 
 /**

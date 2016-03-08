@@ -63,7 +63,6 @@ app._init = function () {
     }
 };
 
-
 /**
  * @public
  */
@@ -96,14 +95,12 @@ app.utils.getScreenSize = function () {
     return (diagonal/(app.PIXELS_ON_CM*app.INCH_TO_CM)).toFixed(2);
 };
 
+// TODO vlnova delka svetla u svetla
 // TODO ON/OFF light switch
 // TODO pravitko
 // TODO mrizka
 // todo AUTHOR HEADER
-// TODO redraw only active table?
-
 // TODO opravdu holograficka deska deli skupiny dobre?
-// TODO http://www.freefavicon.com/freefavicons/objects/iconinfo/graduation-hat-152-193065.html
 
 // ray [[x,y,z],[x,y,z], lightID, rayLength];
 // _intersectionRay and ray in intersect()

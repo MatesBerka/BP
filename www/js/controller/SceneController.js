@@ -776,12 +776,17 @@ app.SceneController.prototype.setReflectionsCount = function (count) {
  */
 app.SceneController.prototype.redrawAll = function () {
     var views = this._tables[this._activeTableID].getViews();
+    var activeComponents = this._VIEW_CONTROLLER.getComponents();
+    var activeModel = this._VIEW_CONTROLLER.getViewModel();
 
     this._VIEW_CONTROLLER.setComponents(this._tables[this._activeTableID].getComponents());
     for (var i = 0; i < views.length; i++) {
         this._VIEW_CONTROLLER.setViewModel(views[i]);
         this._VIEW_CONTROLLER.draw();
     }
+
+    this._VIEW_CONTROLLER.setComponents(activeComponents);
+    this._VIEW_CONTROLLER.setViewModel(activeModel);
 };
 
 /**
