@@ -1,6 +1,7 @@
 goog.provide('app.model.Light');
 
 goog.require('app.model.Component');
+
 /**
  * @param {!number} coordX - component x position
  * @param {!number} coordY - component Y position
@@ -23,11 +24,11 @@ app.model.Light = function (coordX, coordY) {
 
     this.type = 'LIGHT';
 
-    // TODO co to light ID, pouziva se?
     this._lightID = -1;
 
     this.facesCount = 4;
 
+    this.generateShapePoints();
     this.transformPoints();
 };
 
@@ -38,7 +39,7 @@ goog.inherits(app.model.Light, app.model.Component);
  */
 app.model.Light.prototype.generateShapePoints = function () {
     this.originPoints = [];
-    if (this._lightType == 'CIRCLE') {
+    if (this._lightType === 'CIRCLE') {
         this._generateBallShapePoints();
     } else {
         this._generateSquareShapePoints();
@@ -73,12 +74,12 @@ app.model.Light.prototype._generateSquareShapePoints = function () {
 };
 
 /**
+ * @see https://rootllama.wordpress.com/2014/06/20/ray-line-segment-intersection-test-in-2d/#comments
  * @param {!Array<number>} ray
  * @return {!number}
  * @private
  */
 app.model.Light.prototype._squareIntersection = function (ray) {
-    //https://rootllama.wordpress.com/2014/06/20/ray-line-segment-intersection-test-in-2d/#comments
     var numerator, denominator, t1, t2, v1, v2, v3, ix, iy, a, aIndex, b, bIndex,
         length, rayLength = Infinity;
 
@@ -123,8 +124,7 @@ app.model.Light.prototype._squareIntersection = function (ray) {
 };
 
 /**
- * Source:
- * http://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm
+ * @see http://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm
  * t2( dx2 + dy2 ) + 2t( exdx + eydy - dxh - dyk ) + ex2 + ey2 - 2exh - 2eyk + h2 + k2 - r2 = 0
  * @param {!Array<number>} ray
  * @return {!number}
@@ -161,7 +161,7 @@ app.model.Light.prototype._circleIntersection = function (ray) {
  * @override
  */
 app.model.Light.prototype.isIntersection = function (ray) {
-    if (this._lightType == 'BEAM') {
+    if (this._lightType === 'BEAM') {
         return this._squareIntersection(ray);
     } else {
         return this._circleIntersection(ray);
@@ -185,7 +185,7 @@ app.model.Light.prototype._isSquareSelected = function (point) {
 
 /**
  * Source:
- * http://math.stackexchange.com/questions/198764/how-to-know-if-a-point-is-inside-a-circle
+ * @see http://math.stackexchange.com/questions/198764/how-to-know-if-a-point-is-inside-a-circle
  * @param {!Array<number>} point
  * @return {!boolean}
  * @private
@@ -201,7 +201,7 @@ app.model.Light.prototype._isCircleSelected = function (point) {
 app.model.Light.prototype.isSelected = function (x, y) {
     var point = this.reverseTransformPoint([x, y]);
 
-    if (this._lightType == 'BEAM') {
+    if (this._lightType === 'BEAM') {
         return this.isComponentSelected = this._isSquareSelected(point);
     } else {
         return this.isComponentSelected = this._isCircleSelected(point);
@@ -251,7 +251,7 @@ app.model.Light.prototype._drawBeam = function (ctx) {
  */
 app.model.Light.prototype.draw = function (ctx, callback) {
     var x, y, dx, dy, vec1, vec2, indentation, i, degree, radians, halfSize = (this._size / 2);
-    if (this._lightType == 'BEAM') {
+    if (this._lightType === 'BEAM') {
         this._drawBeam(ctx);
         indentation = this._size / this._generatedRaysCount;
         x = Math.floor(this.width / 2);
@@ -293,6 +293,7 @@ app.model.Light.prototype.copyArguments = function (rotation, size, lightType, g
     this._lightType = lightType;
     this._generatedRaysCount = generatedRaysCount;
     this._lightRadius = lightRadius;
+    this.generateShapePoints();
     this.transformPoints();
 };
 
@@ -306,6 +307,7 @@ app.model.Light.prototype.importComponentData = function (componentModel) {
     this._lightType = componentModel._lightType;
     this._generatedRaysCount = componentModel._generatedRaysCount;
     this._lightRadius = componentModel._lightRadius;
+    this.generateShapePoints();
     this.transformPoints();
 };
 

@@ -262,10 +262,10 @@ app.ViewController.prototype.draw = function () {
             }
 
             if (rayLength != Infinity) {
-                endPoint = this._components[/**@type{!number}*/(componentID)].intersect(this._rays, ray);
+                endPoint = this._components[/**@type{!number}*/(componentID)].intersect(this._rays);
                 ctx.moveTo(ray[0], ray[1]);
                 ctx.lineTo(endPoint[0], endPoint[1]);
-            } // TODO else let him to hit wall
+            }
         }
 
         if (this._rays.length == 0 || depthCount >= this._reflectionsCount) {

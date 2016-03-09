@@ -1,6 +1,7 @@
 goog.provide('app.model.Lens');
 
 goog.require('app.model.LineShapeComponent');
+
 /**
  * @param {!number} coordX - component x position
  * @param {!number} coordY - component Y position
@@ -140,7 +141,7 @@ app.model.Lens.prototype._getImagePosition = function(focus, obj) {
 /**
  * @override
  */
-app.model.Lens.prototype.intersect = function (rays, ray) {
+app.model.Lens.prototype.intersect = function (rays) {
     var point = this.reverseTransformPoint([this._intersectionRay[0], this._intersectionRay[1]]);
     var dVec = [], normDVec, imgPoint;
 
@@ -164,9 +165,9 @@ app.model.Lens.prototype.intersect = function (rays, ray) {
     this._intersectionRay[1] = this.intersectionPoint[1];
     this._intersectionRay[3] = normDVec[0];
     this._intersectionRay[4] = normDVec[1];
+    this._intersectionRay[7] +=  this.newRayLength;
     rays.push(this._intersectionRay);
 
-    ray[7] += this.newRayLength;
     return this.intersectionPoint;
 };
 
@@ -182,6 +183,8 @@ app.model.Lens.prototype.copyArguments = function(rotation, height, focusType, f
     this.height = height;
     this._focusType = focusType;
     this._focusOffset = focusOffset;
+    this.generateShapePoints();
+    this._generateLensPoints();
     this.transformPoints();
 };
 
@@ -194,6 +197,8 @@ app.model.Lens.prototype.importComponentData = function (componentModel) {
     this.height = componentModel.height;
     this._focusType = componentModel._focusType;
     this._focusOffset = componentModel._focusOffset;
+    this.generateShapePoints();
+    this._generateLensPoints();
     this.transformPoints();
 };
 

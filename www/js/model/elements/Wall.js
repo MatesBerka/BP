@@ -29,6 +29,7 @@ app.model.Wall.prototype.copyArguments = function (rotation, width, height) {
     this.appliedRotation = rotation;
     this.width = width;
     this.height = height;
+    this.generateShapePoints();
     this.transformPoints();
 };
 
@@ -40,6 +41,7 @@ app.model.Wall.prototype.importComponentData = function (componentModel) {
     this.appliedRotation = componentModel.appliedRotation;
     this.width = componentModel.width;
     this.height = componentModel.height;
+    this.generateShapePoints();
     this.transformPoints();
 };
 

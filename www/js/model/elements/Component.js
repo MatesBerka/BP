@@ -120,11 +120,9 @@ app.model.Component.prototype.copy = goog.abstractMethod;
 
 /**
  * @param {!Array<Array<!number>>} rays
- * @param {Array<!number>} ray
  * @public
  */
-app.model.Component.prototype.intersect = function (rays, ray) {
-    ray[7] += this.newRayLength;
+app.model.Component.prototype.intersect = function (rays) {
     return this.intersectionPoint;
 };
 

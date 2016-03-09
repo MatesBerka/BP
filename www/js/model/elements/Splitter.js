@@ -1,6 +1,7 @@
 goog.provide('app.model.Splitter');
 
 goog.require('app.model.LineShapeComponent');
+
 /**
  * @param {!number} coordX - component x position
  * @param {!number} coordY - component Y position
@@ -21,7 +22,7 @@ goog.inherits(app.model.Splitter, app.model.LineShapeComponent);
 /**
  * @override
  */
-app.model.Splitter.prototype.intersect = function (rays, ray) {
+app.model.Splitter.prototype.intersect = function (rays) {
     var dVec = [], normVec;
 
     var point = this.reverseTransformPoint([this._intersectionRay[0], this._intersectionRay[1]]);
@@ -41,7 +42,6 @@ app.model.Splitter.prototype.intersect = function (rays, ray) {
     this._intersectionRay[1] = this.intersectionPoint[1];
     rays.push(this._intersectionRay);
 
-    ray[7] += this.newRayLength;
     return this.intersectionPoint;
 };
 
@@ -51,6 +51,7 @@ app.model.Splitter.prototype.intersect = function (rays, ray) {
  */
 app.model.Splitter.prototype.copyArguments = function (height) {
     this.height = height;
+    this.generateShapePoints();
     this.transformPoints();
 };
 
@@ -60,6 +61,7 @@ app.model.Splitter.prototype.copyArguments = function (height) {
  */
 app.model.Splitter.prototype.importComponentData = function (componentModel) {
     this.height = componentModel.height;
+    this.generateShapePoints();
     this.transformPoints();
 };
 

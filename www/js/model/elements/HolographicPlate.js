@@ -71,6 +71,9 @@ app.model.HolographicPlate = function (coordX, coordY) {
 
 goog.inherits(app.model.HolographicPlate, app.model.LineShapeComponent);
 
+/**
+ * @private
+ */
 app.model.HolographicPlate.prototype._generateGridPoints = function () {
     var x, y = 0, z = 0;
     // end points
@@ -304,19 +307,14 @@ app.model.HolographicPlate.prototype._checkRecordedRays = function (rays) {
 /**
  * @override
  */
-app.model.HolographicPlate.prototype.intersect = function (rays, ray) {
-
-    // todo ktery teda pouzivat
-    ray[7] += this.newRayLength;
-    this._intersectionRay[7] += this.newRayLength;
-
+app.model.HolographicPlate.prototype.intersect = function (rays) {
     if (this._makeRecord)
         this._recordRay();
 
     if (this._showRecord)
         this._checkRecordedRays(rays);
 
-    this._lightSources[this._intersectionRay[6]] = this._intersectionRay[7];
+    this._lightSources[this._intersectionRay[6]] = (this._intersectionRay[7]  + this.newRayLength);
 
     return this.intersectionPoint;
 };
@@ -367,6 +365,8 @@ app.model.HolographicPlate.prototype.copyArguments = function (rotation, height,
     this.height = height;
     this._groupSize = groupSize;
     this._tolerance = tolerance;
+    this.generateShapePoints();
+    this._generateGridPoints();
     this.transformPoints();
 };
 
@@ -379,6 +379,8 @@ app.model.HolographicPlate.prototype.importComponentData = function (componentMo
     this.height = componentModel.height;
     this._groupSize = componentModel._groupSize;
     this._tolerance = componentModel._tolerance;
+    this.generateShapePoints();
+    this._generateGridPoints();
     this.transformPoints();
 };
 
