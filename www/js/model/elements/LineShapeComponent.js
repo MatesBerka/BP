@@ -36,6 +36,7 @@ app.model.LineShapeComponent.prototype.generateShapePoints = function () {
 };
 
 /**
+ * @see https://rootllama.wordpress.com/2014/06/20/ray-line-segment-intersection-test-in-2d/#comments
  * @override
  */
 app.model.LineShapeComponent.prototype.isIntersection = function (ray) {

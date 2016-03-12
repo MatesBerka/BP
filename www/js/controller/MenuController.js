@@ -33,6 +33,11 @@ app.MenuController = function (sceneController) {
      * @type {goog.ui.Dialog}
      * @private
      */
+    this._toleranceDialog = new goog.ui.Dialog();
+    /**
+     * @type {goog.ui.Dialog}
+     * @private
+     */
     this._helpDialog = new goog.ui.Dialog('wide-dialog');
     /**
      * @type {goog.ui.Dialog}
@@ -207,6 +212,28 @@ app.MenuController.prototype._addListeners = function () {
 
     goog.events.listen(goog.dom.getElement('screen-size'), goog.events.EventType.CLICK, this._screenSize, true, this);
 
+    // simulation/settings/tolerance
+    goog.events.listen(this._toleranceDialog, goog.ui.Dialog.EventType.SELECT,
+        /**
+         * @this {!app.MenuController}
+         * @param {!goog.ui.Dialog.Event} e
+         */
+        function (e) {
+            if (e.key == 'ok') {
+                var input = goog.dom.getElement('tolerance-input');
+                var val = parseFloat(input.value.replace(/\,/g, '.'));
+                if (isNaN(val) || val < 1) {
+                    input.style.backgroundColor = "red";
+                    e.preventDefault();
+                } else {
+                    app.utils.setTolerance(val);
+                }
+            }
+        },
+        false, this);
+
+    goog.events.listen(goog.dom.getElement('tolerance'), goog.events.EventType.CLICK, this._tolerance, true, this);
+
     // simulation/settings/language
     goog.events.listen(goog.dom.getElementByClass('language-switch'), goog.events.EventType.CLICK,
         /**
@@ -340,6 +367,7 @@ app.MenuController.prototype._addListeners = function () {
 
     shortcutHandler.registerShortcut('CTRL_H', goog.events.KeyCodes.H, CTRL); // help popup
     shortcutHandler.registerShortcut('CTRL_L', goog.events.KeyCodes.L, CTRL); // screen size popup
+    shortcutHandler.registerShortcut('CTRL_T', goog.events.KeyCodes.T, CTRL); // coherence tolerance
 
     shortcutHandler.registerShortcut('CTRL_G M',
         goog.events.KeyCodes.G, CTRL,
@@ -421,6 +449,9 @@ app.MenuController.prototype._addListeners = function () {
                     break;
                 case 'CTRL_L':
                     this._screenSize(e);
+                    break;
+                case 'CTRL_T':
+                    this._tolerance(e);
                     break;
                 case 'CTRL_Q E':
                     app.LOCALE = 'en_US';
@@ -553,4 +584,27 @@ app.MenuController.prototype._screenSize = function (e) {
         })]
     ));
     this._sizeDialog.setVisible(true);
+};
+
+/**
+ * @param {!(goog.events.BrowserEvent|goog.ui.KeyboardShortcutEvent)} e
+ * @private
+ */
+app.MenuController.prototype._tolerance = function(e) {
+    this._hideSubMenus(goog.dom.getElement('top-items'));
+    e.stopPropagation();
+
+    this._toleranceDialog.setTitle(app.translation['tolerance-title']);
+    var buttonsSet = new goog.ui.Dialog.ButtonSet();
+    buttonsSet.addButton({key: 'ok', caption: 'Ok'}, true);
+    buttonsSet.addButton({key: 'cancel', caption: app.translation['cancel-btn']}, false, true);
+    this._toleranceDialog.setButtonSet(buttonsSet);
+    this._toleranceDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['set-tolerance'],
+        goog.html.SafeHtml.create('input', {
+            'tabindex': 1,
+            'type': 'text', 'id': 'tolerance-input',
+            'name': 'tolerance-input', 'value': app.utils.getTolerance()
+        })]
+    ));
+    this._toleranceDialog.setVisible(true);
 };

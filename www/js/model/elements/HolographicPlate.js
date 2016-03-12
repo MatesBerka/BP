@@ -36,12 +36,6 @@ app.model.HolographicPlate = function (coordX, coordY) {
      */
     this._groupsCount = Math.floor(this.height / this._groupSize);
     /**
-     * The maximum angels difference of two rays
-     * @type {!number}
-     * @private
-     */
-    this._tolerance = 3;
-    /**
      * @type {boolean}
      * @private
      */
@@ -129,21 +123,6 @@ app.model.HolographicPlate.prototype.setPlateResolution = function (resolution) 
 };
 
 /**
- * @returns {!string}
- * @public
- */
-app.model.HolographicPlate.prototype.getTolerance = function () {
-    return (this._tolerance / app.PIXELS_ON_CM).toFixed(2);
-};
-/**#
- * @param {!number} tolerance
- * @public
- */
-app.model.HolographicPlate.prototype.setTolerance = function (tolerance) {
-    this._tolerance = Math.round(tolerance * app.PIXELS_ON_CM);
-};
-
-/**
  * @public
  */
 app.model.HolographicPlate.prototype.collectRays = function () {
@@ -222,8 +201,8 @@ app.model.HolographicPlate.prototype._createRecord = function () {
                         group[refRaySourceID] = [];
                         for (raySourceID in this._recordedRays[i]) {
                             if (this._recordedRays[i].hasOwnProperty(raySourceID)) {
-                                bottomLimit = this._lightSources[refRaySourceID] - this._tolerance;
-                                topLimit = this._lightSources[refRaySourceID] + this._tolerance;
+                                bottomLimit = this._lightSources[refRaySourceID] - app.COHERENCE_LENGTH;
+                                topLimit = this._lightSources[refRaySourceID] + app.COHERENCE_LENGTH;
 
                                 if (bottomLimit < this._lightSources[raySourceID] && this._lightSources[raySourceID] < topLimit) {
                                     console.log(bottomLimit, this._lightSources[raySourceID], topLimit);
@@ -243,8 +222,8 @@ app.model.HolographicPlate.prototype._createRecord = function () {
                     rays = [];
                     for (raySourceID in this._recordedRays[i]) {
                         if (this._recordedRays[i].hasOwnProperty(raySourceID)) {
-                            bottomLimit = this._lightSources[this._refLightID] - this._tolerance;
-                            topLimit = this._lightSources[this._refLightID] + this._tolerance;
+                            bottomLimit = this._lightSources[this._refLightID] - app.COHERENCE_LENGTH;
+                            topLimit = this._lightSources[this._refLightID] + app.COHERENCE_LENGTH;
 
                             if (bottomLimit <= this._lightSources[raySourceID]) {
                                 if (this._lightSources[raySourceID] <= topLimit) {
@@ -357,14 +336,12 @@ app.model.HolographicPlate.prototype.draw = function (ctx, callback) {
  * @param {!number} rotation
  * @param {!number} height
  * @param {!number} groupSize
- * @param {!number} tolerance
  * @override
  */
-app.model.HolographicPlate.prototype.copyArguments = function (rotation, height, groupSize, tolerance) {
+app.model.HolographicPlate.prototype.copyArguments = function (rotation, height, groupSize) {
     this.appliedRotation = rotation;
     this.height = height;
     this._groupSize = groupSize;
-    this._tolerance = tolerance;
     this.generateShapePoints();
     this._generateGridPoints();
     this.transformPoints();
@@ -378,7 +355,6 @@ app.model.HolographicPlate.prototype.importComponentData = function (componentMo
     this.appliedRotation = componentModel.appliedRotation;
     this.height = componentModel.height;
     this._groupSize = componentModel._groupSize;
-    this._tolerance = componentModel._tolerance;
     this.generateShapePoints();
     this._generateGridPoints();
     this.transformPoints();
@@ -389,6 +365,6 @@ app.model.HolographicPlate.prototype.importComponentData = function (componentMo
  */
 app.model.HolographicPlate.prototype.copy = function () {
     var copy = new app.model.HolographicPlate(this.appliedTranslationX, this.appliedTranslationY);
-    copy.copyArguments(this.appliedRotation, this.height, this._groupSize, this._tolerance);
+    copy.copyArguments(this.appliedRotation, this.height, this._groupSize);
     return copy;
 };

@@ -25,7 +25,10 @@ app.HolographicPlateController = function (model, modelID) {
      * @private
      */
     this._pickRefLightDialog = new goog.ui.Dialog();
-
+    /**
+     * @type {!goog.ui.Dialog}
+     * @private
+     */
     this._errorsDialog = new goog.ui.Dialog();
 };
 goog.inherits(app.HolographicPlateController, app.ComponentController);
@@ -89,17 +92,6 @@ app.HolographicPlateController.prototype.showComponentControlPanel = function (s
             )
         )
     );
-    goog.dom.appendChild(this.componentConfigurationPanel,
-        goog.dom.createDom('div', {'class': 'input-field'},
-            goog.dom.createDom('span', {'class': 'com-left-side'}, app.translation["com-plate-tolerance"]),
-            goog.dom.createDom('span', {'class': 'com-right-side'},
-                goog.dom.createDom('input', {
-                    'type': 'text', 'name': 'com-plate-tol', 'class': 'input-min', 'id': 'com-plate-tol',
-                    'value': this.model.getTolerance()
-                })
-            )
-        )
-    );
 
     goog.dom.appendChild(this.componentConfigurationPanel,
         goog.dom.createDom('div', {'class': 'buttons-group'},
@@ -134,16 +126,6 @@ app.HolographicPlateController.prototype.addPanelListeners = function (sceneCont
          */
         function (e) {
             app.ComponentController.validateFloatInput(e, this.model.setPlateResolution, this.model);
-            sceneController.redrawAll();
-        }, true, this);
-
-    goog.events.listen(goog.dom.getElement('com-plate-tol'), goog.events.EventType.KEYUP,
-        /**
-         * @this {!app.HolographicPlateController}
-         * @param {!goog.events.BrowserEvent} e
-         */
-        function (e) {
-            app.ComponentController.validateFloatInput(e, this.model.setTolerance, this.model);
             sceneController.redrawAll();
         }, true, this);
 
