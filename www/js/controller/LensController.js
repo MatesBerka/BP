@@ -3,10 +3,14 @@ goog.provide('app.LensController');
 goog.require('app.ComponentController');
 
 /**
+ * @description Diffractive optics simulator
+ * @version 1.2
+ * @author Matěj Berka
  * @param {!app.model.Lens} model
  * @param {!number} modelID
  * @constructor
  * @extends {app.ComponentController}
+ * Controller used by app.model.Lens component. Adds specific controls for this component.
  */
 app.LensController = function (model, modelID) {
     app.LensController.base(this, 'constructor');

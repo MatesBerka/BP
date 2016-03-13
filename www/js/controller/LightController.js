@@ -4,10 +4,14 @@ goog.require('app.ComponentController');
 goog.require('goog.ui.Select');
 
 /**
+ * @description Diffractive optics simulator
+ * @version 1.2
+ * @author Matěj Berka
  * @param {!app.model.Light} model
  * @param {!number} modelID
  * @constructor
  * @extends {app.ComponentController}
+ * Controller used by app.model.Light component. Adds specific controls for this component.
  */
 app.LightController = function (model, modelID) {
     app.LightController.base(this, 'constructor');

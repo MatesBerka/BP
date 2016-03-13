@@ -8,9 +8,13 @@ goog.require('goog.json');
 goog.require('app.SceneController');
 
 /**
+ * @description Diffractive optics simulator
+ * @version 1.2
+ * @author Matěj Berka
  * @param {!app.SceneController} sceneController
  * @final
  * @constructor
+ * This controller controls site top menu actions.
  */
 app.MenuController = function (sceneController) {
     /**

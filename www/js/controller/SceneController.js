@@ -7,8 +7,13 @@ goog.require('app.model.View');
 goog.require('goog.json');
 
 /**
+ * @description Diffractive optics simulator
+ * @version 1.2
+ * @author Matěj Berka
  * @final
  * @constructor
+ * Main controller of entire simulation. This controller defines basic actions used to control simulation.
+ * Like tables, views and component control, simulation export and resize control.
  */
 app.SceneController = function () {
     /**

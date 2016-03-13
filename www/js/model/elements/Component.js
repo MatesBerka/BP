@@ -1,10 +1,14 @@
 goog.provide('app.model.Component');
 
 /**
+ * @description Diffractive optics simulator
+ * @version 1.2
+ * @author Matěj Berka
  * @param {!number} coordX - component x position
  * @param {!number} coordY - component Y position
  * @template Component
  * @constructor
+ * Abstract class used to define basic operations used by all components.
  */
 app.model.Component = function (coordX, coordY) {
     /**

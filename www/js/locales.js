@@ -1,5 +1,12 @@
 goog.provide('app.locales');
 
+/**
+ *@description Diffractive optics simulator
+ * @version 1.2
+ * @author Matěj Berka
+ * This file contains entire translation for simulator.
+ * Keys are used as translation IDs. Key value is translation text.
+ */
 app.TRANSLATION = {
     'cs_CZ': {
         'logo-msg': 'Simulátor difraktivní optiky',
@@ -67,8 +74,8 @@ app.TRANSLATION = {
         'com-lens-type-title': 'Typ čočky',
         'com-lens-focus-offset': 'Vzdálenost ohniska:',
         'com-light-size': 'A: ',
-        'com-light-beam': 'Kužel',
-        'com-light-circle': 'Kruh',
+        'com-light-beam': 'Bodové',
+        'com-light-circle': 'Kruhové',
         'com-light-type-title': 'Typ světla: ',
         'com-light-rays-count': 'Počet paprsků: ',
         'com-light-radius': 'Rádius: ',

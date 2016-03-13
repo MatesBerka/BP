@@ -3,10 +3,14 @@ goog.provide('app.SplitterController');
 goog.require('app.ComponentController');
 
 /**
+ * @description Diffractive optics simulator
+ * @version 1.2
+ * @author Matěj Berka
  * @param {!app.model.Splitter} model
  * @param {!number} modelID
  * @constructor
  * @extends {app.ComponentController}
+ * Controller used by app.model.Splitter component. Adds specific controls for this component.
  */
 app.SplitterController = function (model, modelID) {
     app.SplitterController.base(this, 'constructor');

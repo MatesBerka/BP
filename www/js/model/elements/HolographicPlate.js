@@ -3,11 +3,15 @@ goog.provide('app.model.HolographicPlate');
 goog.require('app.model.LineShapeComponent');
 
 /**
+ * @description Diffractive optics simulator
+ * @version 1.2
+ * @author Matěj Berka
  * @param {!number} coordX - component x position
  * @param {!number} coordY - component Y position
  * @final
  * @constructor
  * @extends {app.model.LineShapeComponent}
+ * This class represents Holographic plate component.
  */
 app.model.HolographicPlate = function (coordX, coordY) {
     app.model.HolographicPlate.base(this, 'constructor', coordX, coordY); // call parent constructor
@@ -213,11 +217,13 @@ app.model.HolographicPlate.prototype._getAngle = function () {
  * @private
  */
 app.model.HolographicPlate.prototype._createRecord = function () {
-    var i, refRaySourceID, raySourceID, frequencies = [], errors = [], errorDiff, refRay, refRayAngle, ray, rayAngle, f;
+    var i, refRaySourceID, raySourceID, group = [], frequencies = [], errors = [], errorDiff, refRay, refRayAngle, ray,
+     rayAngle, f;
 
     if (this._allRefLights) {
         for (i = 0; i < this._groups.length; i++) {
             if (this._groups[i] !== undefined) {
+                group = [];
                 for (refRaySourceID in this._groups[i]) {
                     if (this._groups[i].hasOwnProperty(refRaySourceID)) { // 1) pick ref. light
                         refRayAngle = this._groups[i][refRaySourceID][0];
@@ -234,9 +240,10 @@ app.model.HolographicPlate.prototype._createRecord = function () {
                                 }
                             }
                         }
-                        this._groups[i][refRaySourceID] = frequencies;
+                        group.push(frequencies);
                     }
                 }
+                this._groups[i] = group;
             }
         }
     } else { // single ref. light picked
@@ -273,6 +280,7 @@ app.model.HolographicPlate.prototype._createRecord = function () {
             }
         }
     }
+    console.log(this._groups);
     return errors;
 };
 
@@ -301,9 +309,13 @@ app.model.HolographicPlate.prototype._checkRecordedRays = function (rays) {
     if (this._groups[groupID] !== undefined) {
         raySource = this.reverseTransformPoint([this._intersectionRay[0], this._intersectionRay[1]]);
         group = (this._allRefLights) ? this._groups[groupID][this._intersectionRay[6]] : this._groups[groupID];
+        // TODO hodi chybu kdyz bude osvetlovat svetlo ktere nezaznamenavalo
+        console.log(group);
         for (var i = 0; i < group.length; i++) {
             sin = this._m * this._intersectionRay[8] * group[i] + Math.sin((angle * (Math.PI / 180)));
+            console.log(sin, this._intersectionRay[8], group[i], angle);
             if (sin <= 1 && sin >= -1) { // if sin does not crossed maximum add ray
+                console.log('sfsf' );
                 outgoingAngle = Math.asin(sin);
                 dirPoint = (raySource[0] > 0) ? this.rotatePoint([-1, 0], (-outgoingAngle + this.appliedRotation)) :
                     this.rotatePoint([1, 0], (outgoingAngle + this.appliedRotation));

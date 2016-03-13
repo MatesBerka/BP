@@ -1,14 +1,20 @@
 goog.provide('app.model.View');
 
 /**
+ * @description Diffractive optics simulator
+ * @version 1.2
+ * @author Matěj Berka
  * @param {!string} viewName
  * @param {!number} offsetX
  * @param {!number} offsetY
  * @final
  * @constructor
+ * This model represents a single used to display table components.
+ * Contains view transformations.
  */
 app.model.View = function (viewName, offsetX, offsetY) {
     /**
+     * View name displayed in menu.
      * @type {!string}
      * @private
      */

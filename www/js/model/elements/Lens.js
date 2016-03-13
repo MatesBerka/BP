@@ -3,11 +3,15 @@ goog.provide('app.model.Lens');
 goog.require('app.model.LineShapeComponent');
 
 /**
+ * @description Diffractive optics simulator
+ * @version 1.2
+ * @author Matěj Berka
  * @param {!number} coordX - component x position
  * @param {!number} coordY - component Y position
  * @final
  * @constructor
  * @extends {app.model.LineShapeComponent}
+ * This class represents Lens component.
  */
 app.model.Lens = function(coordX, coordY) {
     app.model.Lens.base(this, 'constructor', coordX, coordY); // call parent constructor

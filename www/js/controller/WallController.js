@@ -3,10 +3,14 @@ goog.provide('app.WallController');
 goog.require('app.ComponentController');
 
 /**
+ * @description Diffractive optics simulator
+ * @version 1.2
+ * @author Matěj Berka
  * @param {!app.model.Wall} model
  * @param {!number} modelID
  * @constructor
  * @extends {app.ComponentController}
+ * Controller used by app.model.Wall component. Adds specific controls for this component.
  */
 app.WallController = function (model, modelID) {
     app.WallController.base(this, 'constructor');

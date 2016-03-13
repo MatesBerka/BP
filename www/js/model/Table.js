@@ -1,32 +1,41 @@
 goog.provide('app.model.Table');
 
 /**
+ * @description Diffractive optics simulator
+ * @version 1.2
+ * @author Matěj Berka
  * @param {!string} tableName
  * @final
  * @constructor
+ * This model represents a single table. Contains added components and used views.
  */
 app.model.Table = function (tableName) {
     /**
+     * Table name displayed in menu.
      * @type {!string}
      * @private
      */
     this._tableName = tableName;
     /**
+     * Views used to display this table.
      * @type {!Array<!app.model.View>}
      * @private
      */
     this._views = [];
     /**
+     * Components added to this table.
      * @type {!Array<!app.model.Component>}
      * @private
      */
     this._components = [];
     /**
+     * Used highest light ID.
      * @type {!number}
      * @private
      */
     this._highestLightID = 0;
     /**
+     * Number of active views.
      * @type {!number}
      * @private
      */
@@ -34,6 +43,7 @@ app.model.Table = function (tableName) {
 };
 
 /**
+ * Returns table name.
  * @returns {!string}
  * @public
  */
@@ -42,6 +52,7 @@ app.model.Table.prototype.getName = function () {
 };
 
 /**
+ * Updates table name.
  * @param {!string} name
  * @public
  */
@@ -50,6 +61,7 @@ app.model.Table.prototype.changeName = function (name) {
 };
 
 /**
+ * Updates view name.
  * @param {!number} viewID
  * @param {!string} name
  * @public
@@ -59,6 +71,7 @@ app.model.Table.prototype.updateViewName = function (viewID, name) {
 };
 
 /**
+ * Returns next ID for new view.
  * @returns {!number}
  * @public
  */
@@ -67,6 +80,7 @@ app.model.Table.prototype.getNextViewID = function () {
 };
 
 /**
+ * Adds new view.
  * @param {!app.model.View} view
  * @public
  */
@@ -75,6 +89,7 @@ app.model.Table.prototype.addView = function (view) {
 };
 
 /**
+ * returns view specified by ID.
  * @param {!number} viewID
  * @return {!app.model.View}
  * @public
@@ -84,6 +99,7 @@ app.model.Table.prototype.getView = function (viewID) {
 };
 
 /**
+ * Returns views used to display this table.
  * @return {!Array<!app.model.View>}
  * @public
  */
@@ -92,6 +108,7 @@ app.model.Table.prototype.getViews = function () {
 };
 
 /**
+ * Updates size of view specified by ID.
  * @param {!number} viewID
  * @param {!number} width
  * @param {!number} height
@@ -102,6 +119,7 @@ app.model.Table.prototype.updateViewSize = function (viewID, width, height) {
 };
 
 /**
+ * Increases views counter.
  * @public
  */
 app.model.Table.prototype.increaseActiveViewsCount = function () {
@@ -109,6 +127,7 @@ app.model.Table.prototype.increaseActiveViewsCount = function () {
 };
 
 /**
+ * Decreases views counter.
  * @public
  */
 app.model.Table.prototype.decreaseActiveViewsCount = function () {
@@ -116,6 +135,7 @@ app.model.Table.prototype.decreaseActiveViewsCount = function () {
 };
 
 /**
+ * Returns count of active views.
  * @return {!number}
  * @public
  */
@@ -124,6 +144,7 @@ app.model.Table.prototype.getActiveViewsCount = function () {
 };
 
 /**
+ * Returns table components.
  * @return {!Array<!app.model.Component>}
  * @public
  */
@@ -132,6 +153,7 @@ app.model.Table.prototype.getComponents = function () {
 };
 
 /**
+ * Adds new component to the table.
  * @param {!app.model.Component} model
  * @return {!number}
  * @public
@@ -149,6 +171,7 @@ app.model.Table.prototype.addComponent = function (model) {
 };
 
 /**
+ * Adds/imports new component to the table.
  * @param {!app.model.Component} model
  * @public
  */
@@ -165,6 +188,7 @@ app.model.Table.prototype.removeComponent = function (componentID) {
 };
 
 /**
+ * Removes view specified by ID from table.
  * @param {!number} viewID
  * @public
  */
@@ -174,6 +198,7 @@ app.model.Table.prototype.removeView = function (viewID) {
 };
 
 /**
+ * Imports table data.
  * @param {!Object} tableModel
  * @public
  */

@@ -3,10 +3,14 @@ goog.provide('app.HolographicPlateController');
 goog.require('app.ComponentController');
 
 /**
+ * @description Diffractive optics simulator
+ * @version 1.2
+ * @author Matěj Berka
  * @param {!app.model.HolographicPlate} model
  * @param {!number} modelID
  * @constructor
  * @extends {app.ComponentController}
+ * Controller used by app.model.HolographicPlate component. Adds specific controls for this component.
  */
 app.HolographicPlateController = function (model, modelID) {
     app.HolographicPlateController.base(this, 'constructor');

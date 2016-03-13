@@ -3,7 +3,11 @@ goog.provide('app.ComponentController');
 goog.require('goog.dom');
 
 /**
+ * @description Diffractive optics simulator
+ * @version 1.2
+ * @author Matěj Berka
  * @constructor
+ * Base controller used to control simulation components.
  */
 app.ComponentController = function () {
     /**

@@ -3,10 +3,14 @@ goog.provide('app.model.LineShapeComponent');
 goog.require('app.model.Component');
 
 /**
+ * @description Diffractive optics simulator
+ * @version 1.2
+ * @author Matěj Berka
  * @param {number} coordX - component x position
  * @param {number} coordY - component Y position
  * @constructor
  * @extends {app.model.Component}
+ * Abstract class used to define basic operations for line shape components.
  */
 app.model.LineShapeComponent = function (coordX, coordY) {
     /**

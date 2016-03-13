@@ -3,11 +3,15 @@ goog.provide('app.model.Splitter');
 goog.require('app.model.LineShapeComponent');
 
 /**
+ * @description Diffractive optics simulator
+ * @version 1.2
+ * @author Matěj Berka
  * @param {!number} coordX - component x position
  * @param {!number} coordY - component Y position
  * @final
  * @constructor
  * @extends {app.model.LineShapeComponent}
+ * This class represents Splitter component.
  */
 app.model.Splitter = function (coordX, coordY) {
     app.model.Splitter.base(this, 'constructor', coordX, coordY); // call parent constructor

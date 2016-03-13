@@ -3,10 +3,14 @@ goog.provide('app.MirrorController');
 goog.require('app.ComponentController');
 
 /**
+ * @description Diffractive optics simulator
+ * @version 1.2
+ * @author Matěj Berka
  * @param {!app.model.Mirror} model
  * @param {!number} modelID
  * @constructor
  * @extends {app.ComponentController}
+ * Controller used by app.model.Mirror component. Adds specific controls for this component.
  */
 app.MirrorController = function (model, modelID) {
     app.MirrorController.base(this, 'constructor');

@@ -15,9 +15,13 @@ goog.require('app.SplitterController');
 goog.require('app.WallController');
 
 /**
+ * @description Diffractive optics simulator
+ * @version 1.2
+ * @author Matěj Berka
  * @param {Element} canvasWrapper
  * @final
  * @constructor
+ * View controller provides basic actions used to interact with view. Like coordinates update and redrawing.
  */
 app.ViewController = function (canvasWrapper) {
     /**

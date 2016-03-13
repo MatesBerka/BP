@@ -9,11 +9,11 @@ goog.require('goog.labs.userAgent.device');
 
 /**
  * @description Diffractive optics simulator
- * @version 1.1
- * @author Matej Berka
- *
- * Make {@code app.start} accessible after {@code ADVANCED_OPTIMIZATIONS}.
+ * @version 1.2
+ * @author Matěj Berka
  * @export
+ * Make {@code app.start} accessible after {@code ADVANCED_OPTIMIZATIONS}.
+ * Entry point of application, creates main application controllers
  */
 app.start = function () {
 

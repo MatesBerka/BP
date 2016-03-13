@@ -3,11 +3,15 @@ goog.provide('app.model.Wall');
 goog.require('app.model.RectangleShapeComponent');
 
 /**
+ * @description Diffractive optics simulator
+ * @version 1.2
+ * @author Matěj Berka
  * @param {!number} coordX - component x position
  * @param {!number} coordY - component Y position
  * @final
  * @constructor
  * @extends {app.model.RectangleShapeComponent}
+ * This class represents Wall component.
  */
 app.model.Wall = function (coordX, coordY) {
     app.model.Wall.base(this, 'constructor', coordX, coordY); // call parent constructor
