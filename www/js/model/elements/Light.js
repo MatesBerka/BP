@@ -10,23 +10,58 @@ goog.require('app.model.Component');
  * @extends {app.model.Component}
  */
 app.model.Light = function (coordX, coordY) {
+    /**
+     * @type {!number}
+     * @private
+     */
     this._size = 50;
-    // only for beam light
-    this.width = 10;
-
-    app.model.Light.base(this, 'constructor', coordX, coordY); // call parent constructor
-    // BEAM or CIRCLE
+    /**
+     * Only for beam light.
+     * @const
+     * @type {!number}
+     * @private
+     */
+    this._WIDTH = 10;
+    // call parent constructor
+    app.model.Light.base(this, 'constructor', coordX, coordY);
+    /**
+     * BEAM or CIRCLE
+     * @type {!string}
+     * @private
+     */
     this._lightType = 'BEAM';
-
+    /**
+     * @type {!number}
+     * @private
+     */
     this._generatedRaysCount = 10;
-
+    /**
+     * @type {!number}
+     * @private
+     */
     this._lightRadius = 30;
-
+    /**
+     * @type {!string}
+     * @protected
+     */
     this.type = 'LIGHT';
-
+    /**
+     * @type {!number}
+     * @private
+     */
     this._lightID = -1;
-
-    this.facesCount = 4;
+    /**
+     * Light wave length
+     * @type {!number}
+     * @private
+     */
+    this._lightLength = 550;
+    /**
+     * @const
+     * @type {!number}
+     * @private
+     */
+    this._FACES_COUNT = 4;
 
     this.generateShapePoints();
     this.transformPoints();
@@ -59,17 +94,17 @@ app.model.Light.prototype._generateBallShapePoints = function () {
 app.model.Light.prototype._generateSquareShapePoints = function () {
     var x = 0, y, z = 0;
 
-    x = x - Math.round(this.width / 2);
+    x = x - Math.round(this._WIDTH / 2);
     y = -Math.round(this._size / 2);
     this.originPoints.push([x, y, z]);
 
-    x += this.width;
+    x += this._WIDTH;
     this.originPoints.push([x, y, z]);
 
     y += this._size;
     this.originPoints.push([x, y, z]);
 
-    x -= this.width;
+    x -= this._WIDTH;
     this.originPoints.push([x, y, z]);
 };
 
@@ -83,7 +118,7 @@ app.model.Light.prototype._squareIntersection = function (ray) {
     var numerator, denominator, t1, t2, v1, v2, v3, ix, iy, a, aIndex, b, bIndex,
         length, rayLength = Infinity;
 
-    for (var i = 0; i < this.facesCount; i++) {
+    for (var i = 0; i < this._FACES_COUNT; i++) {
         aIndex = i;
         bIndex = (i + 1) % 4;
 
@@ -174,7 +209,7 @@ app.model.Light.prototype.isIntersection = function (ray) {
  * @private
  */
 app.model.Light.prototype._isSquareSelected = function (point) {
-    var xs = -Math.floor(this.width / 2), ys = -Math.floor(this._size / 2), xe = Math.floor(this.width / 2),
+    var xs = -Math.floor(this._WIDTH / 2), ys = -Math.floor(this._size / 2), xe = Math.floor(this._WIDTH / 2),
         ye = Math.floor(this._size / 2);
 
     if (point[0] >= xs && point[0] <= xe && point[1] >= ys && point[1] <= ye) {
@@ -254,14 +289,14 @@ app.model.Light.prototype.draw = function (ctx, callback) {
     if (this._lightType === 'BEAM') {
         this._drawBeam(ctx);
         indentation = this._size / this._generatedRaysCount;
-        x = Math.floor(this.width / 2);
+        x = Math.floor(this._WIDTH / 2);
         for (i = 0; i < this._generatedRaysCount; i++) {
             y = i * indentation - halfSize + (indentation / 2);
             vec1 = this.transformPoint([x, y, 0]);
             vec2 = this.transformPoint([(x + 1), y, 0]);
             dx = vec2[0] - vec1[0];
             dy = vec2[1] - vec1[1];
-            callback([vec1[0], vec1[1], 0, dx, dy, 0, this._lightID, 0]);
+            callback([vec1[0], vec1[1], 0, dx, dy, 0, this._lightID, 0, this._lightLength]);
         }
     } else {
         this._drawBall(ctx);
@@ -274,7 +309,7 @@ app.model.Light.prototype.draw = function (ctx, callback) {
             vec2 = this.transformPoint(vec2);
             dx = vec2[0] - vec1[0];
             dy = vec2[1] - vec1[1];
-            callback([vec1[0], vec1[1], 0, dx, dy, 0, this._lightID, 0]);
+            callback([vec1[0], vec1[1], 0, dx, dy, 0, this._lightID, 0, this._lightLength]);
         }
     }
 };
@@ -307,6 +342,7 @@ app.model.Light.prototype.importComponentData = function (componentModel) {
     this._lightType = componentModel._lightType;
     this._generatedRaysCount = componentModel._generatedRaysCount;
     this._lightRadius = componentModel._lightRadius;
+    this._lightID = componentModel._lightID;
     this.generateShapePoints();
     this.transformPoints();
 };
@@ -336,6 +372,22 @@ app.model.Light.prototype.setSize = function (size) {
     this._size = Math.round(size * app.PIXELS_ON_CM);
     this.generateShapePoints();
     this.transformPoints();
+};
+
+/**
+ * @return {!number}
+ * @public
+ */
+app.model.Light.prototype.getLightLength = function () {
+    return this._lightLength;
+};
+
+/**
+ * @param {!number} length
+ * @public
+ */
+app.model.Light.prototype.setLightLength = function (length) {
+    this._lightLength = length;
 };
 
 /**

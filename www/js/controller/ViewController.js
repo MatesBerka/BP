@@ -27,11 +27,6 @@ app.ViewController = function (canvasWrapper) {
      */
     this._CANVAS_WRAPPER = canvasWrapper;
     /**
-     * @type {!number}
-     * @private
-     */
-    this._reflectionsCount = 4;
-    /**
      * @type {app.model.View}
      * @private
      */
@@ -192,22 +187,6 @@ app.ViewController.prototype.getViewModel = function () {
 };
 
 /**
- * @return {!number}
- * @public
- */
-app.ViewController.prototype.getReflectionsCount = function () {
-    return this._reflectionsCount;
-};
-
-/**
- * @param {!number} count
- * @public
- */
-app.ViewController.prototype.setReflectionsCount = function (count) {
-    this._reflectionsCount = count;
-};
-
-/**
  * @param {!Array<app.model.Component>} components
  * @public
  */
@@ -236,7 +215,7 @@ app.ViewController.prototype.addRay = function (ray) {
  */
 app.ViewController.prototype.draw = function () {
     var ctx = this._model.getGraphicsContext(),
-        i, j, rayLength, newRayLength, endPoint, ray, componentID, callback = this.addRay.bind(this); // todo vylepsit?
+        i, j, rayLength, newRayLength, endPoint, ray, componentID, callback = this.addRay.bind(this);
 
     // clean canvas
     var area = this._model.getVisibleArea();
@@ -262,13 +241,13 @@ app.ViewController.prototype.draw = function () {
             }
 
             if (rayLength != Infinity) {
-                endPoint = this._components[/**@type{!number}*/(componentID)].intersect(this._rays);
+                endPoint = this._components[/**@type{!number}*/(componentID)].intersects(this._rays);
                 ctx.moveTo(ray[0], ray[1]);
                 ctx.lineTo(endPoint[0], endPoint[1]);
             }
         }
 
-        if (this._rays.length == 0 || depthCount >= this._reflectionsCount) {
+        if (this._rays.length == 0 || depthCount >= app.REFLECTIONS_COUNT) {
             generateRays = false;
         }
     }

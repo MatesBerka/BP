@@ -122,7 +122,7 @@ app.model.Component.prototype.copy = goog.abstractMethod;
  * @param {!Array<Array<!number>>} rays
  * @public
  */
-app.model.Component.prototype.intersect = function (rays) {
+app.model.Component.prototype.intersects = function (rays) {
     return this.intersectionPoint;
 };
 
@@ -168,8 +168,8 @@ app.model.Component.prototype.normalize2DVector = function (vec) {
  */
 app.model.Component.prototype.rotatePoint = function (point, radians) {
     var result = [];
-    result[0] = point[0] * Math.cos(radians) + point[1] * Math.sin(radians);
-    result[1] = point[0] * -Math.sin(radians) + point[1] * Math.cos(radians);
+    result[0] = point[0] * Math.cos(radians) - point[1] * Math.sin(radians);
+    result[1] = point[0] * Math.sin(radians) + point[1] * Math.cos(radians);
 
     return result;
 };

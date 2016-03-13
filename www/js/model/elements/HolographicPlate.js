@@ -47,11 +47,17 @@ app.model.HolographicPlate = function (coordX, coordY) {
      */
     this._refLightID = 0;
     /**
+     * Maximum
+     * @type {!number}
+     * @private
+     */
+    this._m = -1;
+    /**
      * Incoming rays
      * @type {!Array<Object>}
      * @private
      */
-    this._recordedRays = [];
+    this._groups = [];
     /**
      * IDs of light sources which are hitting this desk
      * @type {!Object}
@@ -92,14 +98,6 @@ app.model.HolographicPlate.prototype._generateGridPoints = function () {
 };
 
 /**
- * @returns {!string}
- * @public
- */
-app.model.HolographicPlate.prototype.getPlateResolution = function () {
-    return (this._groupSize / app.PIXELS_ON_CM).toFixed(2);
-};
-
-/**
  * @public
  */
 app.model.HolographicPlate.prototype.setHeight = function (height) {
@@ -108,6 +106,15 @@ app.model.HolographicPlate.prototype.setHeight = function (height) {
     this.generateShapePoints();
     this._generateGridPoints();
     this.transformPoints();
+};
+
+
+/**
+ * @returns {!string}
+ * @public
+ */
+app.model.HolographicPlate.prototype.getPlateResolution = function () {
+    return (this._groupSize / app.PIXELS_ON_CM).toFixed(2);
 };
 
 /**
@@ -123,10 +130,26 @@ app.model.HolographicPlate.prototype.setPlateResolution = function (resolution) 
 };
 
 /**
+ * @param {!number} maximum
+ * @public
+ */
+app.model.HolographicPlate.prototype.setMaximum = function (maximum) {
+    this._m = maximum;
+};
+
+/**
+ * @return {!number} maximum
+ * @public
+ */
+app.model.HolographicPlate.prototype.getMaximum = function () {
+    return this._m;
+};
+
+/**
  * @public
  */
 app.model.HolographicPlate.prototype.collectRays = function () {
-    this._recordedRays = [];
+    this._groups = [];
     this._makeRecord = true;
     this._showRecord = false;
 };
@@ -181,7 +204,7 @@ app.model.HolographicPlate.prototype._getAngle = function () {
 
     cosAlpha = (a[0] * b[0] + a[1] * b[1]) / (Math.sqrt(a[0] * a[0] + a[1] * a[1]) * Math.sqrt(b[0] * b[0] + b[1] * b[1]));
     angle = Math.acos(cosAlpha) * (180 / Math.PI);
-    angle = (angle > 90) ? (angle % 90) : (90 - angle);
+    angle = (angle > 90) ? -(angle % 90) : (90 - angle);
     return Math.round(angle);
 };
 
@@ -190,58 +213,62 @@ app.model.HolographicPlate.prototype._getAngle = function () {
  * @private
  */
 app.model.HolographicPlate.prototype._createRecord = function () {
-    var i, refRaySourceID, raySourceID, rays = [], group = {}, errors = [], bottomLimit, topLimit, errorDiff;
+    var i, refRaySourceID, raySourceID, frequencies = [], errors = [], errorDiff, refRay, refRayAngle, ray, rayAngle, f;
 
     if (this._allRefLights) {
-        for (i = 0; i < this._recordedRays.length; i++) {
-            if (this._recordedRays[i] !== undefined) {
-                group = {};
-                for (refRaySourceID in this._recordedRays[i]) {
-                    if (this._recordedRays[i].hasOwnProperty(refRaySourceID)) {
-                        group[refRaySourceID] = [];
-                        for (raySourceID in this._recordedRays[i]) {
-                            if (this._recordedRays[i].hasOwnProperty(raySourceID)) {
-                                bottomLimit = this._lightSources[refRaySourceID] - app.COHERENCE_LENGTH;
-                                topLimit = this._lightSources[refRaySourceID] + app.COHERENCE_LENGTH;
-
-                                if (bottomLimit < this._lightSources[raySourceID] && this._lightSources[raySourceID] < topLimit) {
-                                    console.log(bottomLimit, this._lightSources[raySourceID], topLimit);
-                                    group[refRaySourceID].push(this._recordedRays[i][raySourceID]);
+        for (i = 0; i < this._groups.length; i++) {
+            if (this._groups[i] !== undefined) {
+                for (refRaySourceID in this._groups[i]) {
+                    if (this._groups[i].hasOwnProperty(refRaySourceID)) { // 1) pick ref. light
+                        refRayAngle = this._groups[i][refRaySourceID][0];
+                        refRay = this._groups[i][refRaySourceID][1];
+                        frequencies = [];
+                        for (raySourceID in this._groups[i]) {
+                            if (this._groups[i].hasOwnProperty(raySourceID) && raySourceID !== refRaySourceID) { // 2) collects obj. lights
+                                rayAngle = this._groups[i][raySourceID][0];
+                                ray = this._groups[i][raySourceID][1];
+                                if (ray[8] === refRay[8] && Math.abs(this._lightSources[refRaySourceID] - this._lightSources[raySourceID])
+                                    <= app.COHERENCE_LENGTH) {
+                                    f = (Math.sin((rayAngle * (Math.PI / 180))) - Math.sin((refRayAngle * (Math.PI / 180)))) / refRay[8];
+                                    frequencies.push(f);
                                 }
                             }
                         }
+                        this._groups[i][refRaySourceID] = frequencies;
                     }
                 }
-                this._recordedRays[i] = group;
             }
         }
-    } else { // single ref light
-        for (i = 0; i < this._recordedRays.length; i++) {
-            if (this._recordedRays[i] !== undefined) {
-                if (this._recordedRays[i].hasOwnProperty(this._refLightID)) {
-                    rays = [];
-                    for (raySourceID in this._recordedRays[i]) {
-                        if (this._recordedRays[i].hasOwnProperty(raySourceID)) {
-                            bottomLimit = this._lightSources[this._refLightID] - app.COHERENCE_LENGTH;
-                            topLimit = this._lightSources[this._refLightID] + app.COHERENCE_LENGTH;
-
-                            if (bottomLimit <= this._lightSources[raySourceID]) {
-                                if (this._lightSources[raySourceID] <= topLimit) {
-                                    rays.push(this._recordedRays[i][raySourceID]);
+    } else { // single ref. light picked
+        for (i = 0; i < this._groups.length; i++) {
+            if (this._groups[i] !== undefined) { // 1) group is not empty
+                if (this._groups[i].hasOwnProperty(this._refLightID)) { // 2) ref. light present
+                    // store and remove ref. ray
+                    refRayAngle = this._groups[i][this._refLightID][0];
+                    refRay = this._groups[i][this._refLightID][1];
+                    delete this._groups[i][this._refLightID];
+                    frequencies = [];
+                    for (raySourceID in this._groups[i]) {
+                        if (this._groups[i].hasOwnProperty(raySourceID)) { // 3) create inter. patterns
+                            rayAngle = this._groups[i][raySourceID][0];
+                            ray = this._groups[i][raySourceID][1];
+                            if (ray[8] === refRay[8]) { // 3.1) Light length is equal
+                                if (Math.abs(this._lightSources[this._refLightID] - this._lightSources[raySourceID])
+                                    <= app.COHERENCE_LENGTH) { // count frequency
+                                    f = (Math.sin((rayAngle * (Math.PI / 180))) - Math.sin((refRayAngle * (Math.PI / 180)))) / refRay[8];
+                                    frequencies.push(f);
                                 } else {
-                                    errorDiff = -((this._lightSources[raySourceID] - bottomLimit) / app.PIXELS_ON_CM).toFixed(2);
-                                    errors.push([i, raySourceID, errorDiff]);
+                                    errorDiff = ((Math.abs(this._lightSources[this._refLightID] - this._lightSources[raySourceID])
+                                    - app.COHERENCE_LENGTH) / app.PIXELS_ON_CM).toFixed(4);
+                                    errors.push([i, raySourceID, this._refLightID, errorDiff]);
                                 }
-                            } else {
-                                errorDiff = -((this._lightSources[raySourceID] - topLimit) / app.PIXELS_ON_CM).toFixed(2);
-                                errors.push([i, raySourceID, errorDiff]);
+                                delete this._groups[i][raySourceID];
                             }
-                            delete this._recordedRays[i][raySourceID];
                         }
                     }
-                    this._recordedRays[i][this._refLightID] = rays;
+                    this._groups[i] = frequencies;
                 } else {
-                    this._recordedRays[i] = {};
+                    this._groups[i] = [];
                 }
             }
         }
@@ -254,11 +281,13 @@ app.model.HolographicPlate.prototype._createRecord = function () {
  */
 app.model.HolographicPlate.prototype._recordRay = function () {
     var point = this.reverseTransformPoint([this.intersectionPoint[0], this.intersectionPoint[1]]),
-        groupID = Math.floor(((this.height / 2) + point[1]) / this._groupSize);
+        groupID = Math.floor(((this.height / 2) + point[1]) / this._groupSize),
+        angle = this._getAngle();
+
     this._intersectionRay[0] = point[0];
     this._intersectionRay[1] = point[1];
-    if (this._recordedRays[groupID] === undefined) this._recordedRays[groupID] = {};
-    this._recordedRays[groupID][this._intersectionRay[6]] = this._intersectionRay;
+    if (this._groups[groupID] === undefined) this._groups[groupID] = {};
+    this._groups[groupID][this._intersectionRay[6]] = [angle, this._intersectionRay];
 };
 
 /**
@@ -267,18 +296,24 @@ app.model.HolographicPlate.prototype._recordRay = function () {
 app.model.HolographicPlate.prototype._checkRecordedRays = function (rays) {
     var point = this.reverseTransformPoint([this.intersectionPoint[0], this.intersectionPoint[1]]),
         groupID = Math.floor(((this.height / 2) + point[1]) / this._groupSize),
-        rayImage, newOrigin, dirPoint, raySourceID = this._intersectionRay[6];
+        angle = this._getAngle(), raySource, sin, outgoingAngle, dirPoint, group;
 
-    if (this._recordedRays[groupID] !== undefined && this._recordedRays[groupID].hasOwnProperty(raySourceID)) {
-        for (var i = 0; i < this._recordedRays[groupID][raySourceID].length; i++) {
-            rayImage = this._recordedRays[groupID][raySourceID][i].slice();
-            newOrigin = this.transformPoint([rayImage[0], rayImage[1]]);
-            dirPoint = this.transformPoint([(rayImage[0] + rayImage[3]), (rayImage[1] + rayImage[4])]);
-            rayImage[0] = newOrigin[0];
-            rayImage[1] = newOrigin[1];
-            rayImage[3] = dirPoint[0] - newOrigin[0];
-            rayImage[4] = dirPoint[1] - newOrigin[1];
-            rays.push(rayImage);
+    if (this._groups[groupID] !== undefined) {
+        raySource = this.reverseTransformPoint([this._intersectionRay[0], this._intersectionRay[1]]);
+        group = (this._allRefLights) ? this._groups[groupID][this._intersectionRay[6]] : this._groups[groupID];
+        for (var i = 0; i < group.length; i++) {
+            sin = this._m * this._intersectionRay[8] * group[i] + Math.sin((angle * (Math.PI / 180)));
+            if(sin <= 1 && sin >= -1) { // if sin does not crossed maximum add ray
+                outgoingAngle = Math.asin(sin);
+                dirPoint = (raySource[0] > 0) ? this.rotatePoint([-1, 0], (-outgoingAngle + this.appliedRotation)) :
+                    this.rotatePoint([1, 0], (outgoingAngle + this.appliedRotation));
+
+                this._intersectionRay[0] = this.intersectionPoint[0];
+                this._intersectionRay[1] = this.intersectionPoint[1];
+                this._intersectionRay[3] = dirPoint[0];
+                this._intersectionRay[4] = dirPoint[1];
+                rays.push(this._intersectionRay);
+            }
         }
     }
 };
@@ -286,14 +321,14 @@ app.model.HolographicPlate.prototype._checkRecordedRays = function (rays) {
 /**
  * @override
  */
-app.model.HolographicPlate.prototype.intersect = function (rays) {
+app.model.HolographicPlate.prototype.intersects = function (rays) {
     if (this._makeRecord)
         this._recordRay();
 
     if (this._showRecord)
         this._checkRecordedRays(rays);
 
-    this._lightSources[this._intersectionRay[6]] = (this._intersectionRay[7]  + this.newRayLength);
+    this._lightSources[this._intersectionRay[6]] = (this._intersectionRay[7] + this.newRayLength);
 
     return this.intersectionPoint;
 };
@@ -317,7 +352,7 @@ app.model.HolographicPlate.prototype.draw = function (ctx, callback) {
     ctx.lineTo(this.transformedPoints[5][0], this.transformedPoints[5][1]);
 
     var offset = 6;
-    for (var i = 0; i < (this._groupsCount *2); i += 2) {
+    for (var i = 0; i < (this._groupsCount * 2); i += 2) {
         ctx.moveTo(this.transformedPoints[(offset + i)][0], this.transformedPoints[(offset + i)][1]);
         ctx.lineTo(this.transformedPoints[(offset + i + 1)][0], this.transformedPoints[(offset + i + 1)][1]);
     }
@@ -342,6 +377,7 @@ app.model.HolographicPlate.prototype.copyArguments = function (rotation, height,
     this.appliedRotation = rotation;
     this.height = height;
     this._groupSize = groupSize;
+
     this.generateShapePoints();
     this._generateGridPoints();
     this.transformPoints();
@@ -355,6 +391,14 @@ app.model.HolographicPlate.prototype.importComponentData = function (componentMo
     this.appliedRotation = componentModel.appliedRotation;
     this.height = componentModel.height;
     this._groupSize = componentModel._groupSize;
+    this._makeRecord = componentModel._makeRecord;
+    this._showRecord = componentModel._showRecord;
+    this._groupsCount = componentModel._groupsCount;
+    this._allRefLights = componentModel._allRefLights;
+    this._refLightID = componentModel._refLightID;
+    this._m = componentModel._m;
+    this._groups = componentModel._groups;
+    this._lightSources = componentModel._lightSources;
     this.generateShapePoints();
     this._generateGridPoints();
     this.transformPoints();

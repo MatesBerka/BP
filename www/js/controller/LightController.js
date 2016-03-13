@@ -55,6 +55,21 @@ app.LightController.prototype.showComponentControlPanel = function (sceneControl
         goog.dom.createDom('label', {'id': 'com-light'}, app.translation["com-light"], ' ' + this.model.getLightID() + ' (ID)')
     );
 
+    goog.dom.appendChild(this.componentConfigurationPanel,
+        goog.dom.createDom('div', {'class': 'input-field'},
+            goog.dom.createDom('span', {
+                'class': 'com-left-side',
+                'id': 'com-wave-length-title'
+            }, app.translation['com-wave-length-title']),
+            goog.dom.createDom('span', {'class': 'com-right-side'},
+                goog.dom.createDom('input', {
+                    'type': 'text', 'name': 'com-wave-length', 'class': 'input-min', 'id': 'com-wave-length',
+                    'value': this.model.getLightLength()
+                })
+            )
+        )
+    );
+
     var option1, option2;
     if (this.model.getLightType() == 'BEAM') {
         option1 = goog.dom.createDom('option', {
@@ -134,7 +149,23 @@ app.LightController.prototype.addPanelListeners = function (sceneController) {
          * @param {goog.events.BrowserEvent} e
          */
         function (e) {
-            app.ComponentController.validateFloatInput(e, this.model.setSize, this.model);
+            app.ComponentController.validateFloatNoZeroInput(e, this.model.setSize, this.model);
+            sceneController.redrawAll();
+        }, true, this);
+
+    goog.events.listen(goog.dom.getElement('com-wave-length'), goog.events.EventType.KEYUP,
+        /**
+         * @this {!app.LightController}
+         * @param {goog.events.BrowserEvent} e
+         */
+        function (e) {
+            var val = parseInt(e.target.value.replace(/\,/g, '.'), 10);
+            if (isNaN(val) || val < 380 || val > 750) {
+                e.target.style.backgroundColor = "red";
+            } else {
+                e.target.style.backgroundColor = "white";
+                this.model.setLightLength(val);
+            }
             sceneController.redrawAll();
         }, true, this);
 
@@ -154,7 +185,7 @@ app.LightController.prototype.addPanelListeners = function (sceneController) {
          * @param {goog.events.BrowserEvent} e
          */
         function (e) {
-            app.ComponentController.validateFloatInput(e, this.model.setRadius, this.model);
+            app.ComponentController.validateIntNoZeroInput(e, this.model.setRadius, this.model);
             sceneController.redrawAll();
         }, true, this);
 

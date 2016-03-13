@@ -149,6 +149,14 @@ app.model.Table.prototype.addComponent = function (model) {
 };
 
 /**
+ * @param {!app.model.Component} model
+ * @public
+ */
+app.model.Table.prototype.importComponent = function (model) {
+    this._components.push(model);
+};
+
+/**
  * @param {!number} componentID
  * @public
  */

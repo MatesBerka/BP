@@ -20,40 +20,32 @@ app.HolographicPlateController = function (model, modelID) {
      * @override
      */
     this.modelID = modelID;
-    /**
-     * @type {!goog.ui.Dialog}
-     * @private
-     */
-    this._pickRefLightDialog = new goog.ui.Dialog();
-    /**
-     * @type {!goog.ui.Dialog}
-     * @private
-     */
-    this._errorsDialog = new goog.ui.Dialog();
 };
 goog.inherits(app.HolographicPlateController, app.ComponentController);
 
 /**
  * @param {!Array<!number>} errors
+ * @param {!goog.ui.Dialog} dialog
  * @private
  */
-app.HolographicPlateController.prototype._reportErrors = function(errors) {
+app.HolographicPlateController.prototype._reportErrors = function (errors, dialog) {
     var rows = [];
-    for(var i = 0; i < errors.length; i++) {
+    for (var i = 0; i < errors.length; i++) {
         rows.push(goog.html.SafeHtml.create('span', {'class': 'ref-err-row'},
-        [app.translation['ref-err-sec'], errors[i][0], app.translation['ref-err-src'], errors[i][1], app.translation['ref-err-ray'], errors[i][2]]))
+            [app.translation['ref-err-sec'], errors[i][0], app.translation['ref-err-src'], errors[i][1], ' vs ', errors[i][2],
+                app.translation['ref-err-ray'], errors[i][3], ' (CM)']))
     }
 
     // create dialog
-    this._errorsDialog.setTitle(app.translation['hol-rec-err']);
+    dialog.setTitle(app.translation['hol-rec-err']);
     var buttonsSet = new goog.ui.Dialog.ButtonSet();
     buttonsSet.addButton({key: 'ok', caption: 'Ok'}, false, true);
-    this._errorsDialog.setButtonSet(buttonsSet);
-    this._errorsDialog.setSafeHtmlContent(goog.html.SafeHtml.create('div', {},
+    dialog.setButtonSet(buttonsSet);
+    dialog.setSafeHtmlContent(goog.html.SafeHtml.create('div', {},
         [goog.html.SafeHtml.create('label', {'id': 'ref-err-label'}, app.translation['ref-errors']),
-         goog.html.SafeHtml.create('div', {'id': 'ref-err-wrapper'}, rows)]
+            goog.html.SafeHtml.create('div', {'id': 'ref-err-wrapper'}, rows)]
     ));
-    this._errorsDialog.setVisible(true);
+    dialog.setVisible(true);
 };
 
 /**
@@ -94,6 +86,27 @@ app.HolographicPlateController.prototype.showComponentControlPanel = function (s
     );
 
     goog.dom.appendChild(this.componentConfigurationPanel,
+        goog.dom.createDom('label', {'id': 'com-position'}, app.translation["com-plate-max-title"])
+    );
+    var args = ['select', {'id': 'com-plate-max-select'}];
+    var selectedMaximum = this.model.getMaximum(), maximum;
+    for (var i = -4; i < 4; i++) {
+        maximum = (i > -1) ? i + 1 : i;
+        if (selectedMaximum === maximum) {
+            args.push(goog.dom.createDom('option', {'value': maximum, 'selected': 'selected'}, '' + maximum));
+        } else {
+            args.push(goog.dom.createDom('option', {'value': maximum}, '' + maximum));
+        }
+    }
+    var select = goog.dom.createDom.apply(this, args);
+    goog.dom.appendChild(this.componentConfigurationPanel,
+        goog.dom.createDom('div', {'class': 'input-field'},
+            goog.dom.createDom('span', {'class': 'com-left-side'}, app.translation["com-plate-max"]),
+            goog.dom.createDom('span', {'class': 'com-right-side'}, select)
+        )
+    );
+
+    goog.dom.appendChild(this.componentConfigurationPanel,
         goog.dom.createDom('div', {'class': 'buttons-group'},
             goog.dom.createDom('button', {'id': 'com-record-btn'}, app.translation['com-record-btn'])
         )
@@ -115,7 +128,7 @@ app.HolographicPlateController.prototype.addPanelListeners = function (sceneCont
          * @param {!goog.events.BrowserEvent} e
          */
         function (e) {
-            app.ComponentController.validateFloatInput(e, this.model.setHeight, this.model);
+            app.ComponentController.validateFloatNoZeroInput(e, this.model.setHeight, this.model);
             sceneController.redrawAll();
         }, true, this);
 
@@ -125,7 +138,17 @@ app.HolographicPlateController.prototype.addPanelListeners = function (sceneCont
          * @param {!goog.events.BrowserEvent} e
          */
         function (e) {
-            app.ComponentController.validateFloatInput(e, this.model.setPlateResolution, this.model);
+            app.ComponentController.validateFloatNoZeroInput(e, this.model.setPlateResolution, this.model);
+            sceneController.redrawAll();
+        }, true, this);
+
+    goog.events.listen(goog.dom.getElement('com-plate-max-select'), goog.events.EventType.CHANGE,
+        /**
+         * @this {!app.HolographicPlateController}
+         * @param {!goog.events.BrowserEvent} e
+         */
+        function (e) {
+            app.ComponentController.validateIntNoZeroInput(e, this.model.setMaximum, this.model);
             sceneController.redrawAll();
         }, true, this);
 
@@ -145,18 +168,19 @@ app.HolographicPlateController.prototype.addPanelListeners = function (sceneCont
             options.push(goog.html.SafeHtml.create('option', {'value': 'ALL'}, app.translation['pick-all-lights']));
 
             // create dialog
-            this._pickRefLightDialog.setTitle(app.translation['pick-ref-light']);
+            sceneController.pickRefLightDialog.setTitle(app.translation['pick-ref-light']);
             var buttonsSet = new goog.ui.Dialog.ButtonSet();
-                buttonsSet.addButton({key: 'pick', caption: app.translation['pick-light']}, true);
-                buttonsSet.addButton({key: 'cancel', caption: app.translation['cancel-btn']}, false, true);
-            this._pickRefLightDialog.setButtonSet(buttonsSet);
-            this._pickRefLightDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['ref-light'],
+            buttonsSet.addButton({key: 'pick', caption: app.translation['pick-light']}, true);
+            buttonsSet.addButton({key: 'cancel', caption: app.translation['cancel-btn']}, false, true);
+            sceneController.pickRefLightDialog.setButtonSet(buttonsSet);
+            sceneController.pickRefLightDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['ref-light'],
                 goog.html.SafeHtml.create('select', {'id': 'select-ref-light'}, options)]
             ));
-            this._pickRefLightDialog.setVisible(true);
+            sceneController.pickRefLightDialog.setVisible(true);
         }, true, this);
 
-    goog.events.listen(this._pickRefLightDialog, goog.ui.Dialog.EventType.SELECT,
+    goog.events.removeAll(sceneController.pickRefLightDialog, goog.ui.Dialog.EventType.SELECT);
+    goog.events.listen(sceneController.pickRefLightDialog, goog.ui.Dialog.EventType.SELECT,
         /**
          * @this {!app.HolographicPlateController}
          * @param {!goog.ui.Dialog.Event} e
@@ -165,9 +189,8 @@ app.HolographicPlateController.prototype.addPanelListeners = function (sceneCont
             if (e.key == 'pick') {
                 var selectedLightID = goog.dom.getElement('select-ref-light').value;
                 var errors = this.model.createRecord(selectedLightID);
-                console.log(errors);
-                if(errors.length > 0) {
-                    this._reportErrors(errors);
+                if (errors.length > 0) {
+                    this._reportErrors(errors, sceneController.errorsDialog);
                 }
                 this.model.showRecord();
                 sceneController.redrawAll();

@@ -22,7 +22,7 @@ goog.inherits(app.model.Splitter, app.model.LineShapeComponent);
 /**
  * @override
  */
-app.model.Splitter.prototype.intersect = function (rays) {
+app.model.Splitter.prototype.intersects = function (rays) {
     var dVec = [], normVec;
 
     var point = this.reverseTransformPoint([this._intersectionRay[0], this._intersectionRay[1]]);

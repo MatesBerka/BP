@@ -141,7 +141,7 @@ app.model.Lens.prototype._getImagePosition = function(focus, obj) {
 /**
  * @override
  */
-app.model.Lens.prototype.intersect = function (rays) {
+app.model.Lens.prototype.intersects = function (rays) {
     var point = this.reverseTransformPoint([this._intersectionRay[0], this._intersectionRay[1]]);
     var dVec = [], normDVec, imgPoint;
 

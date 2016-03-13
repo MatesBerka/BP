@@ -182,7 +182,8 @@ app.MenuController.prototype._addListeners = function () {
                     input.style.backgroundColor = "red";
                     e.preventDefault();
                 } else {
-                    this._SCENECONTROLLER.setReflectionsCount(val);
+                    app.REFLECTIONS_COUNT = val;
+                    this._SCENECONTROLLER.redrawAll();
                 }
             }
         },
@@ -412,7 +413,6 @@ app.MenuController.prototype._addListeners = function () {
          * @param {!goog.ui.KeyboardShortcutEvent} e
          */
         function (e) {
-            console.log(e.identifier);
             switch(e.identifier) {
                 case 'CTRL_H':
                     this._showHelp();
@@ -551,12 +551,11 @@ app.MenuController.prototype._reflectionCount = function (e) {
     buttonsSet.addButton({key: 'ok', caption: 'Ok'}, true);
     buttonsSet.addButton({key: 'cancel', caption: app.translation['cancel-btn']}, false, true);
     this._refDialog.setButtonSet(buttonsSet);
-    var count = this._SCENECONTROLLER.getReflectionsCount();
     this._refDialog.setSafeHtmlContent(goog.html.SafeHtml.create('span', {}, [app.translation['ref-count'],
         goog.html.SafeHtml.create('input', {
             'tabindex': 1,
             'type': 'text', 'id': 'reflection-count-input',
-            'name': 'reflection-count-input', 'value': count
+            'name': 'reflection-count-input', 'value': app.REFLECTIONS_COUNT
         })]
     ));
     this._refDialog.setVisible(true);

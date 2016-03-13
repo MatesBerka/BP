@@ -625,6 +625,8 @@ button:active {
     float: left;
 }
 
+#tolerance-input,
+#reflection-count-input,
 #screen-size-input {
     width: 70px;
 }

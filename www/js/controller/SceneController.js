@@ -141,6 +141,16 @@ app.SceneController.prototype.createDialogs = function () {
      * @private
      */
     this._copyDialog = new goog.ui.Dialog();
+    /**
+     * @type {!goog.ui.Dialog}
+     * @public
+     */
+    this.pickRefLightDialog = new goog.ui.Dialog();
+    /**
+     * @type {!goog.ui.Dialog}
+     * @public
+     */
+    this.errorsDialog = new goog.ui.Dialog();
 };
 
 /**
@@ -508,7 +518,7 @@ app.SceneController.prototype.isIntersection = function (selectedPoint) {
 
     for (var i = 0; i < components.length; i++) {
         if (components[i].isSelected(point[0], point[1])) {
-            this.setSelectedComponent(components[i], i);
+            this._setSelectedComponent(components[i], i);
             return true;
         }
     }
@@ -755,23 +765,6 @@ app.SceneController.prototype.hideComponentControlPanel = function () {
 };
 
 /**
- * @return {!number}
- * @public
- */
-app.SceneController.prototype.getReflectionsCount = function () {
-    return this._VIEW_CONTROLLER.getReflectionsCount();
-};
-
-/**
- * @param {!number} count
- * @public
- */
-app.SceneController.prototype.setReflectionsCount = function (count) {
-    this._VIEW_CONTROLLER.setReflectionsCount(count);
-    this.redrawAll();
-};
-
-/**
  * @public
  */
 app.SceneController.prototype.redrawAll = function () {
@@ -794,7 +787,7 @@ app.SceneController.prototype.redrawAll = function () {
  * @param {!number} componentID
  * @private
  */
-app.SceneController.prototype.setSelectedComponent = function (componentModel, componentID) {
+app.SceneController.prototype._setSelectedComponent = function (componentModel, componentID) {
     switch (componentModel.getType()) {
         case 'MIRROR':
             this._componentController = new app.MirrorController(/**@type{!app.model.Mirror}*/(componentModel), componentID);
@@ -817,7 +810,13 @@ app.SceneController.prototype.setSelectedComponent = function (componentModel, c
     }
 };
 
-app.SceneController.prototype.createComponentModel = function (type, coordX, coordY) {
+/**
+ * @param {!string} type
+ * @param {!number} coordX
+ * @param {!number} coordY
+ * @private
+ */
+app.SceneController.prototype._createComponentModel = function (type, coordX, coordY) {
     switch (type) {
         case 'MIRROR':
             return new app.model.Mirror(coordX, coordY);
@@ -846,9 +845,9 @@ app.SceneController.prototype.createComponentModel = function (type, coordX, coo
  */
 app.SceneController.prototype.addComponent = function (selectedPoint) {
     var model, modelID, coords = this._VIEW_CONTROLLER.reverseTransformPoint(selectedPoint);
-    model = this.createComponentModel(this._newComponentType, coords[0], coords[1]);
+    model = this._createComponentModel(this._newComponentType, coords[0], coords[1]);
     modelID = this._tables[this._activeTableID].addComponent(model);
-    this.setSelectedComponent(model, modelID);
+    this._setSelectedComponent(model, modelID);
     this._componentController.showComponentControlPanel(this);
     goog.dom.getElement('add-com-popup').style.visibility = 'hidden';
     this.redrawAll();
@@ -878,9 +877,19 @@ app.SceneController.prototype.getInactiveTablesList = function () {
  * @public
  */
 app.SceneController.prototype.exportData = function () {
-    return goog.json.serialize(this._tables);
+    var data = {};
+    data.tables = this._tables;
+    data.locale = app.LOCALE;
+    data.pixels_on_cm = app.PIXELS_ON_CM;
+    data.coherence_length = app.COHERENCE_LENGTH;
+    data.reflections_count = app.REFLECTIONS_COUNT;
+
+    return goog.json.serialize(data);
 };
 
+/**
+ * @private
+ */
 app.SceneController.prototype._deleteCurrentSimulation = function () {
     var tables, tableButtons, viewButtons, i;
     this._tables = [];
@@ -907,27 +916,35 @@ app.SceneController.prototype.importData = function (dataModel) {
     this._tables = [];
     this._deleteCurrentSimulation();
 
-    for (var i = 0; i < dataModel.length; i++) {
-        var table = new app.model.Table(dataModel[i]._tableName);
-        table.importTable(dataModel[i]);
+    app.LOCALE = dataModel.locale;
+    app.utils.translate();
+
+    app.PIXELS_ON_CM = dataModel.pixels_on_cm;
+    app.COHERENCE_LENGTH = dataModel.coherence_length;
+    app.REFLECTIONS_COUNT = dataModel.reflections_count;
+
+    var tables = dataModel.tables;
+    for (var i = 0; i < tables.length; i++) {
+        var table = new app.model.Table(tables[i]._tableName);
+        table.importTable(tables[i]);
         this._tables.push(table);
         this._activeTableID = i;
-        this.addTableToGUI(i, dataModel[i]._tableName);
+        this.addTableToGUI(i, tables[i]._tableName);
 
-        for (var j = 0; j < dataModel[i]._views.length; j++) {
-            var view = new app.model.View(dataModel[i]._views[j]._viewName, dataModel[i]._views[j]._appliedTranslationX,
-                dataModel[i]._views[j]._appliedTranslationY);
+        for (var j = 0; j < tables[i]._views.length; j++) {
+            var view = new app.model.View(tables[i]._views[j]._viewName, tables[i]._views[j]._appliedTranslationX,
+                tables[i]._views[j]._appliedTranslationY);
 
-            view.importView(dataModel[i]._views[j]);
+            view.importView(tables[i]._views[j]);
             table.addView(view);
-            view.setCanvas(this.addViewToGUI(j, dataModel[i]._views[j]._viewName));
+            view.setCanvas(this.addViewToGUI(j, tables[i]._views[j]._viewName));
         }
 
-        for (var k = 0; k < dataModel[i]._components.length; k++) {
-            var component = this.createComponentModel(dataModel[i]._components[k].type,
-            dataModel[i]._components[k].appliedTranslationX, dataModel[i]._components[k].appliedTranslationY);
-            component.importComponentData(dataModel[i]._components[k]);
-            table.addComponent(component);
+        for (var k = 0; k < tables[i]._components.length; k++) {
+            var component = this._createComponentModel(tables[i]._components[k].type,
+            tables[i]._components[k].appliedTranslationX, tables[i]._components[k].appliedTranslationY);
+            component.importComponentData(tables[i]._components[k]);
+            table.importComponent(component);
         }
     }
     this.setActiveTable((i - 1), goog.dom.getElement('button-table-' + (i - 1)));

@@ -1,4 +1,6 @@
 /**
+ * @description Diffractive optics simulator
+ * @version 1.1
  * @author Matej Berka
  */
 goog.provide('app.start');
@@ -10,26 +12,24 @@ goog.require('app.MenuController');
 goog.require('app.locales');
 goog.require('goog.labs.userAgent.device');
 
-app.LOCALE = 'en_US';
-
 /**
  * Make {@code app.start} accessible after {@code ADVANCED_OPTIMIZATIONS}.
  * @export
  */
 app.start = function () {
-    app._init();
 
+    app._init();
     app.utils.translate();
     /**
      * @const
      * @private
      */
-    app.SCENECONTROLLER = new app.SceneController(true);
+    app._SCENECONTROLLER = new app.SceneController(true);
     /**
      * @const
      * @private
      */
-    app.MENUCONTROLLER = new app.MenuController(app.SCENECONTROLLER);
+    app._MENUCONTROLLER = new app.MenuController(app._SCENECONTROLLER);
 };
 
 /**
@@ -37,19 +37,32 @@ app.start = function () {
  */
 app._init = function () {
     /**
+     * @type {!string}
+     * @public
+     */
+    app.LOCALE = 'en_US';
+    /**
      * @type {number}
+     * @public
      */
     app.PIXELS_ON_CM = goog.dom.getElement('cm-box').clientWidth;
     /**
      * The maximum angels difference of two rays
-     * @type {number}
+     * @type {!number}
+     * @public
      */
-    app.COHERENCE_LENGTH = 10;
+    app.COHERENCE_LENGTH = 500;
     /**
      * @const
-     * @type {number}
+     * @type {!number}
+     * @public
      */
     app.INCH_TO_CM = 2.54;
+    /**
+     * @type {!number}
+     * @public
+     */
+    app.REFLECTIONS_COUNT = 4;
 
     if (goog.labs.userAgent.device.isDesktop()) {
         /** @type {goog.events.EventType|string} */
@@ -115,10 +128,8 @@ app.utils.setTolerance = function (tolerance) {
     app.COHERENCE_LENGTH = Math.round(tolerance * app.PIXELS_ON_CM);
 };
 
-// TODO vlnova delka svetla u svetla
-// TODO oprava holo desky
-// TODO import also globals
-
+// TODO Monochromaticke vs polo...
+// TODO mala pismena? COHERENCE_LENGTH
 // TODO ON/OFF light switch
 // TODO pravitko
 // TODO mrizka
