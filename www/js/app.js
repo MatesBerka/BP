@@ -1,8 +1,3 @@
-/**
- * @description Diffractive optics simulator
- * @version 1.1
- * @author Matej Berka
- */
 goog.provide('app.start');
 goog.provide('app.utils');
 
@@ -13,6 +8,10 @@ goog.require('app.locales');
 goog.require('goog.labs.userAgent.device');
 
 /**
+ * @description Diffractive optics simulator
+ * @version 1.1
+ * @author Matej Berka
+ *
  * Make {@code app.start} accessible after {@code ADVANCED_OPTIMIZATIONS}.
  * @export
  */
@@ -24,7 +23,7 @@ app.start = function () {
      * @const
      * @private
      */
-    app._SCENECONTROLLER = new app.SceneController(true);
+    app._SCENECONTROLLER = new app.SceneController();
     /**
      * @const
      * @private
@@ -134,7 +133,6 @@ app.utils.setTolerance = function (tolerance) {
 // TODO pravitko
 // TODO mrizka
 // todo AUTHOR HEADER
-// TODO opravdu holograficka deska deli skupiny dobre?
 
 // ray [[x,y,z],[x,y,z], lightID, rayLength];
 //co brat v potaz?

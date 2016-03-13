@@ -11,11 +11,19 @@ goog.require('app.model.LineShapeComponent');
  */
 app.model.Lens = function(coordX, coordY) {
     app.model.Lens.base(this, 'constructor', coordX, coordY); // call parent constructor
-
-    this._focusType = 'CONVERGING'; // DIVERSE
-
+    /**
+     * Defines lens type (CONVERGING or DIVERSE)
+     * @type {!string}
+     * @private
+     */
+    this._focusType = 'CONVERGING';
+    /**
+     * Defines focus offset in pixels.
+     * @type {!number}
+     * @private
+     */
     this._focusOffset = 100;
-
+    /** @override */
     this.type = 'LENS';
 
     this._generateLensPoints();

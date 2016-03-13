@@ -11,7 +11,7 @@ goog.require('app.model.RectangleShapeComponent');
  */
 app.model.Wall = function (coordX, coordY) {
     app.model.Wall.base(this, 'constructor', coordX, coordY); // call parent constructor
-
+    /** @override */
     this.type = 'WALL';
 
     this.transformPoints();

@@ -11,7 +11,7 @@ goog.require('app.model.LineShapeComponent');
  */
 app.model.Splitter = function (coordX, coordY) {
     app.model.Splitter.base(this, 'constructor', coordX, coordY); // call parent constructor
-
+    /** @override */
     this.type = 'SPLITTER';
 
     this.transformPoints();

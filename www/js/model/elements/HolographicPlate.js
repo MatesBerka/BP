@@ -303,7 +303,7 @@ app.model.HolographicPlate.prototype._checkRecordedRays = function (rays) {
         group = (this._allRefLights) ? this._groups[groupID][this._intersectionRay[6]] : this._groups[groupID];
         for (var i = 0; i < group.length; i++) {
             sin = this._m * this._intersectionRay[8] * group[i] + Math.sin((angle * (Math.PI / 180)));
-            if(sin <= 1 && sin >= -1) { // if sin does not crossed maximum add ray
+            if (sin <= 1 && sin >= -1) { // if sin does not crossed maximum add ray
                 outgoingAngle = Math.asin(sin);
                 dirPoint = (raySource[0] > 0) ? this.rotatePoint([-1, 0], (-outgoingAngle + this.appliedRotation)) :
                     this.rotatePoint([1, 0], (outgoingAngle + this.appliedRotation));

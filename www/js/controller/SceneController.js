@@ -7,11 +7,10 @@ goog.require('app.model.View');
 goog.require('goog.json');
 
 /**
- * @param {!boolean} newSimulation
  * @final
  * @constructor
  */
-app.SceneController = function (newSimulation) {
+app.SceneController = function () {
     /**
      * @const
      * @type {Element}
@@ -65,32 +64,30 @@ app.SceneController = function (newSimulation) {
      */
     this._canvasMoveActive = false;
 
-    if (newSimulation) {
-        this.init();
-    }
+    this._init();
 };
 
 /**
  * @private
  */
-app.SceneController.prototype.init = function () {
-    this.createDialogs();
+app.SceneController.prototype._init = function () {
+    this._createDialogs();
 
     // create first table and view
     var viewID = 0, tableID = 0;
     var newTable = new app.model.Table('Table 1');
     this._tables.push(newTable);
     this._activeTableID = 0;
-    this.addTableToGUI(this._activeTableID, 'Table 1');
+    this._addTableToGUI(this._activeTableID, 'Table 1');
 
     var newView = new app.model.View('View 1', 0, 0);
     newTable.addView(newView);
-    newView.setCanvas(this.addViewToGUI(viewID, 'View 1'));
+    newView.setCanvas(this._addViewToGUI(viewID, 'View 1'));
 
     this._addListeners();
 
     var tableButton = goog.dom.getElement('button-table-' + tableID);
-    this.setActiveTable(tableID, tableButton);
+    this._setActiveTable(tableID, tableButton);
 };
 
 /**
@@ -108,14 +105,14 @@ app.SceneController.prototype.showCross = function (type) {
 /**
  * @private
  */
-app.SceneController.prototype.hideCross = function () {
+app.SceneController.prototype._hideCross = function () {
     goog.dom.classlist.remove(this._CANVAS_WRAPPER, 'show-cross');
 };
 
 /**
  * @private
  */
-app.SceneController.prototype.createDialogs = function () {
+app.SceneController.prototype._createDialogs = function () {
     /**
      * @type {goog.ui.Dialog}
      * @private
@@ -156,7 +153,7 @@ app.SceneController.prototype.createDialogs = function () {
 /**
  * @private
  */
-app.SceneController.prototype.updateSizes = function () {
+app.SceneController.prototype._updateSizes = function () {
     var width = this._CANVAS_WRAPPER.clientWidth,
         views = goog.dom.getElementsByClass('active-view', goog.dom.getElement('table-' + this._activeTableID));
 
@@ -180,7 +177,7 @@ app.SceneController.prototype.updateSizes = function () {
  * @param {Element} buttonElement
  * @private
  */
-app.SceneController.prototype.setActiveTable = function (tableID, buttonElement) {
+app.SceneController.prototype._setActiveTable = function (tableID, buttonElement) {
     // activate table button
     var curActiveButton = goog.dom.getElement('button-table-' + this._activeTableID);
 
@@ -210,7 +207,7 @@ app.SceneController.prototype.setActiveTable = function (tableID, buttonElement)
  * @param {!number} viewID
  * @private
  */
-app.SceneController.prototype.setSelectedView = function (tableID, viewID) {
+app.SceneController.prototype._setSelectedView = function (tableID, viewID) {
     this._VIEW_CONTROLLER.setComponents(this._tables[tableID].getComponents());
     this._VIEW_CONTROLLER.setViewModel(this._tables[tableID].getView(viewID));
 };
@@ -220,12 +217,12 @@ app.SceneController.prototype.setSelectedView = function (tableID, viewID) {
  * @param {Element} buttonElement
  * @private
  */
-app.SceneController.prototype.showView = function (viewID, buttonElement) {
+app.SceneController.prototype._showView = function (viewID, buttonElement) {
     this._tables[this._activeTableID].increaseActiveViewsCount();
     goog.dom.classlist.add(buttonElement, 'active-view');
     var view = goog.dom.getElement('view-' + viewID);
     goog.dom.classlist.add(view, 'active-view');
-    this.updateSizes();
+    this._updateSizes();
 };
 
 /**
@@ -233,12 +230,12 @@ app.SceneController.prototype.showView = function (viewID, buttonElement) {
  * @param {Element} buttonElement
  * @private
  */
-app.SceneController.prototype.hideView = function (viewID, buttonElement) {
+app.SceneController.prototype._hideView = function (viewID, buttonElement) {
     this._tables[this._activeTableID].decreaseActiveViewsCount();
     goog.dom.classlist.remove(buttonElement, 'active-view');
     var view = goog.dom.getElement('view-' + viewID);
     goog.dom.classlist.remove(view, 'active-view');
-    this.updateSizes();
+    this._updateSizes();
 };
 
 /**
@@ -246,7 +243,7 @@ app.SceneController.prototype.hideView = function (viewID, buttonElement) {
  * @param {!string} tableName
  * @private
  */
-app.SceneController.prototype.addTableToGUI = function (tableID, tableName) {
+app.SceneController.prototype._addTableToGUI = function (tableID, tableName) {
     var table = goog.dom.createDom('div', {'id': 'table-' + tableID, 'class': 'table-wrapper'}),
         tables = goog.dom.getElement('tables'),
         views = goog.dom.getElement('views');
@@ -268,9 +265,9 @@ app.SceneController.prototype.addTableToGUI = function (tableID, tableName) {
 /**
  * @private
  */
-app.SceneController.prototype.createTable = function () {
+app.SceneController.prototype._createTable = function () {
     var input = goog.dom.getElement('new-table-name');
-    this.addTableToGUI(this._tables.length, input.value);
+    this._addTableToGUI(this._tables.length, input.value);
     this._tables.push(new app.model.Table(input.value));
 };
 
@@ -278,7 +275,7 @@ app.SceneController.prototype.createTable = function () {
  * @param {!string} elementID
  * @private
  */
-app.SceneController.prototype.removeTableFromGUI = function (elementID) {
+app.SceneController.prototype._removeTableFromGUI = function (elementID) {
     goog.dom.removeNode(goog.dom.getElement(elementID).parentNode);
     var tableWrapperName = elementID.replace("button-", "");
     goog.dom.removeNode(goog.dom.getElement(tableWrapperName));
@@ -314,18 +311,18 @@ app.SceneController.prototype.removeTableFromGUI = function (elementID) {
 /**
  * @private
  */
-app.SceneController.prototype.removeTable = function () {
+app.SceneController.prototype._removeTable = function () {
     var input = goog.dom.getElement('edit-table-name'),
         tableID = parseInt(input.name.replace("button-table-", ""), 10);
 
     this._tables.splice(tableID, 1);
-    this.removeTableFromGUI(input.name);
+    this._removeTableFromGUI(input.name);
 };
 
 /**
  * @private
  */
-app.SceneController.prototype.renameTable = function () {
+app.SceneController.prototype._renameTable = function () {
     var input = goog.dom.getElement('edit-table-name'),
         tableID = parseInt(input.name.replace("button-table-", ""), 10),
         tableButton = goog.dom.getElement(input.name);
@@ -337,14 +334,14 @@ app.SceneController.prototype.renameTable = function () {
 /**
  * @private
  */
-app.SceneController.prototype.createView = function () {
+app.SceneController.prototype._createView = function () {
     var viewID = this._tables[this._activeTableID].getNextViewID();
     var input = goog.dom.getElement('new-view-name');
 
     var newView = new app.model.View(input.value, 0, 0);
     this._tables[this._activeTableID].addView(newView);
 
-    newView.setCanvas(this.addViewToGUI(viewID, input.value));
+    newView.setCanvas(this._addViewToGUI(viewID, input.value));
     this.redrawAll();
 };
 
@@ -353,7 +350,7 @@ app.SceneController.prototype.createView = function () {
  * @param {!string} viewName
  * @private
  */
-app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
+app.SceneController.prototype._addViewToGUI = function (viewID, viewName) {
     var canvasName = 'canvas-' + this._activeTableID + '-' + viewID,
         viewWrapperName = 'view-' + this._activeTableID + '-' + viewID,
         buttonID = 'button-view-' + this._activeTableID + '-' + viewID;
@@ -389,9 +386,9 @@ app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
     view.appendChild(move);
     tableElement.appendChild(view);
 
-    this.showView(this._activeTableID + '-' + viewID, button);
+    this._showView(this._activeTableID + '-' + viewID, button);
     this._VIEW_CONTROLLER.addListeners(view);
-    this.updateSizes();
+    this._updateSizes();
 
     goog.events.listen(view, goog.events.EventType.MOUSEENTER,
         /**
@@ -400,7 +397,7 @@ app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
          */
         function (e) {
             var pieces = e.currentTarget.id.split('-');
-            this.setSelectedView(parseInt(pieces[1], 10), parseInt(pieces[2], 10));
+            this._setSelectedView(parseInt(pieces[1], 10), parseInt(pieces[2], 10));
         }, true, this);
 
     goog.events.listen(view, app.MOUSE_DOWN_EVENT,
@@ -413,13 +410,13 @@ app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
             coords[0] = (e.clientX - this._CANVAS_WRAPPER.offsetLeft);
             coords[1] = (e.clientY - e.currentTarget.offsetTop - this._CANVAS_WRAPPER.offsetTop);
             var pieces = e.currentTarget.id.split('-');
-            this.setSelectedView(parseInt(pieces[1], 10), parseInt(pieces[2], 10));
+            this._setSelectedView(parseInt(pieces[1], 10), parseInt(pieces[2], 10));
             if (this._isAddNewComponent) { // pridani nove
-                this.addComponent(coords);
-            } else if (this.isIntersection(coords)) { // vyber komponenty
+                this._addComponent(coords);
+            } else if (this._isIntersection(coords)) { // vyber komponenty
                 this._componentMoveActive = true;
                 this._mouseCursorPoint = coords;
-                goog.events.listen(view, app.MOUSE_MOVE_EVENT, this.componentMoved, true, this);
+                goog.events.listen(view, app.MOUSE_MOVE_EVENT, this._componentMove, true, this);
             } else { // muze byt posun platna
                 this._canvasMoveActive = true;
                 this._VIEW_CONTROLLER.addCanvasMove(view, coords);
@@ -434,18 +431,18 @@ app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
         function () {
             if (this._isAddNewComponent) {
                 this._isAddNewComponent = false;
-                this.hideCross();
+                this._hideCross();
             } else if (this._componentMoveActive && this._componentMoved) {
                 this._componentMoveActive = false;
                 this._componentMoved = false;
                 this._componentController.removeSelected();
                 this.redrawAll();
-                goog.events.unlisten(view, app.MOUSE_MOVE_EVENT, this.componentMoved, true, this);
+                goog.events.unlisten(view, app.MOUSE_MOVE_EVENT, this._componentMove, true, this);
             } else if (this._componentMoveActive && !this._componentMoved) {
                 this._componentMoveActive = false;
                 this._componentController.removeSelected();
                 this._componentController.showComponentControlPanel(this);
-                goog.events.unlisten(view, app.MOUSE_MOVE_EVENT, this.componentMoved, true, this);
+                goog.events.unlisten(view, app.MOUSE_MOVE_EVENT, this._componentMove, true, this);
             } else if (this._canvasMoveActive) {
                 this._canvasMoveActive = false;
                 this._VIEW_CONTROLLER.removeCanvasMove(view);
@@ -459,7 +456,7 @@ app.SceneController.prototype.addViewToGUI = function (viewID, viewName) {
  * @param {!string} elementID
  * @private
  */
-app.SceneController.prototype.removeViewFromGUI = function (elementID) {
+app.SceneController.prototype._removeViewFromGUI = function (elementID) {
     goog.dom.removeNode(goog.dom.getElement(elementID).parentNode);
     goog.dom.removeNode(goog.dom.getElement(elementID.replace("button-", "")));
 
@@ -482,22 +479,22 @@ app.SceneController.prototype.removeViewFromGUI = function (elementID) {
 /**
  * @private
  */
-app.SceneController.prototype.removeView = function () {
+app.SceneController.prototype._removeView = function () {
     var input = goog.dom.getElement('edit-view-name');
     var res = input.name.split('-');
     var viewID = res[3];
 
     this._tables[this._activeTableID].removeView(viewID);
     // remove
-    this.removeViewFromGUI(input.name);
-    this.updateSizes();
+    this._removeViewFromGUI(input.name);
+    this._updateSizes();
     this.redrawAll();
 };
 
 /**
  * @private
  */
-app.SceneController.prototype.renameView = function () {
+app.SceneController.prototype._renameView = function () {
     var input = goog.dom.getElement('edit-view-name'),
         viewButton = goog.dom.getElement(input.name),
         res = input.name.split('-'),
@@ -512,7 +509,7 @@ app.SceneController.prototype.renameView = function () {
  * @return {!boolean}
  * @private
  */
-app.SceneController.prototype.isIntersection = function (selectedPoint) {
+app.SceneController.prototype._isIntersection = function (selectedPoint) {
     var point = this._VIEW_CONTROLLER.reverseTransformPoint(selectedPoint),
         components = this._tables[this._activeTableID].getComponents();
 
@@ -529,7 +526,7 @@ app.SceneController.prototype.isIntersection = function (selectedPoint) {
  * @param {goog.events.BrowserEvent} e
  * @private
  */
-app.SceneController.prototype.componentMoved = function (e) {
+app.SceneController.prototype._componentMove = function (e) {
     var diffX, diffY, move = [];
 
     move[0] = (e.clientX - this._CANVAS_WRAPPER.offsetLeft);
@@ -559,7 +556,7 @@ app.SceneController.prototype._addListeners = function () {
          * @param {!goog.ui.Dialog.Event} e
          */
         function (e) {
-            if (e.key == 'ok') this.createTable();
+            if (e.key == 'ok') this._createTable();
         },
         false, this);
 
@@ -586,9 +583,9 @@ app.SceneController.prototype._addListeners = function () {
          */
         function (e) {
             if (e.key == 'save') {
-                this.renameTable();
+                this._renameTable();
             } else if (e.key == 'remove') {
-                this.removeTable();
+                this._removeTable();
             }
         },
         false, this);
@@ -600,7 +597,7 @@ app.SceneController.prototype._addListeners = function () {
          * @param {!goog.ui.Dialog.Event} e
          */
         function (e) {
-            if (e.key == 'ok') this.createView();
+            if (e.key == 'ok') this._createView();
         },
         false, this);
 
@@ -627,9 +624,9 @@ app.SceneController.prototype._addListeners = function () {
          */
         function (e) {
             if (e.key == 'save') {
-                this.renameView();
+                this._renameView();
             } else if (e.key == 'remove') {
-                this.removeView();
+                this._removeView();
             }
         },
         false, this);
@@ -658,8 +655,8 @@ app.SceneController.prototype._addListeners = function () {
                 ));
                 this._editTableDialog.setVisible(true);
             } else if (!goog.dom.classlist.contains(/**@type{Element}*/(e.target.parentNode), 'active-table')) {
-                this.hideComponentControlPanel();
-                this.setActiveTable(parseInt(e.target.id.replace('button-table-', ''), 10), /**@type{Element}*/(e.target));
+                this._hideComponentControlPanel();
+                this._setActiveTable(parseInt(e.target.id.replace('button-table-', ''), 10), /**@type{Element}*/(e.target));
             }
         },
         false, this);
@@ -690,9 +687,9 @@ app.SceneController.prototype._addListeners = function () {
             } else {
                 var viewID = e.target.id.replace('button-view-', '');
                 if (goog.dom.classlist.contains(/**@type{Element}*/(e.target.parentNode), 'active-view')) {
-                    this.hideView(viewID, /**@type{Element}*/(e.target.parentNode));
+                    this._hideView(viewID, /**@type{Element}*/(e.target.parentNode));
                 } else {
-                    this.showView(viewID, /**@type{Element}*/(e.target.parentNode));
+                    this._showView(viewID, /**@type{Element}*/(e.target.parentNode));
                 }
                 this.redrawAll();
             }
@@ -702,20 +699,20 @@ app.SceneController.prototype._addListeners = function () {
     goog.events.listen(/** @type {EventTarget} */(window), goog.events.EventType.RESIZE,
         /** @this {!app.SceneController} */
         function () {
-            this.updateSizes();
+            this._updateSizes();
             this.redrawAll();
         }, false, this);
 
     // Common component listeners
     goog.events.listen(goog.dom.getElement('com-close-btn'), goog.events.EventType.CLICK,
-        this.hideComponentControlPanel, false, this);
+        this._hideComponentControlPanel, false, this);
 
     goog.events.listen(goog.dom.getElement('com-delete-btn'), goog.events.EventType.CLICK,
         /** @this {!app.SceneController} */
         function () {
             var componentID = this._componentController.removeActiveComponent();
             this._tables[this._activeTableID].removeComponent(componentID);
-            this.hideComponentControlPanel();
+            this._hideComponentControlPanel();
             this.redrawAll();
         }, false, this);
 
@@ -723,7 +720,7 @@ app.SceneController.prototype._addListeners = function () {
         /** @this {!app.SceneController} */
         function () {
             var buttonSet = new goog.ui.Dialog.ButtonSet(),
-                list = this.getInactiveTablesList(),
+                list = this._getInactiveTablesList(),
                 /**@type{!Array<!goog.html.SafeHtml>}*/ options = [];
 
             this._copyDialog.setTitle(app.translation['copy-title']);
@@ -758,7 +755,7 @@ app.SceneController.prototype._addListeners = function () {
 /**
  * @private
  */
-app.SceneController.prototype.hideComponentControlPanel = function () {
+app.SceneController.prototype._hideComponentControlPanel = function () {
     goog.dom.classlist.remove(this._CANVAS_WRAPPER, 'active-component-panel');
     var element = goog.dom.getElement('component-configuration');
     element.innerHTML = '';
@@ -843,7 +840,7 @@ app.SceneController.prototype._createComponentModel = function (type, coordX, co
  * @param {!Array<number>} selectedPoint
  * @private
  */
-app.SceneController.prototype.addComponent = function (selectedPoint) {
+app.SceneController.prototype._addComponent = function (selectedPoint) {
     var model, modelID, coords = this._VIEW_CONTROLLER.reverseTransformPoint(selectedPoint);
     model = this._createComponentModel(this._newComponentType, coords[0], coords[1]);
     modelID = this._tables[this._activeTableID].addComponent(model);
@@ -857,7 +854,7 @@ app.SceneController.prototype.addComponent = function (selectedPoint) {
  * @return {Array<Object>}
  * @private
  */
-app.SceneController.prototype.getInactiveTablesList = function () {
+app.SceneController.prototype._getInactiveTablesList = function () {
     var list = [], item;
 
     for (var i = 0; i < this._tables.length; i++) {
@@ -929,7 +926,7 @@ app.SceneController.prototype.importData = function (dataModel) {
         table.importTable(tables[i]);
         this._tables.push(table);
         this._activeTableID = i;
-        this.addTableToGUI(i, tables[i]._tableName);
+        this._addTableToGUI(i, tables[i]._tableName);
 
         for (var j = 0; j < tables[i]._views.length; j++) {
             var view = new app.model.View(tables[i]._views[j]._viewName, tables[i]._views[j]._appliedTranslationX,
@@ -937,7 +934,7 @@ app.SceneController.prototype.importData = function (dataModel) {
 
             view.importView(tables[i]._views[j]);
             table.addView(view);
-            view.setCanvas(this.addViewToGUI(j, tables[i]._views[j]._viewName));
+            view.setCanvas(this._addViewToGUI(j, tables[i]._views[j]._viewName));
         }
 
         for (var k = 0; k < tables[i]._components.length; k++) {
@@ -947,6 +944,6 @@ app.SceneController.prototype.importData = function (dataModel) {
             table.importComponent(component);
         }
     }
-    this.setActiveTable((i - 1), goog.dom.getElement('button-table-' + (i - 1)));
+    this._setActiveTable((i - 1), goog.dom.getElement('button-table-' + (i - 1)));
     this.redrawAll();
 };
