@@ -126,29 +126,3 @@ app.utils.getTolerance = function () {
 app.utils.setTolerance = function (tolerance) {
     app.COHERENCE_LENGTH = Math.round(tolerance * app.PIXELS_ON_CM);
 };
-
-// TODO Monochromaticke vs polo...
-// TODO mala pismena? COHERENCE_LENGTH
-// TODO ON/OFF light switch
-// TODO pravitko
-// TODO mrizka
-// todo AUTHOR HEADER
-
-// ray [[x,y,z],[x,y,z], lightID, rayLength];
-//co brat v potaz?
-//· Seznam vlnovŭch délek
-//· Vlastnosti polarizace (pro kadou vlnovou délku)
-//· Vlastnosti koherence (pro kadou vlnovou délku)
-//· Energie (pro kadou vlnovou délku)
-
-//http://www.gymhol.cz/projekt/fyzika/09_difrakce/09_difrakce.htm
-//https://www.youtube.com/watch?v=i20bzCUw464
-//http://fyzika.jreichl.com/main.article/view/481-zobrazeni-tenkou-cockou
-//https://www.youtube.com/watch?v=i20bzCUw464
-//https://www.khanacademy.org/science/physics/geometric-optics/mirrors-and-lenses/v/thin-lens-equation-and-problem-solving
-//https://phet.colorado.edu/sims/geometric-optics/geometric-optics_cs.html
-//http://www.e-fyzika.cz/kapitoly/08-geometricka-optika.pdf
-//http://www.gymhol.cz/projekt/fyzika/05_cocky/05_cocky.htm
-//http://www.itnetwork.cz/maturitni-otazka-fyzika-zobrazeni-cocky-zrcadla-pristroje
-//https://cs.wikipedia.org/wiki/Rozptyln%C3%A1_%C4%8Do%C4%8Dka
-//http://stackoverflow.com/questions/9705123/how-can-i-get-sin-cos-and-tan-to-use-degrees-instead-of-radians
