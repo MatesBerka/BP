@@ -2,7 +2,6 @@ goog.provide('app.model.Component');
 
 /**
  * @description Diffractive optics simulator
- * @version 1.2
  * @author Matěj Berka
  * @param {!number} coordX - component x position
  * @param {!number} coordY - component Y position

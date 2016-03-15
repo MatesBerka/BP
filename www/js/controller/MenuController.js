@@ -9,7 +9,6 @@ goog.require('app.SceneController');
 
 /**
  * @description Diffractive optics simulator
- * @version 1.2
  * @author Matěj Berka
  * @param {!app.SceneController} sceneController
  * @final
@@ -478,7 +477,8 @@ app.MenuController.prototype._showHelp = function () {
     helpButton.addButton({key: 'ok', caption: 'Ok'}, true);
     this._helpDialog.setButtonSet(helpButton);
     this._helpDialog.setSafeHtmlContent(goog.html.SafeHtml.create('div', {'id': 'help-popup-wrapper'},
-        [goog.html.SafeHtml.create('h1', {}, app.translation['how-to-title']),
+        [goog.html.SafeHtml.create('span', {'id': 'program-version'}, [app.translation['version'], app.VERSION]),
+        goog.html.SafeHtml.create('h1', {}, app.translation['how-to-title']),
         // language
         goog.html.SafeHtml.create('h2', {}, app.translation['ht-change-lg-title']),
         goog.html.SafeHtml.create('span', {}, app.translation['ht-change-lg-text']),

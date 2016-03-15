@@ -2,7 +2,6 @@ goog.provide('app.model.View');
 
 /**
  * @description Diffractive optics simulator
- * @version 1.2
  * @author Matěj Berka
  * @param {!string} viewName
  * @param {!number} offsetX

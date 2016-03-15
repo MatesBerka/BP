@@ -2,7 +2,6 @@ goog.provide('app.model.Table');
 
 /**
  * @description Diffractive optics simulator
- * @version 1.2
  * @author Matěj Berka
  * @param {!string} tableName
  * @final

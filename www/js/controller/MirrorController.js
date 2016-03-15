@@ -4,7 +4,6 @@ goog.require('app.ComponentController');
 
 /**
  * @description Diffractive optics simulator
- * @version 1.2
  * @author Matěj Berka
  * @param {!app.model.Mirror} model
  * @param {!number} modelID

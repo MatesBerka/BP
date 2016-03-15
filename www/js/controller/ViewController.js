@@ -16,7 +16,6 @@ goog.require('app.WallController');
 
 /**
  * @description Diffractive optics simulator
- * @version 1.2
  * @author Matěj Berka
  * @param {Element} canvasWrapper
  * @final

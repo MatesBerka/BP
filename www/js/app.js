@@ -62,6 +62,12 @@ app._init = function () {
      * @public
      */
     app.REFLECTIONS_COUNT = 4;
+    /**
+     * @const
+     * @version 1.1.3
+     * @type {!string}
+     */
+    app.VERSION = '1.1.3';
 
     if (goog.labs.userAgent.device.isDesktop()) {
         /** @type {goog.events.EventType|string} */

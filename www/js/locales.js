@@ -1,14 +1,14 @@
 goog.provide('app.locales');
 
 /**
- *@description Diffractive optics simulator
- * @version 1.2
+ * @description Diffractive optics simulator
  * @author Matěj Berka
  * This file contains entire translation for simulator.
  * Keys are used as translation IDs. Key value is translation text.
  */
 app.TRANSLATION = {
     'cs_CZ': {
+        'version': 'Verze programu: ',
         'logo-msg': 'Simulátor difraktivní optiky',
         // menu
         'simulation-menu-msg': 'Simulace',
@@ -55,7 +55,7 @@ app.TRANSLATION = {
         'set-screen-size': 'Nastavit úhlopříčku (v palcích): ',
         'tolerance': 'Tolerance koherance',
         'tolerance-title': 'Nastavit toleranci rozdílu koherence',
-        'set-tolerance': 'Tolerance (v CM): ',
+        'set-tolerance': 'Tolerance (v cm): ',
         // component configuration popup
         'add-com-popup': 'Kliknutím na plátno přidáte komponentu',
         'com-conf-header': 'Konfigurace komponenty',
@@ -97,7 +97,7 @@ app.TRANSLATION = {
         'ht-change-cr-title': 'Změna počtu odrazů paprsku',
         'ht-change-cr-text': 'Počet odrazů parsku lze změnit na kartě Simulace/Nastavení/Počet odrazů.',
         // screen size
-        'ht-change-sz-title': 'Oprava vzdálenosti v CM',
+        'ht-change-sz-title': 'Oprava vzdálenosti v cm',
         'ht-change-sz-text': 'Vzdálenost lze upravit na kartě Simulace/Nastavení/Úhlopříčka displeje a zde zadat správnou úhlopříčku' +
         'vašeho displeje v palcích.',
         // export/import
@@ -121,6 +121,7 @@ app.TRANSLATION = {
         'light-type': 'Světlo'
     },
     'en_US': {
+        'version': 'Program version: ',
         'logo-msg': 'Diffractive optics simulator',
         // menu
         'simulation-menu-msg': 'Simulation',
@@ -167,7 +168,7 @@ app.TRANSLATION = {
         'set-screen-size': 'Set diagonal (in inches): ',
         'tolerance': 'Coherence tolerance',
         'tolerance-title': 'Set coherence difference tolerance',
-        'set-tolerance': 'Set tolerance (in CM): ',
+        'set-tolerance': 'Set tolerance (in cm): ',
         // component configuration popup
         'add-com-popup': 'Click to canvas adds the component',
         'com-conf-header': 'Component configuration',
@@ -209,7 +210,7 @@ app.TRANSLATION = {
         'ht-change-cr-title': 'Increase number of light reflections',
         'ht-change-cr-text': 'Go to Simulation/Settings and click on Count of reflections.',
         // screen size
-        'ht-change-sz-title': 'Correct size in CM',
+        'ht-change-sz-title': 'Correct size in cm',
         'ht-change-sz-text': 'Go to Simulation/Settings and click on Screen diagonal and insert correct display size in inches.',
         // export/import
         'ht-change-xi-title': 'How to share',

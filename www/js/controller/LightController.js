@@ -5,7 +5,6 @@ goog.require('goog.ui.Select');
 
 /**
  * @description Diffractive optics simulator
- * @version 1.2
  * @author Matěj Berka
  * @param {!app.model.Light} model
  * @param {!number} modelID

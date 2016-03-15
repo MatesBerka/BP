@@ -8,7 +8,6 @@ goog.require('goog.json');
 
 /**
  * @description Diffractive optics simulator
- * @version 1.2
  * @author Matěj Berka
  * @final
  * @constructor
