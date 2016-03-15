@@ -152,7 +152,7 @@ app.LightController.prototype.addPanelListeners = function (sceneController) {
          * @param {goog.events.BrowserEvent} e
          */
         function (e) {
-            app.ComponentController.validateFloatNoZeroInput(e, this.model.setSize, this.model);
+            app.ComponentController.validateFloatNoZeroNoNegativeInput(e, this.model.setSize, this.model);
             sceneController.redrawAll();
         }, true, this);
 
@@ -162,13 +162,7 @@ app.LightController.prototype.addPanelListeners = function (sceneController) {
          * @param {goog.events.BrowserEvent} e
          */
         function (e) {
-            var val = parseInt(e.target.value.replace(/\,/g, '.'), 10);
-            if (isNaN(val) || val < 380 || val > 750) {
-                e.target.style.backgroundColor = "red";
-            } else {
-                e.target.style.backgroundColor = "white";
-                this.model.setLightLength(val);
-            }
+            app.ComponentController.validateIntNoZeroNoNegativeInput(e, this.model.setLightLength, this.model);
             sceneController.redrawAll();
         }, true, this);
 
@@ -178,7 +172,7 @@ app.LightController.prototype.addPanelListeners = function (sceneController) {
          * @param {goog.events.BrowserEvent} e
          */
         function (e) {
-            app.ComponentController.validateIntInput(e, this.model.setRaysCount, this.model);
+            app.ComponentController.validateIntNoNegativeInput(e, this.model.setRaysCount, this.model);
             sceneController.redrawAll();
         }, true, this);
 

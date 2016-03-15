@@ -51,22 +51,6 @@ app.ComponentController.validateFloatInput = function (e, callback, scope) {
  * @param {app.model.Component} scope
  * @protected
  */
-app.ComponentController.validateIntInput = function (e, callback, scope) {
-    var val = parseInt(e.target.value, 10);
-    if (isNaN(val)) {
-        e.target.style.backgroundColor = "red";
-    } else {
-        e.target.style.backgroundColor = "white";
-        callback.call(scope, val);
-    }
-};
-
-/**
- * @param {goog.events.Event} e
- * @param {function(!number)} callback
- * @param {app.model.Component} scope
- * @protected
- */
 app.ComponentController.validateFloatNoZeroInput = function (e, callback, scope) {
     var val = parseFloat(e.target.value.replace(/\,/g, '.'));
     if (isNaN(val) || val === 0) {
@@ -83,9 +67,89 @@ app.ComponentController.validateFloatNoZeroInput = function (e, callback, scope)
  * @param {app.model.Component} scope
  * @protected
  */
+app.ComponentController.validateFloatNoNegativeInput = function (e, callback, scope) {
+    var val = parseFloat(e.target.value.replace(/\,/g, '.'));
+    if (isNaN(val) || val < 0) {
+        e.target.style.backgroundColor = "red";
+    } else {
+        e.target.style.backgroundColor = "white";
+        callback.call(scope, val);
+    }
+};
+
+/**
+ * @param {goog.events.Event} e
+ * @param {function(!number)} callback
+ * @param {app.model.Component} scope
+ * @protected
+ */
+app.ComponentController.validateFloatNoZeroNoNegativeInput = function (e, callback, scope) {
+    var val = parseFloat(e.target.value.replace(/\,/g, '.'));
+    if (isNaN(val) || val <= 0) {
+        e.target.style.backgroundColor = "red";
+    } else {
+        e.target.style.backgroundColor = "white";
+        callback.call(scope, val);
+    }
+};
+
+/**
+ * @param {goog.events.Event} e
+ * @param {function(!number)} callback
+ * @param {app.model.Component} scope
+ * @protected
+ */
+app.ComponentController.validateIntInput = function (e, callback, scope) {
+    var val = parseInt(e.target.value, 10);
+    if (isNaN(val)) {
+        e.target.style.backgroundColor = "red";
+    } else {
+        e.target.style.backgroundColor = "white";
+        callback.call(scope, val);
+    }
+};
+
+/**
+ * @param {goog.events.Event} e
+ * @param {function(!number)} callback
+ * @param {app.model.Component} scope
+ * @protected
+ */
 app.ComponentController.validateIntNoZeroInput = function (e, callback, scope) {
     var val = parseInt(e.target.value, 10);
     if (isNaN(val) || val === 0) {
+        e.target.style.backgroundColor = "red";
+    } else {
+        e.target.style.backgroundColor = "white";
+        callback.call(scope, val);
+    }
+};
+
+/**
+ * @param {goog.events.Event} e
+ * @param {function(!number)} callback
+ * @param {app.model.Component} scope
+ * @protected
+ */
+app.ComponentController.validateIntNoNegativeInput = function (e, callback, scope) {
+    var val = parseInt(e.target.value, 10);
+    if (isNaN(val) || val < 0) {
+        e.target.style.backgroundColor = "red";
+    } else {
+        e.target.style.backgroundColor = "white";
+        callback.call(scope, val);
+    }
+};
+
+/**
+ * @param {goog.events.Event} e
+ * @param {function(!number)} callback
+ * @param {app.model.Component} scope
+ * @protected
+ */
+app.ComponentController.validateIntNoZeroNoNegativeInput = function (e, callback, scope) {
+    var val = parseInt(e.target.value, 10);
+    if (isNaN(val) || val <= 0) {
         e.target.style.backgroundColor = "red";
     } else {
         e.target.style.backgroundColor = "white";

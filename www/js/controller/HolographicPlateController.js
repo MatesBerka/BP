@@ -131,7 +131,7 @@ app.HolographicPlateController.prototype.addPanelListeners = function (sceneCont
          * @param {!goog.events.BrowserEvent} e
          */
         function (e) {
-            app.ComponentController.validateFloatNoZeroInput(e, this.model.setHeight, this.model);
+            app.ComponentController.validateFloatNoZeroNoNegativeInput(e, this.model.setHeight, this.model);
             sceneController.redrawAll();
         }, true, this);
 
@@ -141,7 +141,7 @@ app.HolographicPlateController.prototype.addPanelListeners = function (sceneCont
          * @param {!goog.events.BrowserEvent} e
          */
         function (e) {
-            app.ComponentController.validateFloatNoZeroInput(e, this.model.setPlateResolution, this.model);
+            app.ComponentController.validateFloatNoZeroNoNegativeInput(e, this.model.setPlateResolution, this.model);
             sceneController.redrawAll();
         }, true, this);
 
@@ -151,6 +151,7 @@ app.HolographicPlateController.prototype.addPanelListeners = function (sceneCont
          * @param {!goog.events.BrowserEvent} e
          */
         function (e) {
+            // TODO remove
             app.ComponentController.validateIntNoZeroInput(e, this.model.setMaximum, this.model);
             sceneController.redrawAll();
         }, true, this);

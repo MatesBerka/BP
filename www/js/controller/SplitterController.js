@@ -65,7 +65,7 @@ app.SplitterController.prototype.addPanelListeners = function (sceneController) 
          * @param {goog.events.BrowserEvent} e
          */
         function (e) {
-            app.ComponentController.validateFloatNoZeroInput(e, this.model.setHeight, this.model);
+            app.ComponentController.validateFloatNoZeroNoNegativeInput(e, this.model.setHeight, this.model);
             sceneController.redrawAll();
         }, true, this);
 };
