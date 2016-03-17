@@ -51,11 +51,11 @@ app.model.HolographicPlate = function (coordX, coordY) {
      */
     this._refLightID = 0;
     /**
-     * // TODO
-     * @type {!number}
+     * Array of displayed maxim
+     * @type {!Array<number>}
      * @private
      */
-    this._m = -1;
+    this._m = [-1];
     /**
      * Incoming rays
      * @type {!Array<Object>}
@@ -138,20 +138,32 @@ app.model.HolographicPlate.prototype.setPlateResolution = function (resolution) 
 };
 
 /**
- * // TODO
+ * Adds selected maximum
  * @param {!number} maximum
  * @public
  */
-app.model.HolographicPlate.prototype.setMaximum = function (maximum) {
-    this._m = maximum;
+app.model.HolographicPlate.prototype.addMaximum = function (maximum) {
+    this._m.push(maximum);
 };
 
 /**
- * // TODO
- * @return {!number} maximum
+ * Removes selected maximum
+ * @param {!number} maximum
  * @public
  */
-app.model.HolographicPlate.prototype.getMaximum = function () {
+app.model.HolographicPlate.prototype.removeMaximum = function (maximum) {
+    var i = this._m.indexOf(maximum);
+    if (i !== -1) {
+        this._m.splice(i, 1)
+    }
+};
+
+/**
+ * Returns array of displayed maxim
+ * @return {!Array<number>} maximum
+ * @public
+ */
+app.model.HolographicPlate.prototype.getMaxim = function () {
     return this._m;
 };
 
@@ -230,7 +242,7 @@ app.model.HolographicPlate.prototype._getAngle = function () {
  */
 app.model.HolographicPlate.prototype._createRecord = function () {
     var i, refRaySourceID, raySourceID, group = [], frequencies = [], errors = [], errorDiff, refRay, refRayAngle, ray,
-     rayAngle, f;
+        rayAngle, f;
 
     if (this._allRefLights) {
         for (i = 0; i < this._groups.length; i++) {
@@ -307,7 +319,12 @@ app.model.HolographicPlate.prototype._recordRay = function () {
     this._intersectionRay[0] = point[0];
     this._intersectionRay[1] = point[1];
     if (this._groups[groupID] === undefined) this._groups[groupID] = {};
-    this._groups[groupID][this._intersectionRay[6]] = [angle, this._intersectionRay];
+    if(this._groups[groupID][this._intersectionRay[6]] === undefined) {
+        this._groups[groupID][this._intersectionRay[6]] = [angle, this._intersectionRay];
+    } else {
+        var newAngle = (angle + this._groups[groupID][this._intersectionRay[6]][0])/2;
+        this._groups[groupID][this._intersectionRay[6]]  = [newAngle, this._intersectionRay];
+    }
 };
 
 /**
@@ -321,23 +338,21 @@ app.model.HolographicPlate.prototype._checkRecordedRays = function (rays) {
 
     if (this._groups[groupID] !== undefined) {
         raySource = this.reverseTransformPoint([this._intersectionRay[0], this._intersectionRay[1]]);
+        // todo tohle nefunguje, kdyz zasviti svetlo ktere neni v seznamu
         group = (this._allRefLights) ? this._groups[groupID][this._intersectionRay[6]] : this._groups[groupID];
-        // TODO hodi chybu kdyz bude osvetlovat svetlo ktere nezaznamenavalo
-        console.log(group);
+        this._intersectionRay[0] = this.intersectionPoint[0];
+        this._intersectionRay[1] = this.intersectionPoint[1];
         for (var i = 0; i < group.length; i++) {
-            sin = this._m * this._intersectionRay[8] * group[i] + Math.sin((angle * (Math.PI / 180)));
-            console.log(sin, this._intersectionRay[8], group[i], angle);
-            if (sin <= 1 && sin >= -1) { // if sin does not crossed maximum add ray
-                console.log('sfsf' );
-                outgoingAngle = Math.asin(sin);
-                dirPoint = (raySource[0] > 0) ? this.rotatePoint([-1, 0], (-outgoingAngle + this.appliedRotation)) :
-                    this.rotatePoint([1, 0], (outgoingAngle + this.appliedRotation));
-
-                this._intersectionRay[0] = this.intersectionPoint[0];
-                this._intersectionRay[1] = this.intersectionPoint[1];
-                this._intersectionRay[3] = dirPoint[0];
-                this._intersectionRay[4] = dirPoint[1];
-                rays.push(this._intersectionRay);
+            for (var k = 0; k < this._m.length; k++) {
+                sin = this._m[k] * this._intersectionRay[8] * group[i] + Math.sin((angle * (Math.PI / 180)));
+                if (sin <= 1 && sin >= -1) { // if sin does not crossed maximum add ray
+                    outgoingAngle = Math.asin(sin);
+                    dirPoint = (raySource[0] > 0) ? this.rotatePoint([-1, 0], (-outgoingAngle + this.appliedRotation)) :
+                        this.rotatePoint([1, 0], (outgoingAngle + this.appliedRotation));
+                    this._intersectionRay[3] = dirPoint[0];
+                    this._intersectionRay[4] = dirPoint[1];
+                    rays.push(this._intersectionRay.slice());
+                }
             }
         }
     }

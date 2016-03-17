@@ -160,26 +160,6 @@ app.model.Component.normalize2DVector = function (vec) {
 };
 
 /**
- * Transforms component origin points
- * @protected
- */
-app.model.Component.prototype.transformPoints = function () {
-    var newPoint;
-    this.transformedPoints = [];
-
-    for (var i = 0; i < this.originPoints.length; i++) {
-        newPoint = [];
-        newPoint[0] = this.originPoints[i][0] * Math.cos(this.appliedRotation) - this.originPoints[i][1] * Math.sin(this.appliedRotation);
-        newPoint[1] = this.originPoints[i][0] * Math.sin(this.appliedRotation) + this.originPoints[i][1] * Math.cos(this.appliedRotation);
-
-        newPoint[0] = newPoint[0] + this.appliedTranslationX;
-        newPoint[1] = newPoint[1] + this.appliedTranslationY;
-
-        this.transformedPoints.push(newPoint);
-    }
-};
-
-/**
  * Rotates accepted point
  * @param {!Array<number>} point
  * @param {!number} radians
@@ -228,6 +208,26 @@ app.model.Component.prototype.transformPoint = function (point) {
     newPoint[1] = newPoint[1] + this.appliedTranslationY;
 
     return newPoint;
+};
+
+/**
+ * Transforms component origin points
+ * @protected
+ */
+app.model.Component.prototype.transformPoints = function () {
+    var newPoint;
+    this.transformedPoints = [];
+
+    for (var i = 0; i < this.originPoints.length; i++) {
+        newPoint = [];
+        newPoint[0] = this.originPoints[i][0] * Math.cos(this.appliedRotation) - this.originPoints[i][1] * Math.sin(this.appliedRotation);
+        newPoint[1] = this.originPoints[i][0] * Math.sin(this.appliedRotation) + this.originPoints[i][1] * Math.cos(this.appliedRotation);
+
+        newPoint[0] = newPoint[0] + this.appliedTranslationX;
+        newPoint[1] = newPoint[1] + this.appliedTranslationY;
+
+        this.transformedPoints.push(newPoint);
+    }
 };
 
 /**

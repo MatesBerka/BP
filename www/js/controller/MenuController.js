@@ -377,9 +377,16 @@ app.MenuController.prototype._addListeners = function () {
     // help
     goog.events.listen(goog.dom.getElement('help'), goog.events.EventType.CLICK, this._showHelp, true, this);
 
+    this._addKeyboardShortcuts();
+};
+
+/**
+ * Adds keyboard shortcuts for menu items.
+ * @private
+ */
+app.MenuController.prototype._addKeyboardShortcuts = function() {
     var shortcutHandler = new goog.ui.KeyboardShortcutHandler(document);
     var CTRL = goog.ui.KeyboardShortcutHandler.Modifiers.CTRL;
-
     shortcutHandler.registerShortcut('CTRL_H', goog.events.KeyCodes.H, CTRL); // help popup
     shortcutHandler.registerShortcut('CTRL_L', goog.events.KeyCodes.L, CTRL); // screen size popup
     shortcutHandler.registerShortcut('CTRL_T', goog.events.KeyCodes.T, CTRL); // coherence tolerance

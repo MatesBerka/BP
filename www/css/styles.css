@@ -635,3 +635,12 @@ button:active {
     padding: 4px 0px;
     font-size: 16px;
 }
+
+#diffraction-maxim .com-left-side {
+    line-height: 22px;
+    height: 20px;
+}
+
+#diffraction-maxim .com-right-side {
+    height: 20px;
+}

@@ -820,6 +820,7 @@ app.SceneController.prototype.redrawAll = function () {
         this._VIEW_CONTROLLER.draw();
     }
 
+    // restore active model
     this._VIEW_CONTROLLER.setComponents(activeComponents);
     this._VIEW_CONTROLLER.setViewModel(activeModel);
 };
