@@ -13,9 +13,7 @@ goog.require('app.model.LineShapeComponent');
  * This class represents Mirror component.
  */
 app.model.Mirror = function(coordX, coordY) {
-    app.model.Mirror.base(this, 'constructor', coordX, coordY); // call parent constructor
-    /** @override */
-    this.type = 'MIRROR';
+    app.model.Mirror.base(this, 'constructor', coordX, coordY, 'MIRROR'); // call parent constructor
 
     this.transformPoints();
 };
@@ -35,7 +33,7 @@ app.model.Mirror.prototype.intersects = function (rays) {
     dVec[0] = k[0] - this.intersectionPoint[0];
     dVec[1] = k[1] - this.intersectionPoint[1];
 
-    normVec = this.normalize2DVector(dVec);
+    normVec = app.model.Component.normalize2DVector(dVec);
 
     var rayLength = this._intersectionRay[7] + this.newRayLength;
     rays.push([this.intersectionPoint[0], this.intersectionPoint[1], 0, normVec[0], normVec[1], 0, this._intersectionRay[6], rayLength]);
@@ -55,7 +53,7 @@ app.model.Mirror.prototype.copyArguments = function(height) {
 
 /**
  * @param {!Object} componentModel
- * @public
+ * @override
  */
 app.model.Mirror.prototype.importComponentData = function (componentModel) {
     this.height = componentModel.height;

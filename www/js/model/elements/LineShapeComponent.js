@@ -7,11 +7,12 @@ goog.require('app.model.Component');
  * @author Matěj Berka
  * @param {number} coordX - component x position
  * @param {number} coordY - component Y position
+ * @param {!string} type - component type
  * @constructor
  * @extends {app.model.Component}
  * Abstract class used to define basic operations for line shape components.
  */
-app.model.LineShapeComponent = function (coordX, coordY) {
+app.model.LineShapeComponent = function (coordX, coordY, type) {
     /**
      * Used to define component height
      * @type {!number}
@@ -19,7 +20,7 @@ app.model.LineShapeComponent = function (coordX, coordY) {
      */
     this.height = 300;
 
-    app.model.LineShapeComponent.base(this, 'constructor', coordX, coordY); // call parent constructor
+    app.model.LineShapeComponent.base(this, 'constructor', coordX, coordY, type); // call parent constructor
 };
 
 goog.inherits(app.model.LineShapeComponent, app.model.Component);
@@ -102,7 +103,6 @@ app.model.LineShapeComponent.prototype.draw = function (ctx, callback) {
 
 /**
  * @override
- * @public
  */
 app.model.LineShapeComponent.prototype.isSelected = function (x, y) {
     var point = this.reverseTransformPoint([x, y]),
@@ -115,17 +115,19 @@ app.model.LineShapeComponent.prototype.isSelected = function (x, y) {
 };
 
 /**
+ * Returns component height
  * @public
  */
 app.model.LineShapeComponent.prototype.getHeight = function () {
-    return (this.height / app.PIXELS_ON_CM).toFixed(2);
+    return (this.height / app.pixels_on_cm).toFixed(2);
 };
 
 /**
+ * Sets new component height
  * @public
  */
 app.model.LineShapeComponent.prototype.setHeight = function (height) {
-    this.height = Math.round(height * app.PIXELS_ON_CM);
+    this.height = Math.round(height * app.pixels_on_cm);
     this.generateShapePoints();
     this.transformPoints();
 };

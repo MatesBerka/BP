@@ -12,24 +12,13 @@ goog.require('app.ComponentController');
  * Controller used by app.model.Splitter component. Adds specific controls for this component.
  */
 app.SplitterController = function (model, modelID) {
-    app.SplitterController.base(this, 'constructor');
-    /**
-     * Points to currently selected component model
-     * @type {app.model.Splitter}
-     * @override
-     */
-    this.model = model;
-    /**
-     * @override
-     */
-    this.modelID = modelID;
+    app.SplitterController.base(this, 'constructor', model, modelID);
 };
 
 goog.inherits(app.SplitterController, app.ComponentController);
 
 /**
  * @override
- * @param sceneController
  */
 app.SplitterController.prototype.showComponentControlPanel = function (sceneController) {
     app.SplitterController.base(this, 'showComponentControlPanel', sceneController);
@@ -54,7 +43,6 @@ app.SplitterController.prototype.showComponentControlPanel = function (sceneCont
 
 /**
  * @override
- * @param sceneController
  */
 app.SplitterController.prototype.addPanelListeners = function (sceneController) {
     app.SplitterController.base(this, 'addPanelListeners', sceneController);

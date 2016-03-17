@@ -24,27 +24,32 @@ goog.require('app.WallController');
  */
 app.ViewController = function (canvasWrapper) {
     /**
+     * DOM element containing canvas wrapper
      * @const
      * @type {Element}
      * @private
      */
     this._CANVAS_WRAPPER = canvasWrapper;
     /**
+     * Currently view model
      * @type {app.model.View}
      * @private
      */
     this._model = null;
     /**
+     * Array of components added on currently active table
      * @type {!Array<app.model.Component>}
      * @private
      */
     this._components = [];
     /**
+     * Help array used during redrawing and contains view rays
      * @type {!Array<Array<!number>>}
      * @private
      */
     this._rays = [];
     /**
+     * Contains mouse coordinates
      * @type {!Array<!number>}
      * @private
      */
@@ -52,6 +57,7 @@ app.ViewController = function (canvasWrapper) {
 };
 
 /**
+ * Helper method to add listener for canvas move
  * @param {Element} view
  * @param {!Array<number>} coordinates
  * @public
@@ -62,6 +68,7 @@ app.ViewController.prototype.addCanvasMove = function (view, coordinates) {
 };
 
 /**
+ * Helper method to remove listener for canvas move
  * @param {Element} view
  * @public
  */
@@ -70,6 +77,7 @@ app.ViewController.prototype.removeCanvasMove = function (view) {
 };
 
 /**
+ * Add listeners used to interact with view
  * @param {Element} view
  * @public
  */
@@ -125,19 +133,21 @@ app.ViewController.prototype.addListeners = function (view) {
 };
 
 /**
+ * Updates mouse coordinates displayed in view
  * @param {!goog.events.BrowserEvent} e
  * @param {!Node} coordinates
  * @public
  */
 app.ViewController.prototype._updateCoordinates = function (e, coordinates) {
     var xCm, yCm, zoom;
-    xCm = (e.clientX - this._CANVAS_WRAPPER.offsetLeft - this._model.getAppliedTranslationX()) / app.PIXELS_ON_CM;
-    yCm = (e.clientY - e.currentTarget.offsetTop - this._CANVAS_WRAPPER.offsetTop - this._model.getAppliedTranslationY()) / app.PIXELS_ON_CM;
+    xCm = (e.clientX - this._CANVAS_WRAPPER.offsetLeft - this._model.getAppliedTranslationX()) / app.pixels_on_cm;
+    yCm = (e.clientY - e.currentTarget.offsetTop - this._CANVAS_WRAPPER.offsetTop - this._model.getAppliedTranslationY()) / app.pixels_on_cm;
     zoom = Math.floor(100 * this._model.getZoom());
     goog.dom.setTextContent(coordinates, 'x: ' + xCm.toFixed(2) + ' cm, y: ' + yCm.toFixed(2) + ' cm, zoom: ' + zoom + ' %');
 };
 
 /**
+ * Triggered when user moves with canvas to update displayed view
  * @param {!goog.events.BrowserEvent} e
  * @private
  */
@@ -158,6 +168,7 @@ app.ViewController.prototype._canvasMoved = function (e) {
 };
 
 /**
+ * Reverse transforms inserted point
  * @param {!Array<!number>} point
  * @public
  */
@@ -166,6 +177,7 @@ app.ViewController.prototype.reverseTransformPoint = function (point) {
 };
 
 /**
+ * Reverse scales inserted point
  * @param {!Array<!number>} point
  * @public
  */
@@ -174,6 +186,7 @@ app.ViewController.prototype.reverseScale = function (point) {
 };
 
 /**
+ * Sets new active view model
  * @param {!app.model.View} view
  * @public
  */
@@ -182,6 +195,7 @@ app.ViewController.prototype.setViewModel = function (view) {
 };
 
 /**
+ * Returns currently active view model
  * @return {!app.model.View}
  * @public
  */
@@ -190,6 +204,7 @@ app.ViewController.prototype.getViewModel = function () {
 };
 
 /**
+ * Sets new active set of components
  * @param {!Array<app.model.Component>} components
  * @public
  */
@@ -198,6 +213,7 @@ app.ViewController.prototype.setComponents = function (components) {
 };
 
 /**
+ * Returns active set of components
  * @return {!Array<app.model.Component>}
  * @public
  */
@@ -206,6 +222,7 @@ app.ViewController.prototype.getComponents = function () {
 };
 
 /**
+ * Adds new ray into rays array to be drawn on canvas
  * @param {!Array<number>} ray
  * @public
  */
@@ -214,6 +231,7 @@ app.ViewController.prototype.addRay = function (ray) {
 };
 
 /**
+ * Iterates over active table components and draws them on canvas with rays the generates
  * @public
  */
 app.ViewController.prototype.draw = function () {
@@ -250,7 +268,7 @@ app.ViewController.prototype.draw = function () {
             }
         }
 
-        if (this._rays.length == 0 || depthCount >= app.REFLECTIONS_COUNT) {
+        if (this._rays.length == 0 || depthCount >= app.reflections_count) {
             generateRays = false;
         }
     }

@@ -19,31 +19,37 @@ app.model.View = function (viewName, offsetX, offsetY) {
      */
     this._viewName = viewName;
     /**
+     * View canvas
      * @type {CanvasRenderingContext2D}
      * @private
      */
     this._ctx = null;
     /**
+     * View width
      * @type {!number}
      * @private
      */
     this._width = 0;
     /**
+     * View height
      * @type {!number}
      * @private
      */
     this._height = 0;
     /**
+     * Applied scale
      * @type {!number}
      * @private
      */
     this._appliedScale = 1;
     /**
+     * Applied x translation
      * @type {!number}
      * @private
      */
     this._appliedTranslationX = offsetX;
     /**
+     * Applied y translation
      * @type {!number}
      * @private
      */
@@ -53,6 +59,7 @@ app.model.View = function (viewName, offsetX, offsetY) {
 app.model.View.CLEAR_OFFSET = 100;
 
 /**
+ * Sets new canvas for this view
  * @param {HTMLCanvasElement} canvas
  * @public
  */
@@ -61,6 +68,7 @@ app.model.View.prototype.setCanvas = function (canvas) {
 };
 
 /**
+ * Returns transformed canvas
  * @return {CanvasRenderingContext2D}
  * @public
  */
@@ -70,6 +78,7 @@ app.model.View.prototype.getGraphicsContext = function () {
 };
 
 /**
+ * Returns view name
  * @param {!string} name
  * @public
  */
@@ -78,6 +87,7 @@ app.model.View.prototype.changeName = function (name) {
 };
 
 /**
+ * Updates view size
  * @param {!number} width
  * @param {!number} height
  * @public
@@ -88,6 +98,7 @@ app.model.View.prototype.updateSize = function (width, height) {
 };
 
 /**
+ * Returns table visible area in this view
  * @return {!Array<!number>} visible area
  * @public
  */
@@ -102,6 +113,7 @@ app.model.View.prototype.getVisibleArea = function () {
 };
 
 /**
+ * Returns applied x translation
  * @return {!number}
  * @public
  */
@@ -110,6 +122,7 @@ app.model.View.prototype.getAppliedTranslationX = function () {
 };
 
 /**
+ * Returns applied y translation
  * @return {!number}
  * @public
  */
@@ -118,6 +131,7 @@ app.model.View.prototype.getAppliedTranslationY = function () {
 };
 
 /**
+ * Applies new scale up on view
  * @public
  */
 app.model.View.prototype.scaleUp = function () {
@@ -125,6 +139,7 @@ app.model.View.prototype.scaleUp = function () {
 };
 
 /**
+ * Applies new down scale on view (limited)
  * @public
  */
 app.model.View.prototype.scaleDown = function () {
@@ -134,6 +149,7 @@ app.model.View.prototype.scaleDown = function () {
 };
 
 /**
+ * Adds top move to applied translation
  * @public
  */
 app.model.View.prototype.moveUp = function () {
@@ -141,6 +157,7 @@ app.model.View.prototype.moveUp = function () {
 };
 
 /**
+ * Adds down move to applied translation
  * @public
  */
 app.model.View.prototype.moveDown = function () {
@@ -148,6 +165,7 @@ app.model.View.prototype.moveDown = function () {
 };
 
 /**
+ * Adds left move to applied translation
  * @public
  */
 app.model.View.prototype.moveLeft = function () {
@@ -155,6 +173,7 @@ app.model.View.prototype.moveLeft = function () {
 };
 
 /**
+ * Adds right move to applied translation
  * @public
  */
 app.model.View.prototype.moveRight = function () {
@@ -162,6 +181,7 @@ app.model.View.prototype.moveRight = function () {
 };
 
 /**
+ * Adds new translation
  * @param {!number} x
  * @param {!number} y
  * @public
@@ -172,6 +192,7 @@ app.model.View.prototype.translate = function (x, y) {
 };
 
 /**
+ * Applies reverse transformations on inserted point
  * @param {!Array<!number>} point
  * @return {!Array<!number>}
  * @public
@@ -187,6 +208,7 @@ app.model.View.prototype.reverseTransformPoint = function (point) {
 };
 
 /**
+ * Applies reverse scale on inserted point
  * @param {!Array<!number>} point
  * @return {!Array<!number>}
  * @public
@@ -199,6 +221,7 @@ app.model.View.prototype.reverseScale = function (point) {
 };
 
 /**
+ * Returns view current zoom/applied scale
  * @return {!number}
  * @public
  */
@@ -207,6 +230,7 @@ app.model.View.prototype.getZoom = function () {
 };
 
 /**
+ * Imports view data
  * @param {!Object} viewModel
  */
 app.model.View.prototype.importView = function (viewModel) {

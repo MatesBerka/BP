@@ -13,18 +13,20 @@ goog.require('goog.labs.userAgent.device');
  * @author Matěj Berka
  * @export
  * Make {@code app.start} accessible after {@code ADVANCED_OPTIMIZATIONS}.
- * Entry point of application, creates main application controllers
+ * Entry point, creates main application controllers
  */
 app.start = function () {
 
     app._init();
     app.utils.translate();
     /**
+     * Contains scene controller, main controller used to control simulation
      * @const
      * @private
      */
     app._SCENECONTROLLER = new app.SceneController();
     /**
+     * Contains menu controller, used to control simulation navigation
      * @const
      * @private
      */
@@ -32,43 +34,49 @@ app.start = function () {
 };
 
 /**
+ * Creates default variables and constants used across simulation
  * @private
  */
 app._init = function () {
     /**
-     * @type {!string}
-     * @public
-     */
-    app.LOCALE = 'en_US';
-    /**
-     * @type {number}
-     * @public
-     */
-    app.PIXELS_ON_CM = goog.dom.getElement('cm-box').clientWidth;
-    /**
-     * The maximum angels difference of two rays
-     * @type {!number}
-     * @public
-     */
-    app.COHERENCE_LENGTH = 500;
-    /**
+     * Defines conversion between inches and centimeters
      * @const
      * @type {!number}
      * @public
      */
     app.INCH_TO_CM = 2.54;
     /**
+     * Simulator version
+     * @const
+     * @version 1.1.4
+     * @type {!string}
+     */
+    app.VERSION = '1.1.4';
+    /**
+     * Simulator default locale
+     * @type {!string}
+     * @public
+     */
+    app.locale = 'en_US';
+    /**
+     * Defines conversion between pixels and centimeters
+     * @type {number}
+     * @public
+     */
+    app.pixels_on_cm = goog.dom.getElement('cm-box').clientWidth;
+    /**
+     * The maximum angels difference of two rays
      * @type {!number}
      * @public
      */
-    app.REFLECTIONS_COUNT = 4;
+    app.coherence_length = 500;
     /**
-     * @const
-     * @version 1.1.3
-     * @type {!string}
+     * Defines maximum reflections count
+     * @type {!number}
+     * @public
      */
-    app.VERSION = '1.1.3';
-
+    app.reflections_count = 4;
+    /** Checks device type and sets correct event types used to control simulation */
     if (goog.labs.userAgent.device.isDesktop()) {
         /** @type {goog.events.EventType|string} */
         app.MOUSE_DOWN_EVENT = goog.events.EventType.MOUSEDOWN;
@@ -87,10 +95,11 @@ app._init = function () {
 };
 
 /**
+ * Utils function used to translate text in application
  * @public
  */
 app.utils.translate = function () {
-    app.translation = app.TRANSLATION[app.LOCALE];
+    app.translation = app.TRANSLATION[app.locale];
 
     for (var key in app.translation) {
         var el = goog.dom.getElement(key);
@@ -101,34 +110,39 @@ app.utils.translate = function () {
 };
 
 /**
+ * Utils function used tu update px/cm conversion
  * @param {!number} screenSize
  * @public
  */
 app.utils.updatePixelsPerCM = function (screenSize) {
     var diagonal = Math.sqrt(window.screen.height * window.screen.height + window.screen.width * window.screen.width);
-    app.PIXELS_ON_CM = diagonal/(screenSize*app.INCH_TO_CM);
+    app.pixels_on_cm = diagonal/(screenSize*app.INCH_TO_CM);
 };
 
 /**
+ * Utils function used to update screen size
  * @returns {string}
  * @public
  */
 app.utils.getScreenSize = function () {
     var diagonal = Math.sqrt(window.screen.height * window.screen.height + window.screen.width * window.screen.width);
-    return (diagonal/(app.PIXELS_ON_CM*app.INCH_TO_CM)).toFixed(2);
+    return (diagonal/(app.pixels_on_cm*app.INCH_TO_CM)).toFixed(2);
 };
 
 /**
+ * Returns light length difference tolerance
  * @returns {!string}
  * @public
  */
 app.utils.getTolerance = function () {
-    return (app.COHERENCE_LENGTH / app.PIXELS_ON_CM).toFixed(2);
+    return (app.coherence_length / app.pixels_on_cm).toFixed(2);
 };
-/**#
+
+/**
+ * Sets light length difference tolerance
  * @param {!number} tolerance
  * @public
  */
 app.utils.setTolerance = function (tolerance) {
-    app.COHERENCE_LENGTH = Math.round(tolerance * app.PIXELS_ON_CM);
+    app.coherence_length = Math.round(tolerance * app.pixels_on_cm);
 };

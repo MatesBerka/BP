@@ -3,24 +3,26 @@ goog.provide('app.ComponentController');
 goog.require('goog.dom');
 
 /**
+ * @param {!app.model.Component} model
+ * @param {!number} modelID
  * @description Diffractive optics simulator
  * @author Matěj Berka
  * @constructor
  * Base controller used to control simulation components.
  */
-app.ComponentController = function () {
+app.ComponentController = function (model, modelID) {
     /**
      * Points to currently selected component model
      * @type {app.model.Component}
      * @protected
      */
-    this.model = null;
+    this.model = model;
     /**
      * currently selected component model ID
      * @type {!number}
      * @protected
      */
-    this.modelID = -1;
+    this.modelID = modelID;
     /**
      * Element which contains component control panel
      * @type {Element}
@@ -30,6 +32,7 @@ app.ComponentController = function () {
 };
 
 /**
+ * Helper function to validate float input
  * @param {goog.events.Event} e
  * @param {function(!number)} callback
  * @param {app.model.Component} scope
@@ -46,6 +49,7 @@ app.ComponentController.validateFloatInput = function (e, callback, scope) {
 };
 
 /**
+ * Helper function to validate float input
  * @param {goog.events.Event} e
  * @param {function(!number)} callback
  * @param {app.model.Component} scope
@@ -62,6 +66,7 @@ app.ComponentController.validateFloatNoZeroInput = function (e, callback, scope)
 };
 
 /**
+ * Helper function to validate float input
  * @param {goog.events.Event} e
  * @param {function(!number)} callback
  * @param {app.model.Component} scope
@@ -78,6 +83,7 @@ app.ComponentController.validateFloatNoNegativeInput = function (e, callback, sc
 };
 
 /**
+ * Helper function to validate float input
  * @param {goog.events.Event} e
  * @param {function(!number)} callback
  * @param {app.model.Component} scope
@@ -94,6 +100,7 @@ app.ComponentController.validateFloatNoZeroNoNegativeInput = function (e, callba
 };
 
 /**
+ * Helper function to validate integer input
  * @param {goog.events.Event} e
  * @param {function(!number)} callback
  * @param {app.model.Component} scope
@@ -110,6 +117,7 @@ app.ComponentController.validateIntInput = function (e, callback, scope) {
 };
 
 /**
+ * Helper function to validate integet input
  * @param {goog.events.Event} e
  * @param {function(!number)} callback
  * @param {app.model.Component} scope
@@ -126,6 +134,7 @@ app.ComponentController.validateIntNoZeroInput = function (e, callback, scope) {
 };
 
 /**
+ * Helper function to validate integer input
  * @param {goog.events.Event} e
  * @param {function(!number)} callback
  * @param {app.model.Component} scope
@@ -142,6 +151,7 @@ app.ComponentController.validateIntNoNegativeInput = function (e, callback, scop
 };
 
 /**
+ * Helper function to validate integer input
  * @param {goog.events.Event} e
  * @param {function(!number)} callback
  * @param {app.model.Component} scope
@@ -158,6 +168,7 @@ app.ComponentController.validateIntNoZeroNoNegativeInput = function (e, callback
 };
 
 /**
+ * Helper function which return correct type translation according to model type
  * @public
  */
 app.ComponentController.prototype._getComponentType = function () {
@@ -186,6 +197,7 @@ app.ComponentController.prototype._getComponentType = function () {
 };
 
 /**
+ * Adds component controls into component control panel popup.
  * @param {app.SceneController} sceneController
  * @public
  */
@@ -248,14 +260,7 @@ app.ComponentController.prototype.showComponentControlPanel = function (sceneCon
 };
 
 /**
- * @public
- */
-app.ComponentController.prototype.hideComponentControlPanel = function () {
-    this.componentConfigurationPanel.style.display = "none";
-    goog.dom.classlist.remove(goog.dom.getElement('canvas-wrapper'), 'active-component-panel');
-};
-
-/**
+ * Adds listeners for added controls in component control panel
  * @param {app.SceneController} sceneController
  * @protected
  */
@@ -292,6 +297,7 @@ app.ComponentController.prototype.addPanelListeners = function (sceneController)
 };
 
 /**
+ * Cleans this controller and removes currently selected component.
  * @public
  */
 app.ComponentController.prototype.removeActiveComponent = function () {
@@ -302,6 +308,7 @@ app.ComponentController.prototype.removeActiveComponent = function () {
 };
 
 /**
+ * Deselects currently active component
  * @public
  */
 app.ComponentController.prototype.removeSelected = function () {
@@ -309,6 +316,7 @@ app.ComponentController.prototype.removeSelected = function () {
 };
 
 /**
+ * Helper to update component position
  * @param {!number} diffX
  * @param {!number} diffY
  * @public
@@ -318,6 +326,7 @@ app.ComponentController.prototype.updatePosition = function (diffX, diffY) {
 };
 
 /**
+ * Returns copy of selected component model
  * @public
  */
 app.ComponentController.prototype.getComponentModelCopy = function () {

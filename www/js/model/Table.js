@@ -88,7 +88,7 @@ app.model.Table.prototype.addView = function (view) {
 };
 
 /**
- * returns view specified by ID.
+ * Returns view specified by ID.
  * @param {!number} viewID
  * @return {!app.model.View}
  * @public

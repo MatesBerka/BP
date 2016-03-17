@@ -17,37 +17,44 @@ goog.require('app.SceneController');
  */
 app.MenuController = function (sceneController) {
     /**
+     * Pointer to scene controller used in menu actions
      * @const
      * @type {!app.SceneController}
      * @private
      */
     this._SCENECONTROLLER = sceneController;
     /**
+     * Dialog used to set count of reflections
      * @type {goog.ui.Dialog}
      * @private
      */
     this._refDialog = new goog.ui.Dialog();
     /**
+     * Dialog used to set screen size
      * @type {goog.ui.Dialog}
      * @private
      */
     this._sizeDialog = new goog.ui.Dialog();
     /**
+     * Dialog used to set lights length difference tolerance
      * @type {goog.ui.Dialog}
      * @private
      */
     this._toleranceDialog = new goog.ui.Dialog();
     /**
+     * Dialog used to display help
      * @type {goog.ui.Dialog}
      * @private
      */
     this._helpDialog = new goog.ui.Dialog('wide-dialog');
     /**
+     * Dialog used for simulation export
      * @type {goog.ui.Dialog}
      * @private
      */
     this._dataOutputDialog = new goog.ui.Dialog();
     /**
+     * Dialog used for simulation import
      * @type {goog.ui.Dialog}
      * @private
      */
@@ -57,6 +64,7 @@ app.MenuController = function (sceneController) {
 };
 
 /**
+ * Hides or show submenu
  * @param {!goog.events.BrowserEvent} e
  * @param {Element} child
  * @private
@@ -80,6 +88,7 @@ app.MenuController.prototype._toggleSubMenu = function (e, child) {
 };
 
 /**
+ * Hides submenu
  * @param {Element} element
  * @private
  */
@@ -91,6 +100,7 @@ app.MenuController.prototype._hideSubMenus = function (element) {
 };
 
 /**
+ * Display notification that new component should be added
  * @param {!(goog.events.BrowserEvent|goog.ui.KeyboardShortcutEvent)} e
  * @param {!string} type
  * @private
@@ -108,6 +118,7 @@ app.MenuController.prototype._addComponent = function (e, type) {
 };
 
 /**
+ * Adds menu listeners
  * @private
  */
 app.MenuController.prototype._addListeners = function () {
@@ -185,7 +196,7 @@ app.MenuController.prototype._addListeners = function () {
                     input.style.backgroundColor = "red";
                     e.preventDefault();
                 } else {
-                    app.REFLECTIONS_COUNT = val;
+                    app.reflections_count = val;
                     this._SCENECONTROLLER.redrawAll();
                 }
             }
@@ -248,9 +259,9 @@ app.MenuController.prototype._addListeners = function () {
             this._hideSubMenus(goog.dom.getElement('top-items'));
             e.stopPropagation();
             if (e.target.id == "lang-en-us") {
-                app.LOCALE = 'en_US';
+                app.locale = 'en_US';
             } else if (e.target.id == "lang-cs-cz") {
-                app.LOCALE = 'cs_CZ';
+                app.locale = 'cs_CZ';
             }
             app.utils.translate();
         },
@@ -457,11 +468,11 @@ app.MenuController.prototype._addListeners = function () {
                     this._tolerance(e);
                     break;
                 case 'CTRL_Q E':
-                    app.LOCALE = 'en_US';
+                    app.locale = 'en_US';
                     app.utils.translate();
                     break;
                 case 'CTRL_Q C':
-                    app.LOCALE = 'cs_CZ';
+                    app.locale = 'cs_CZ';
                     app.utils.translate();
                     break;
             }
@@ -469,6 +480,7 @@ app.MenuController.prototype._addListeners = function () {
 };
 
 /**
+ * Displays help dialog
  * @private
  */
 app.MenuController.prototype._showHelp = function () {
@@ -500,6 +512,7 @@ app.MenuController.prototype._showHelp = function () {
 };
 
 /**
+ * Displays export simulation dialog
  * @param {!(goog.events.BrowserEvent|goog.ui.KeyboardShortcutEvent)} e
  * @private
  */
@@ -519,8 +532,9 @@ app.MenuController.prototype._export = function (e) {
 };
 
 /**
+ * Displays import simulation dialog
  * @param {!(goog.events.BrowserEvent|goog.ui.KeyboardShortcutEvent)} e
-* @private
+ * @private
 */
 app.MenuController.prototype._import = function (e) {
     this._hideSubMenus(goog.dom.getElement('top-items'));
@@ -543,6 +557,7 @@ app.MenuController.prototype._import = function (e) {
 };
 
 /**
+ * Displays reflections count dialog
  * @param {!(goog.events.BrowserEvent|goog.ui.KeyboardShortcutEvent)} e
  * @private
  */
@@ -559,13 +574,14 @@ app.MenuController.prototype._reflectionCount = function (e) {
         goog.html.SafeHtml.create('input', {
             'tabindex': 1,
             'type': 'text', 'id': 'reflection-count-input',
-            'name': 'reflection-count-input', 'value': app.REFLECTIONS_COUNT
+            'name': 'reflection-count-input', 'value': app.reflections_count
         })]
     ));
     this._refDialog.setVisible(true);
 };
 
 /**
+ * Displays screen size dialog
  * @param {!(goog.events.BrowserEvent|goog.ui.KeyboardShortcutEvent)} e
  * @private
  */
@@ -590,6 +606,7 @@ app.MenuController.prototype._screenSize = function (e) {
 };
 
 /**
+ * Displays tolerance dialog
  * @param {!(goog.events.BrowserEvent|goog.ui.KeyboardShortcutEvent)} e
  * @private
  */

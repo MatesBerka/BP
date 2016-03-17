@@ -5,17 +5,18 @@ goog.provide('app.model.Component');
  * @author Matěj Berka
  * @param {!number} coordX - component x position
  * @param {!number} coordY - component Y position
+ * @param {!string} type - component type
  * @template Component
  * @constructor
  * Abstract class used to define basic operations used by all components.
  */
-app.model.Component = function (coordX, coordY) {
+app.model.Component = function (coordX, coordY, type) {
     /**
      * Holds component type
      * @type {!string}
      * @protected
      */
-    this.type = '';
+    this.type = type;
     /**
      * Applied x translation in px
      * @type {!number}
@@ -47,16 +48,19 @@ app.model.Component = function (coordX, coordY) {
      */
     this.isComponentSelected = false;
     /**
+     * Holds intersection point for currently processed ray
      * @type {!Array<number>}
      * @protected
      */
     this.intersectionPoint = [];
     /**
+     * Holds component origin points before they are transformed
      * @type {!Array<!Array<number>>}
      * @protected
      */
     this.originPoints = [];
     /**
+     * Holds component transformed points which are created from origin points
      * @type {!Array<!Array<number>>}
      * @protected
      */
@@ -66,6 +70,7 @@ app.model.Component = function (coordX, coordY) {
 };
 
 /**
+ * Defines minimal length which ray has to have to be considered as a intersection ray
  * @const
  * @type {number}
  * @protected
@@ -73,6 +78,7 @@ app.model.Component = function (coordX, coordY) {
 app.model.Component.RAY_MIN_LENGTH = 3;
 
 /**
+ * Accepts currently processed ray and checks if ray intersects this component
  * @param {!Array<number>} ray
  * @return {!number}
  * @public
@@ -82,6 +88,8 @@ app.model.Component.prototype.isIntersection = function (ray) {
 };
 
 /**
+ * Draws components on inserted canvas and if components generate light, then it will call callback function
+ * to add new rays
  * @param {!CanvasRenderingContext2D} ctx
  * @param {function(Array<number>)} callback
  * @public
@@ -91,6 +99,7 @@ app.model.Component.prototype.draw = function (ctx, callback) {
 };
 
 /**
+ * Accepts x and y coordinates and checks if they intersects this component
  * @param {!number} x
  * @param {!number} y
  * @return {!boolean}
@@ -101,27 +110,32 @@ app.model.Component.prototype.isSelected = function (x, y) {
 };
 
 /**
+ * Generates shape points which represents the component and stores them in origin points array
  * @public
  */
 app.model.Component.prototype.generateShapePoints = goog.abstractMethod;
 
 /**
+ * Helper method to  quickly copy component model arguments
  * @protected
  */
 app.model.Component.prototype.copyArguments = goog.abstractMethod;
 
 /**
+ * Helper method used to insert imported component data
  * @public
  */
 app.model.Component.prototype.importComponentData = goog.abstractMethod;
 
 /**
+ * Returns copy of component model
  * @return {app.model.Component}
  * @public
  */
 app.model.Component.prototype.copy = goog.abstractMethod;
 
 /**
+ * Called when currently processed validates intersection.
  * @param {!Array<Array<!number>>} rays
  * @public
  */
@@ -130,6 +144,23 @@ app.model.Component.prototype.intersects = function (rays) {
 };
 
 /**
+ * Helper method to normalize direction vector
+ * @param {!Array<number>} vec
+ * @return {!Array<number>} vec
+ * @protected
+ */
+app.model.Component.normalize2DVector = function (vec) {
+    var len = Math.sqrt(Math.pow(vec[0],2) + Math.pow(vec[1], 2));
+    len = (len === Infinity) ? Number.MAX_VALUE : len;
+
+    vec[0] = vec[0] / len;
+    vec[1] = vec[1] / len;
+
+    return vec;
+};
+
+/**
+ * Transforms component origin points
  * @protected
  */
 app.model.Component.prototype.transformPoints = function () {
@@ -149,21 +180,7 @@ app.model.Component.prototype.transformPoints = function () {
 };
 
 /**
- * @param {!Array<number>} vec
- * @return {!Array<number>} vec
- * @protected
- */
-app.model.Component.prototype.normalize2DVector = function (vec) {
-    var len = Math.sqrt(Math.pow(vec[0],2) + Math.pow(vec[1], 2));
-    len = (len === Infinity) ? Number.MAX_VALUE : len;
-
-    vec[0] = vec[0] / len;
-    vec[1] = vec[1] / len;
-
-    return vec;
-};
-
-/**
+ * Rotates accepted point
  * @param {!Array<number>} point
  * @param {!number} radians
  * @return {!Array<number>} result
@@ -178,6 +195,7 @@ app.model.Component.prototype.rotatePoint = function (point, radians) {
 };
 
 /**
+ * Applies reverse transformations on accepted point
  * @param {!Array<number>} point
  * @return {!Array<number>} result
  * @protected
@@ -194,6 +212,7 @@ app.model.Component.prototype.reverseTransformPoint = function (point) {
 };
 
 /**
+ * Transforms accepted point
  * @param {!Array<number>} point
  * @return {!Array<number>} newPoint
  * @protected
@@ -212,6 +231,7 @@ app.model.Component.prototype.transformPoint = function (point) {
 };
 
 /**
+ * Applies new rotation on component
  * @param {!number} degrees
  * @public
  */
@@ -221,6 +241,7 @@ app.model.Component.prototype.updateRotation = function (degrees) {
 };
 
 /**
+ * Applies new translation on component
  * @param {!number} moveX
  * @param {!number} moveY
  * @public
@@ -232,40 +253,45 @@ app.model.Component.prototype.applyTranslation = function (moveX, moveY) {
 };
 
 /**
+ * Applies new x translation on component
  * @param {!number} x
  * @public
  */
 app.model.Component.prototype.updateTranslationX = function (x) {
-    this.appliedTranslationX = Math.round(x * app.PIXELS_ON_CM);
+    this.appliedTranslationX = Math.round(x * app.pixels_on_cm);
     this.transformPoints();
 };
 
 /**
+ * Applies new y translation on component
  * @param {!number} y
  * @public
  */
 app.model.Component.prototype.updateTranslationY = function (y) {
-    this.appliedTranslationY = Math.round(y * app.PIXELS_ON_CM);
+    this.appliedTranslationY = Math.round(y * app.pixels_on_cm);
     this.transformPoints();
 };
 
 /**
+ * Returns applied X translation on component in cm
  * @return {!string} component x coordinate
  * @public
  */
 app.model.Component.prototype.getPosX = function () {
-    return (this.appliedTranslationX / app.PIXELS_ON_CM).toFixed(2);
+    return (this.appliedTranslationX / app.pixels_on_cm).toFixed(2);
 };
 
 /**
+ * Returns applied Y translation on component in cm
  * @return {!string} component y coordinate
  * @public
  */
 app.model.Component.prototype.getPosY = function () {
-    return (this.appliedTranslationY / app.PIXELS_ON_CM).toFixed(2);
+    return (this.appliedTranslationY / app.pixels_on_cm).toFixed(2);
 };
 
 /**
+ * Returns component type
  * @return {!string} component type
  * @public
  */
@@ -274,6 +300,7 @@ app.model.Component.prototype.getType = function () {
 };
 
 /**
+ * Returns applied rotation in degrees
  * @return {!number} applied rotation
  * @public
  */
@@ -282,15 +309,7 @@ app.model.Component.prototype.getRotation = function () {
 };
 
 /**
- * @param {!number} rotation
- * @public
- */
-app.model.Component.prototype.setRotation = function (rotation) {
-    this.appliedRotation = rotation;
-    this.transformPoints();
-};
-
-/**
+ * Marks component as selected
  * @param {!boolean} boolean
  * @public
  */

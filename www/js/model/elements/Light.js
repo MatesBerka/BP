@@ -14,6 +14,7 @@ goog.require('app.model.Component');
  */
 app.model.Light = function (coordX, coordY) {
     /**
+     * Light size (radius/height)
      * @type {!number}
      * @private
      */
@@ -26,7 +27,7 @@ app.model.Light = function (coordX, coordY) {
      */
     this._WIDTH = 10;
     // call parent constructor
-    app.model.Light.base(this, 'constructor', coordX, coordY);
+    app.model.Light.base(this, 'constructor', coordX, coordY, 'LIGHT');
     /**
      * BEAM or CIRCLE
      * @type {!string}
@@ -34,21 +35,19 @@ app.model.Light = function (coordX, coordY) {
      */
     this._lightType = 'BEAM';
     /**
+     * How many rays should light generate
      * @type {!number}
      * @private
      */
     this._generatedRaysCount = 10;
     /**
+     * Light radius used for CIRCLE light 30 = 60 degrees in summary
      * @type {!number}
      * @private
      */
     this._lightRadius = 30;
     /**
-     * @type {!string}
-     * @protected
-     */
-    this.type = 'LIGHT';
-    /**
+     * Light ID
      * @type {!number}
      * @private
      */
@@ -60,6 +59,7 @@ app.model.Light = function (coordX, coordY) {
      */
     this._lightLength = 550;
     /**
+     * Used during intersection check to check all sides
      * @const
      * @type {!number}
      * @private
@@ -78,20 +78,22 @@ goog.inherits(app.model.Light, app.model.Component);
 app.model.Light.prototype.generateShapePoints = function () {
     this.originPoints = [];
     if (this._lightType === 'CIRCLE') {
-        this._generateBallShapePoints();
+        this._generateCircleShapePoints();
     } else {
         this._generateSquareShapePoints();
     }
 };
 
 /**
+ * Generates shape points which circle shape
  * @private
  */
-app.model.Light.prototype._generateBallShapePoints = function () {
+app.model.Light.prototype._generateCircleShapePoints = function () {
     this.originPoints.push([0, 0, 0]);
 };
 
 /**
+ *  Generates shape points which square shape
  * @private
  */
 app.model.Light.prototype._generateSquareShapePoints = function () {
@@ -112,6 +114,7 @@ app.model.Light.prototype._generateSquareShapePoints = function () {
 };
 
 /**
+ * Checks if ray intersects squared light
  * @see https://rootllama.wordpress.com/2014/06/20/ray-line-segment-intersection-test-in-2d/#comments
  * @param {!Array<number>} ray
  * @return {!number}
@@ -162,6 +165,7 @@ app.model.Light.prototype._squareIntersection = function (ray) {
 };
 
 /**
+ * Checks if ray intersects ring light
  * @see http://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm
  * t2( dx2 + dy2 ) + 2t( exdx + eydy - dxh - dyk ) + ex2 + ey2 - 2exh - 2eyk + h2 + k2 - r2 = 0
  * @param {!Array<number>} ray
@@ -207,6 +211,7 @@ app.model.Light.prototype.isIntersection = function (ray) {
 };
 
 /**
+ * Checks if point intersects squared light
  * @param {!Array<number>} point
  * @return {!boolean}
  * @private
@@ -216,13 +221,13 @@ app.model.Light.prototype._isSquareSelected = function (point) {
         ye = Math.floor(this._size / 2);
 
     if (point[0] >= xs && point[0] <= xe && point[1] >= ys && point[1] <= ye) {
-        return this.isComponentSelected = true;
+        return true;
     }
-    return this.isComponentSelected = false;
+    return false;
 };
 
 /**
- * Source:
+ * Checks if point intersects squared light
  * @see http://math.stackexchange.com/questions/198764/how-to-know-if-a-point-is-inside-a-circle
  * @param {!Array<number>} point
  * @return {!boolean}
@@ -247,10 +252,11 @@ app.model.Light.prototype.isSelected = function (x, y) {
 };
 
 /**
+ * Draws ring light on canvas
  * @param {!CanvasRenderingContext2D} ctx
  * @private
  */
-app.model.Light.prototype._drawBall = function (ctx) {
+app.model.Light.prototype._drawCircle = function (ctx) {
     ctx.beginPath();
     ctx.arc(this.transformedPoints[0][0], this.transformedPoints[0][1], this._size, 0, Math.PI * 2, true);
 
@@ -264,6 +270,7 @@ app.model.Light.prototype._drawBall = function (ctx) {
 };
 
 /**
+ * Draws squared light on canvas
  * @param {!CanvasRenderingContext2D} ctx
  * @private
  */
@@ -302,7 +309,7 @@ app.model.Light.prototype.draw = function (ctx, callback) {
             callback([vec1[0], vec1[1], 0, dx, dy, 0, this._lightID, 0, this._lightLength]);
         }
     } else {
-        this._drawBall(ctx);
+        this._drawCircle(ctx);
         indentation = ((2 * this._lightRadius) % 361) / this._generatedRaysCount;
         for (i = 0; i < this._generatedRaysCount; i++) {
             degree = this._lightRadius - i * indentation;
@@ -337,7 +344,7 @@ app.model.Light.prototype.copyArguments = function (rotation, size, lightType, g
 
 /**
  * @param {!Object} componentModel
- * @public
+ * @override
  */
 app.model.Light.prototype.importComponentData = function (componentModel) {
     this.appliedRotation = componentModel.appliedRotation;
@@ -360,24 +367,27 @@ app.model.Light.prototype.copy = function () {
 };
 
 /**
+ * Returns light size (radius/height) in cm
  * @return {!string}
  * @public
  */
 app.model.Light.prototype.getSize = function () {
-    return (this._size / app.PIXELS_ON_CM).toFixed(2);
+    return (this._size / app.pixels_on_cm).toFixed(2);
 };
 
 /**
+ * Sets new light size (radius/height)
  * @param {!number} size
  * @public
  */
 app.model.Light.prototype.setSize = function (size) {
-    this._size = Math.round(size * app.PIXELS_ON_CM);
+    this._size = Math.round(size * app.pixels_on_cm);
     this.generateShapePoints();
     this.transformPoints();
 };
 
 /**
+ * Returns light length (wave length)
  * @return {!number}
  * @public
  */
@@ -386,6 +396,7 @@ app.model.Light.prototype.getLightLength = function () {
 };
 
 /**
+ * Sets new light length (wave length)
  * @param {!number} length
  * @public
  */
@@ -394,6 +405,7 @@ app.model.Light.prototype.setLightLength = function (length) {
 };
 
 /**
+ * Returns rays count
  * @return {!number}
  * @public
  */
@@ -402,6 +414,7 @@ app.model.Light.prototype.getRaysCount = function () {
 };
 
 /**
+ * Sets new rays count
  * @param {!number} count
  * @public
  */
@@ -410,6 +423,7 @@ app.model.Light.prototype.setRaysCount = function (count) {
 };
 
 /**
+ * Return light type
  * @return {!string}
  * @public
  */
@@ -418,6 +432,7 @@ app.model.Light.prototype.getLightType = function () {
 };
 
 /**
+ * Sets new light type
  * @param {!string} type
  * @public
  */
@@ -428,6 +443,7 @@ app.model.Light.prototype.setLightType = function (type) {
 };
 
 /**
+ * Returns light radius
  * @return {!number}
  * @public
  */
@@ -436,6 +452,7 @@ app.model.Light.prototype.getRadius = function () {
 };
 
 /**
+ * Sets new light radius
  * @param {!number} radius
  * @public
  */
@@ -444,6 +461,7 @@ app.model.Light.prototype.setRadius = function (radius) {
 };
 
 /**
+ * Sets new light ID
  * @param {!number} lightID
  * @public
  */
@@ -452,6 +470,7 @@ app.model.Light.prototype.setLightID = function (lightID) {
 };
 
 /**
+ * Returns light ID
  * @return {!number}
  * @public
  */

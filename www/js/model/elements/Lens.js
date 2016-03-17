@@ -13,7 +13,7 @@ goog.require('app.model.LineShapeComponent');
  * This class represents Lens component.
  */
 app.model.Lens = function(coordX, coordY) {
-    app.model.Lens.base(this, 'constructor', coordX, coordY); // call parent constructor
+    app.model.Lens.base(this, 'constructor', coordX, coordY, 'LENS'); // call parent constructor
     /**
      * Defines lens type (CONVERGING or DIVERSE)
      * @type {!string}
@@ -26,8 +26,6 @@ app.model.Lens = function(coordX, coordY) {
      * @private
      */
     this._focusOffset = 100;
-    /** @override */
-    this.type = 'LENS';
 
     this._generateLensPoints();
     this.transformPoints();
@@ -36,6 +34,7 @@ app.model.Lens = function(coordX, coordY) {
 goog.inherits(app.model.Lens, app.model.LineShapeComponent);
 
 /**
+ * Generates points specific to lens component, focus offsets and arrows
  * @private
  */
 app.model.Lens.prototype._generateLensPoints = function () {
@@ -64,23 +63,26 @@ app.model.Lens.prototype._generateLensPoints = function () {
 };
 
 /**
+ * returns new focus offset
  * @public
  */
 app.model.Lens.prototype.getFocusOffset = function() {
-    return (this._focusOffset / app.PIXELS_ON_CM).toFixed(2);
+    return (this._focusOffset / app.pixels_on_cm).toFixed(2);
 };
 
 /**
+ * Sets new focus offset
  * @public
  */
 app.model.Lens.prototype.setFocusOffset = function(offset) {
-    this._focusOffset = Math.round(offset * app.PIXELS_ON_CM);
+    this._focusOffset = Math.round(offset * app.pixels_on_cm);
     this.generateShapePoints();
     this._generateLensPoints();
     this.transformPoints();
 };
 
 /**
+ * Returns lens type (CONVERGING or DIVERSE)
  * @public
  */
 app.model.Lens.prototype.getLensType = function() {
@@ -88,6 +90,7 @@ app.model.Lens.prototype.getLensType = function() {
 };
 
 /**
+ * Sets lens type (CONVERGING or DIVERSE)
  * @public
  */
 app.model.Lens.prototype.setLensType = function(type) {
@@ -101,7 +104,7 @@ app.model.Lens.prototype.setLensType = function(type) {
  * @override
  */
 app.model.Lens.prototype.setHeight = function(height) {
-    this.height = Math.round(height * app.PIXELS_ON_CM);
+    this.height = Math.round(height * app.pixels_on_cm);
     this.generateShapePoints();
     this._generateLensPoints();
     this.transformPoints();
@@ -135,6 +138,9 @@ app.model.Lens.prototype.draw = function(ctx, callback) {
 };
 
 /**
+ * Calculates lens image position
+ * @param {!number} focus
+ * @param {Array<number>} obj
  * @private
  */
 app.model.Lens.prototype._getImagePosition = function(focus, obj) {
@@ -170,7 +176,7 @@ app.model.Lens.prototype.intersects = function (rays) {
         dVec[0] = this.intersectionPoint[0] - imgPoint[0];
         dVec[1] = this.intersectionPoint[1] - imgPoint[1];
     }
-    normDVec = this.normalize2DVector(dVec);
+    normDVec = app.model.Component.normalize2DVector(dVec);
 
     this._intersectionRay[0] = this.intersectionPoint[0];
     this._intersectionRay[1] = this.intersectionPoint[1];
@@ -201,7 +207,7 @@ app.model.Lens.prototype.copyArguments = function(rotation, height, focusType, f
 
 /**
  * @param {!Object} componentModel
- * @public
+ * @override
  */
 app.model.Lens.prototype.importComponentData = function (componentModel) {
     this.appliedRotation = componentModel.appliedRotation;

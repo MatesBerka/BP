@@ -12,24 +12,13 @@ goog.require('app.ComponentController');
  * Controller used by app.model.Mirror component. Adds specific controls for this component.
  */
 app.MirrorController = function (model, modelID) {
-    app.MirrorController.base(this, 'constructor');
-    /**
-     * Points to currently selected component model
-     * @type {app.model.Mirror}
-     * @override
-     */
-    this.model = model;
-    /**
-     * @override
-     */
-    this.modelID = modelID;
+    app.MirrorController.base(this, 'constructor', model, modelID);
 };
 
 goog.inherits(app.MirrorController, app.ComponentController);
 
 /**
  * @override
- * @param sceneController
  */
 app.MirrorController.prototype.showComponentControlPanel = function (sceneController) {
     app.MirrorController.base(this, 'showComponentControlPanel', sceneController);
@@ -54,7 +43,6 @@ app.MirrorController.prototype.showComponentControlPanel = function (sceneContro
 
 /**
  * @override
- * @param sceneController
  */
 app.MirrorController.prototype.addPanelListeners = function (sceneController) {
     app.MirrorController.base(this, 'addPanelListeners', sceneController);

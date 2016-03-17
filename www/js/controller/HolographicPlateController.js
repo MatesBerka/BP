@@ -12,21 +12,12 @@ goog.require('app.ComponentController');
  * Controller used by app.model.HolographicPlate component. Adds specific controls for this component.
  */
 app.HolographicPlateController = function (model, modelID) {
-    app.HolographicPlateController.base(this, 'constructor');
-    /**
-     * Points to currently selected component model
-     * @type {app.model.HolographicPlate}
-     * @override
-     */
-    this.model = model;
-    /**
-     * @override
-     */
-    this.modelID = modelID;
+    app.HolographicPlateController.base(this, 'constructor', model, modelID);;
 };
 goog.inherits(app.HolographicPlateController, app.ComponentController);
 
 /**
+ * Helper function to report that lights length difference limit was crossed
  * @param {!Array<!number>} errors
  * @param {!goog.ui.Dialog} dialog
  * @private
@@ -53,7 +44,6 @@ app.HolographicPlateController.prototype._reportErrors = function (errors, dialo
 
 /**
  * @override
- * @param sceneController
  */
 app.HolographicPlateController.prototype.showComponentControlPanel = function (sceneController) {
     app.HolographicPlateController.base(this, 'showComponentControlPanel', sceneController);
@@ -120,7 +110,6 @@ app.HolographicPlateController.prototype.showComponentControlPanel = function (s
 
 /**
  * @override
- * @param sceneController
  */
 app.HolographicPlateController.prototype.addPanelListeners = function (sceneController) {
     app.HolographicPlateController.base(this, 'addPanelListeners', sceneController);

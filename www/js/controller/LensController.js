@@ -12,24 +12,13 @@ goog.require('app.ComponentController');
  * Controller used by app.model.Lens component. Adds specific controls for this component.
  */
 app.LensController = function (model, modelID) {
-    app.LensController.base(this, 'constructor');
-    /**
-     * Points to currently selected component model
-     * @type {app.model.Lens}
-     * @override
-     */
-    this.model = model;
-    /**
-     * @override
-     */
-    this.modelID = modelID;
+    app.LensController.base(this, 'constructor', model, modelID);;
 };
 
 goog.inherits(app.LensController, app.ComponentController);
 
 /**
  * @override
- * @param sceneController
  */
 app.LensController.prototype.showComponentControlPanel = function (sceneController) {
     app.LensController.base(this, 'showComponentControlPanel', sceneController);
@@ -107,7 +96,6 @@ app.LensController.prototype.showComponentControlPanel = function (sceneControll
 
 /**
  * @override
- * @param sceneController
  */
 app.LensController.prototype.addPanelListeners = function (sceneController) {
     app.LensController.base(this, 'addPanelListeners', sceneController);

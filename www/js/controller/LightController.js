@@ -13,24 +13,13 @@ goog.require('goog.ui.Select');
  * Controller used by app.model.Light component. Adds specific controls for this component.
  */
 app.LightController = function (model, modelID) {
-    app.LightController.base(this, 'constructor');
-    /**
-     * Points to currently selected component model
-     * @type {app.model.Light}
-     * @override
-     */
-    this.model = model;
-    /**
-     * @override
-     */
-    this.modelID = modelID;
+    app.LightController.base(this, 'constructor', model, modelID);
 };
 
 goog.inherits(app.LightController, app.ComponentController);
 
 /**
  * @override
- * @param sceneController
  */
 app.LightController.prototype.showComponentControlPanel = function (sceneController) {
     app.LightController.base(this, 'showComponentControlPanel', sceneController);
@@ -141,7 +130,6 @@ app.LightController.prototype.showComponentControlPanel = function (sceneControl
 
 /**
  * @override
- * @param sceneController
  */
 app.LightController.prototype.addPanelListeners = function (sceneController) {
     app.LightController.base(this, 'addPanelListeners', sceneController);

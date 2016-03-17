@@ -13,15 +13,15 @@ goog.require('app.model.LineShapeComponent');
  * This class represents Holographic plate component.
  */
 app.model.HolographicPlate = function (coordX, coordY) {
-    app.model.HolographicPlate.base(this, 'constructor', coordX, coordY); // call parent constructor
-    /** @override */
-    this.type = 'HOLO-PLATE';
+    app.model.HolographicPlate.base(this, 'constructor', coordX, coordY, 'HOLO-PLATE'); // call parent constructor
     /**
+     * Flag to check if new record show be created during redrawing
      * @type {!boolean}
      * @private
      */
     this._makeRecord = false;
     /**
+     * Flag to check if component should show stored record
      * @type {!boolean}
      * @private
      */
@@ -33,12 +33,13 @@ app.model.HolographicPlate = function (coordX, coordY) {
      */
     this._groupSize = 30;
     /**
-     * How many groups we have
+     * How many groups component has
      * @type {!number}
      * @private
      */
     this._groupsCount = Math.floor(this.height / this._groupSize);
     /**
+     * Flag to check if all lights are reference
      * @type {boolean}
      * @private
      */
@@ -50,7 +51,7 @@ app.model.HolographicPlate = function (coordX, coordY) {
      */
     this._refLightID = 0;
     /**
-     * Maximum
+     * // TODO
      * @type {!number}
      * @private
      */
@@ -75,6 +76,7 @@ app.model.HolographicPlate = function (coordX, coordY) {
 goog.inherits(app.model.HolographicPlate, app.model.LineShapeComponent);
 
 /**
+ * Generates points for holographic plate grid
  * @private
  */
 app.model.HolographicPlate.prototype._generateGridPoints = function () {
@@ -101,10 +103,11 @@ app.model.HolographicPlate.prototype._generateGridPoints = function () {
 };
 
 /**
+ * Updates component height
  * @public
  */
 app.model.HolographicPlate.prototype.setHeight = function (height) {
-    this.height = Math.round(height * app.PIXELS_ON_CM);
+    this.height = Math.round(height * app.pixels_on_cm);
     this._groupsCount = Math.floor(this.height / this._groupSize);
     this.generateShapePoints();
     this._generateGridPoints();
@@ -113,19 +116,21 @@ app.model.HolographicPlate.prototype.setHeight = function (height) {
 
 
 /**
+ * Returns size of a group in cm
  * @returns {!string}
  * @public
  */
 app.model.HolographicPlate.prototype.getPlateResolution = function () {
-    return (this._groupSize / app.PIXELS_ON_CM).toFixed(2);
+    return (this._groupSize / app.pixels_on_cm).toFixed(2);
 };
 
 /**
+ * Sets new resolution for this component
  * @param {!number} resolution
  * @public
  */
 app.model.HolographicPlate.prototype.setPlateResolution = function (resolution) {
-    this._groupSize = Math.round(resolution * app.PIXELS_ON_CM);
+    this._groupSize = Math.round(resolution * app.pixels_on_cm);
     this._groupsCount = Math.floor(this.height / this._groupSize);
     this.generateShapePoints();
     this._generateGridPoints();
@@ -133,6 +138,7 @@ app.model.HolographicPlate.prototype.setPlateResolution = function (resolution) 
 };
 
 /**
+ * // TODO
  * @param {!number} maximum
  * @public
  */
@@ -141,6 +147,7 @@ app.model.HolographicPlate.prototype.setMaximum = function (maximum) {
 };
 
 /**
+ * // TODO
  * @return {!number} maximum
  * @public
  */
@@ -149,6 +156,7 @@ app.model.HolographicPlate.prototype.getMaximum = function () {
 };
 
 /**
+ * Called when new record should be created
  * @public
  */
 app.model.HolographicPlate.prototype.collectRays = function () {
@@ -158,6 +166,7 @@ app.model.HolographicPlate.prototype.collectRays = function () {
 };
 
 /**
+ * Returns IDs of light sources which are hitting this desk
  * @public
  */
 app.model.HolographicPlate.prototype.getCollectedLightSources = function () {
@@ -171,6 +180,7 @@ app.model.HolographicPlate.prototype.getCollectedLightSources = function () {
 };
 
 /**
+ * Called during redrawing to create new record
  * @param {!string} refLightID
  * @return {Array<number>}
  * @public
@@ -187,6 +197,7 @@ app.model.HolographicPlate.prototype.createRecord = function (refLightID) {
 };
 
 /**
+ * Called to notify that record should be displayed
  * @public
  */
 app.model.HolographicPlate.prototype.showRecord = function () {
@@ -195,6 +206,7 @@ app.model.HolographicPlate.prototype.showRecord = function () {
 };
 
 /**
+ * Calculates angle between intersection ray and holographic plate
  * @private
  */
 app.model.HolographicPlate.prototype._getAngle = function () {
@@ -212,6 +224,7 @@ app.model.HolographicPlate.prototype._getAngle = function () {
 };
 
 /**
+ * From incoming rays calculates frequencies
  * @return {!Array<number>}
  * @private
  */
@@ -233,7 +246,7 @@ app.model.HolographicPlate.prototype._createRecord = function () {
                                 rayAngle = this._groups[i][raySourceID][0];
                                 ray = this._groups[i][raySourceID][1];
                                 if (ray[8] === refRay[8] && Math.abs(this._lightSources[refRaySourceID] - this._lightSources[raySourceID])
-                                    <= app.COHERENCE_LENGTH) {
+                                    <= app.coherence_length) {
                                     f = (Math.sin((rayAngle * (Math.PI / 180))) - Math.sin((refRayAngle * (Math.PI / 180)))) / refRay[8];
                                     frequencies.push(f);
                                 }
@@ -260,12 +273,12 @@ app.model.HolographicPlate.prototype._createRecord = function () {
                             ray = this._groups[i][raySourceID][1];
                             if (ray[8] === refRay[8]) { // 3.1) Light length is equal
                                 if (Math.abs(this._lightSources[this._refLightID] - this._lightSources[raySourceID])
-                                    <= app.COHERENCE_LENGTH) { // count frequency
+                                    <= app.coherence_length) { // count frequency
                                     f = (Math.sin((rayAngle * (Math.PI / 180))) - Math.sin((refRayAngle * (Math.PI / 180)))) / refRay[8];
                                     frequencies.push(f);
                                 } else {
                                     errorDiff = ((Math.abs(this._lightSources[this._refLightID] - this._lightSources[raySourceID])
-                                    - app.COHERENCE_LENGTH) / app.PIXELS_ON_CM).toFixed(4);
+                                    - app.coherence_length) / app.pixels_on_cm).toFixed(4);
                                     errors.push([i, raySourceID, this._refLightID, errorDiff]);
                                 }
                                 delete this._groups[i][raySourceID];
@@ -279,11 +292,11 @@ app.model.HolographicPlate.prototype._createRecord = function () {
             }
         }
     }
-    console.log(this._groups);
     return errors;
 };
 
 /**
+ * Collects incoming rays to later create record
  * @private
  */
 app.model.HolographicPlate.prototype._recordRay = function () {
@@ -298,6 +311,7 @@ app.model.HolographicPlate.prototype._recordRay = function () {
 };
 
 /**
+ * When show record is active, then this method is called to check if incoming ray generates some outgoing ray
  * @private
  */
 app.model.HolographicPlate.prototype._checkRecordedRays = function (rays) {
@@ -396,7 +410,7 @@ app.model.HolographicPlate.prototype.copyArguments = function (rotation, height,
 
 /**
  * @param {!Object} componentModel
- * @public
+ * @override
  */
 app.model.HolographicPlate.prototype.importComponentData = function (componentModel) {
     this.appliedRotation = componentModel.appliedRotation;

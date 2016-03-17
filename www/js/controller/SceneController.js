@@ -16,53 +16,63 @@ goog.require('goog.json');
  */
 app.SceneController = function () {
     /**
+     * DOM element containing canvas wrapper
      * @const
      * @type {Element}
      * @private
      */
     this._CANVAS_WRAPPER = goog.dom.getElement('canvas-wrapper');
     /**
+     * Pointer to view controller
      * @const
      * @type {!app.ViewController}
      * @private
      */
     this._VIEW_CONTROLLER = new app.ViewController(this._CANVAS_WRAPPER);
     /**
+     * Pointer to component controller
      * @type {app.ComponentController}
      * @private
      */
     this._componentController = null;
     /**
+     * Used to define type of currently added component
      * @type {!string}
      * @private
      */
     this._newComponentType = '';
     /**
+     * Contains all available tables in the simulation
      * @type {!Array<app.model.Table>}
      * @private
      */
     this._tables = [];
     /**
+     * Contains mouse coordinates
      * @type {!Array<number>}
      * @private
      */
     this._mouseCursorPoint = [];
     /**
+     * Flag used to determine if add new component action is active
      * @type {!boolean}
      * @private
      */
     this._isAddNewComponent = false;
     /**
+     * Flag used to determine if add component move action is active
      * @type {!boolean}
      * @private
      */
     this._componentMoveActive = false;
     /**
+     * Flag used to determine if user moved with selected component
      * @type {!boolean}
      * @private
      */
     this._componentMoved = false;
     /**
+     * Flag used to determine if add canvas move action is active
      * @type {!boolean}
      * @private
      */
@@ -72,6 +82,7 @@ app.SceneController = function () {
 };
 
 /**
+ * Creates demo table and view
  * @private
  */
 app.SceneController.prototype._init = function () {
@@ -95,6 +106,7 @@ app.SceneController.prototype._init = function () {
 };
 
 /**
+ * Show crows in view when add new component action is active
  * @param {!string} type
  * @public
  */
@@ -107,6 +119,7 @@ app.SceneController.prototype.showCross = function (type) {
 };
 
 /**
+ * Hides cross after new component is added to table
  * @private
  */
 app.SceneController.prototype._hideCross = function () {
@@ -114,40 +127,48 @@ app.SceneController.prototype._hideCross = function () {
 };
 
 /**
+ * Creates dialogs
  * @private
  */
 app.SceneController.prototype._createDialogs = function () {
     /**
+     * Dialog used to add new view
      * @type {goog.ui.Dialog}
      * @private
      */
     this._newViewDialog = new goog.ui.Dialog();
     /**
+     * Dialog used to edit view
      * @type {goog.ui.Dialog}
      * @private
      */
     this._editViewDialog = new goog.ui.Dialog();
     /**
+     * Dialog used add new table
      * @type {goog.ui.Dialog}
      * @private
      */
     this._newTableDialog = new goog.ui.Dialog();
     /**
+     * Dialog used to edit table
      * @type {goog.ui.Dialog}
      * @private
      */
     this._editTableDialog = new goog.ui.Dialog();
     /**
+     * Dialog used to copy component from one table to another
      * @type {goog.ui.Dialog}
      * @private
      */
     this._copyDialog = new goog.ui.Dialog();
     /**
+     * Dialog used to pick ref. light
      * @type {!goog.ui.Dialog}
      * @public
      */
     this.pickRefLightDialog = new goog.ui.Dialog();
     /**
+     * Dialog used to display errors during record creation in holographic plate
      * @type {!goog.ui.Dialog}
      * @public
      */
@@ -155,6 +176,7 @@ app.SceneController.prototype._createDialogs = function () {
 };
 
 /**
+ * Updates views sizes when screen is resized
  * @private
  */
 app.SceneController.prototype._updateSizes = function () {
@@ -177,6 +199,7 @@ app.SceneController.prototype._updateSizes = function () {
 };
 
 /**
+ * Sets new active able
  * @param {!number} tableID
  * @param {Element} buttonElement
  * @private
@@ -207,6 +230,7 @@ app.SceneController.prototype._setActiveTable = function (tableID, buttonElement
 };
 
 /**
+ * Activates selected view
  * @param {!number} tableID
  * @param {!number} viewID
  * @private
@@ -217,6 +241,7 @@ app.SceneController.prototype._setSelectedView = function (tableID, viewID) {
 };
 
 /**
+ * Show selected view
  * @param {!string} viewID - format: (tableID)-(viewID)
  * @param {Element} buttonElement
  * @private
@@ -230,6 +255,7 @@ app.SceneController.prototype._showView = function (viewID, buttonElement) {
 };
 
 /**
+ * Hides selected view
  * @param {!string} viewID - format: (tableID)-(viewID)
  * @param {Element} buttonElement
  * @private
@@ -243,6 +269,7 @@ app.SceneController.prototype._hideView = function (viewID, buttonElement) {
 };
 
 /**
+ * Adds new table to GUI
  * @param {!number} tableID
  * @param {!string} tableName
  * @private
@@ -267,6 +294,7 @@ app.SceneController.prototype._addTableToGUI = function (tableID, tableName) {
 };
 
 /**
+ * Creates new table
  * @private
  */
 app.SceneController.prototype._createTable = function () {
@@ -276,6 +304,7 @@ app.SceneController.prototype._createTable = function () {
 };
 
 /**
+ * Removes selected table from GUI
  * @param {!string} elementID
  * @private
  */
@@ -313,6 +342,7 @@ app.SceneController.prototype._removeTableFromGUI = function (elementID) {
 };
 
 /**
+ * Removes table
  * @private
  */
 app.SceneController.prototype._removeTable = function () {
@@ -324,6 +354,7 @@ app.SceneController.prototype._removeTable = function () {
 };
 
 /**
+ * Renames table
  * @private
  */
 app.SceneController.prototype._renameTable = function () {
@@ -336,6 +367,7 @@ app.SceneController.prototype._renameTable = function () {
 };
 
 /**
+ * Creates new view
  * @private
  */
 app.SceneController.prototype._createView = function () {
@@ -350,6 +382,7 @@ app.SceneController.prototype._createView = function () {
 };
 
 /**
+ * Adds new view to GUI
  * @param {!number} viewID
  * @param {!string} viewName
  * @private
@@ -457,6 +490,7 @@ app.SceneController.prototype._addViewToGUI = function (viewID, viewName) {
 };
 
 /**
+ * Removes view from GUI
  * @param {!string} elementID
  * @private
  */
@@ -481,6 +515,7 @@ app.SceneController.prototype._removeViewFromGUI = function (elementID) {
 };
 
 /**
+ * removes view
  * @private
  */
 app.SceneController.prototype._removeView = function () {
@@ -496,6 +531,7 @@ app.SceneController.prototype._removeView = function () {
 };
 
 /**
+ * Renames view
  * @private
  */
 app.SceneController.prototype._renameView = function () {
@@ -509,6 +545,7 @@ app.SceneController.prototype._renameView = function () {
 };
 
 /**
+ * Checks all active components if some is selected
  * @param {!Array<!number>} selectedPoint
  * @return {!boolean}
  * @private
@@ -527,6 +564,7 @@ app.SceneController.prototype._isIntersection = function (selectedPoint) {
 };
 
 /**
+ * Called when used moves with component to udpate it's position
  * @param {goog.events.BrowserEvent} e
  * @private
  */
@@ -550,6 +588,7 @@ app.SceneController.prototype._componentMove = function (e) {
 };
 
 /**
+ * Add scene listeners
  * @private
  */
 app.SceneController.prototype._addListeners = function () {
@@ -757,6 +796,7 @@ app.SceneController.prototype._addListeners = function () {
 };
 
 /**
+ * Hides component control panel
  * @private
  */
 app.SceneController.prototype._hideComponentControlPanel = function () {
@@ -766,6 +806,7 @@ app.SceneController.prototype._hideComponentControlPanel = function () {
 };
 
 /**
+ * Redraws all active views
  * @public
  */
 app.SceneController.prototype.redrawAll = function () {
@@ -784,6 +825,7 @@ app.SceneController.prototype.redrawAll = function () {
 };
 
 /**
+ * Updates component controller to correspond selected component type
  * @param {!app.model.Component} componentModel
  * @param {!number} componentID
  * @private
@@ -812,6 +854,7 @@ app.SceneController.prototype._setSelectedComponent = function (componentModel, 
 };
 
 /**
+ * Returns new component, which corresponds to selected component type
  * @param {!string} type
  * @param {!number} coordX
  * @param {!number} coordY
@@ -841,6 +884,7 @@ app.SceneController.prototype._createComponentModel = function (type, coordX, co
 };
 
 /**
+ * Creates and adds new component
  * @param {!Array<number>} selectedPoint
  * @private
  */
@@ -855,6 +899,7 @@ app.SceneController.prototype._addComponent = function (selectedPoint) {
 };
 
 /**
+ * Returns a list of inactive tables
  * @return {Array<Object>}
  * @private
  */
@@ -874,21 +919,23 @@ app.SceneController.prototype._getInactiveTablesList = function () {
 };
 
 /**
+ * Generates simulation data dump used in export dialog
  * @return {!string}
  * @public
  */
 app.SceneController.prototype.exportData = function () {
     var data = {};
     data.tables = this._tables;
-    data.locale = app.LOCALE;
-    data.pixels_on_cm = app.PIXELS_ON_CM;
-    data.coherence_length = app.COHERENCE_LENGTH;
-    data.reflections_count = app.REFLECTIONS_COUNT;
+    data.locale = app.locale;
+    data.pixels_on_cm = app.pixels_on_cm;
+    data.coherence_length = app.coherence_length;
+    data.reflections_count = app.reflections_count;
 
     return goog.json.serialize(data);
 };
 
 /**
+ * Deletes all data in this simulation. Used durring import.
  * @private
  */
 app.SceneController.prototype._deleteCurrentSimulation = function () {
@@ -910,6 +957,7 @@ app.SceneController.prototype._deleteCurrentSimulation = function () {
 };
 
 /**
+ * Used by import dialog to load simulation data
  * @param {*} dataModel
  * @public
  */
@@ -917,12 +965,12 @@ app.SceneController.prototype.importData = function (dataModel) {
     this._tables = [];
     this._deleteCurrentSimulation();
 
-    app.LOCALE = dataModel.locale;
+    app.locale = dataModel.locale;
     app.utils.translate();
 
-    app.PIXELS_ON_CM = dataModel.pixels_on_cm;
-    app.COHERENCE_LENGTH = dataModel.coherence_length;
-    app.REFLECTIONS_COUNT = dataModel.reflections_count;
+    app.pixels_on_cm = dataModel.pixels_on_cm;
+    app.coherence_length = dataModel.coherence_length;
+    app.reflections_count = dataModel.reflections_count;
 
     var tables = dataModel.tables;
     for (var i = 0; i < tables.length; i++) {

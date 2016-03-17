@@ -13,9 +13,7 @@ goog.require('app.model.LineShapeComponent');
  * This class represents Splitter component.
  */
 app.model.Splitter = function (coordX, coordY) {
-    app.model.Splitter.base(this, 'constructor', coordX, coordY); // call parent constructor
-    /** @override */
-    this.type = 'SPLITTER';
+    app.model.Splitter.base(this, 'constructor', coordX, coordY, 'SPLITTER'); // call parent constructor
 
     this.transformPoints();
 };
@@ -36,7 +34,7 @@ app.model.Splitter.prototype.intersects = function (rays) {
     dVec[0] = k[0] - this.intersectionPoint[0];
     dVec[1] = k[1] - this.intersectionPoint[1];
 
-    normVec = this.normalize2DVector(dVec);
+    normVec = app.model.Component.normalize2DVector(dVec);
 
     var rayLength = this._intersectionRay[7] + this.newRayLength;
     rays.push([this.intersectionPoint[0], this.intersectionPoint[1], 0, normVec[0], normVec[1], 0, this._intersectionRay[6], rayLength]);
@@ -60,7 +58,7 @@ app.model.Splitter.prototype.copyArguments = function (height) {
 
 /**
  * @param {!Object} componentModel
- * @public
+ * @override
  */
 app.model.Splitter.prototype.importComponentData = function (componentModel) {
     this.height = componentModel.height;

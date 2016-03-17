@@ -7,11 +7,12 @@ goog.require('app.model.Component');
  * @author Matěj Berka
  * @param {number} coordX - component x position
  * @param {number} coordY - component Y position
+ * @param {!string} type - component type
  * @constructor
  * @extends {app.model.Component}
  * Abstract class used to define basic operations for rectangle shape components.
  */
-app.model.RectangleShapeComponent = function(coordX, coordY) {
+app.model.RectangleShapeComponent = function(coordX, coordY, type) {
     /**
      * Used to define component width
      * @type {!number}
@@ -31,7 +32,7 @@ app.model.RectangleShapeComponent = function(coordX, coordY) {
      */
     this.facesCount = 4;
 
-    app.model.RectangleShapeComponent.base(this, 'constructor', coordX, coordY); // call parent constructor
+    app.model.RectangleShapeComponent.base(this, 'constructor', coordX, coordY, type); // call parent constructor
 };
 
 goog.inherits(app.model.RectangleShapeComponent, app.model.Component);
@@ -136,37 +137,41 @@ app.model.RectangleShapeComponent.prototype.isSelected = function(x, y) {
 };
 
 /**
+ * Returns component height
  * @return {!string}
  * @public
  */
 app.model.RectangleShapeComponent.prototype.getHeight = function() {
-    return (this.height / app.PIXELS_ON_CM).toFixed(2);
+    return (this.height / app.pixels_on_cm).toFixed(2);
 };
 
 /**
+ * Sets new component height
  * @param {!number} height
  * @public
  */
 app.model.RectangleShapeComponent.prototype.setHeight = function(height) {
-    this.height = Math.round(height * app.PIXELS_ON_CM);
+    this.height = Math.round(height * app.pixels_on_cm);
     this.generateShapePoints();
     this.transformPoints();
 };
 
 /**
+ * Returns component width
  * @return {!string}
  * @public
  */
 app.model.RectangleShapeComponent.prototype.getWidth = function() {
-    return (this.width / app.PIXELS_ON_CM).toFixed(2);
+    return (this.width / app.pixels_on_cm).toFixed(2);
 };
 
 /**
+ * Sets component width
  * @param {!number} width
  * @public
  */
 app.model.RectangleShapeComponent.prototype.setWidth = function(width) {
-    this.width = Math.round(width * app.PIXELS_ON_CM);
+    this.width = Math.round(width * app.pixels_on_cm);
     this.generateShapePoints();
     this.transformPoints();
 };

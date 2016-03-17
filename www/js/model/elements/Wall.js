@@ -13,9 +13,7 @@ goog.require('app.model.RectangleShapeComponent');
  * This class represents Wall component.
  */
 app.model.Wall = function (coordX, coordY) {
-    app.model.Wall.base(this, 'constructor', coordX, coordY); // call parent constructor
-    /** @override */
-    this.type = 'WALL';
+    app.model.Wall.base(this, 'constructor', coordX, coordY, 'WALL'); // call parent constructor
 
     this.transformPoints();
 };
@@ -38,7 +36,7 @@ app.model.Wall.prototype.copyArguments = function (rotation, width, height) {
 
 /**
  * @param {!Object} componentModel
- * @public
+ * @override
  */
 app.model.Wall.prototype.importComponentData = function (componentModel) {
     this.appliedRotation = componentModel.appliedRotation;

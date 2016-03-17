@@ -12,24 +12,13 @@ goog.require('app.ComponentController');
  * Controller used by app.model.Wall component. Adds specific controls for this component.
  */
 app.WallController = function (model, modelID) {
-    app.WallController.base(this, 'constructor');
-    /**
-     * Points to currently selected component model
-     * @type {app.model.Wall}
-     * @override
-     */
-    this.model = model;
-    /**
-     * @override
-     */
-    this.modelID = modelID;
+    app.WallController.base(this, 'constructor', model, modelID);
 };
 
 goog.inherits(app.WallController, app.ComponentController);
 
 /**
  * @override
- * @param {app.SceneController} sceneController
  */
 app.WallController.prototype.showComponentControlPanel = function (sceneController) {
     app.WallController.base(this, 'showComponentControlPanel', sceneController);
@@ -69,7 +58,6 @@ app.WallController.prototype.showComponentControlPanel = function (sceneControll
 
 /**
  * @override
- * @param sceneController
  */
 app.WallController.prototype.addPanelListeners = function (sceneController) {
     app.WallController.base(this, 'addPanelListeners', sceneController);
