@@ -12,7 +12,7 @@ goog.require('app.ComponentController');
  * Controller used by app.model.HolographicPlate component. Adds specific controls for this component.
  */
 app.HolographicPlateController = function (model, modelID) {
-    app.HolographicPlateController.base(this, 'constructor', model, modelID);;
+    app.HolographicPlateController.base(this, 'constructor', model, modelID);
 };
 goog.inherits(app.HolographicPlateController, app.ComponentController);
 
@@ -81,23 +81,32 @@ app.HolographicPlateController.prototype.showComponentControlPanel = function (s
     goog.dom.appendChild(this.componentConfigurationPanel,
         goog.dom.createDom('label', {'id': 'com-position'}, app.translation["com-plate-max-title"])
     );
-    var args = ['select', {'id': 'com-plate-max-select'}];
-    var selectedMaximum = this.model.getMaximum(), maximum;
+
+    var args = ['div', {'class': 'input-field', 'id': 'diffraction-maxim'}];
+    var selectedMaximum = this.model.getMaxim(), maximum;
     for (var i = -4; i < 4; i++) {
         maximum = (i > -1) ? i + 1 : i;
-        if (selectedMaximum === maximum) {
-            args.push(goog.dom.createDom('option', {'value': maximum, 'selected': 'selected'}, '' + maximum));
+        args.push(goog.dom.createDom('span', {'class': 'com-left-side'}, '' + maximum));
+        if (selectedMaximum.indexOf(maximum) !== -1) {
+            args.push(goog.dom.createDom('span', {'class': 'com-right-side'},
+                goog.dom.createDom('input', {
+                        'type': 'checkbox', 'name': 'checkbox-' + maximum, 'class': 'input-min maxim-checkbox',
+                        'id': 'checkbox-' + maximum, 'checked': 'checked'
+                    }
+                )
+            ));
         } else {
-            args.push(goog.dom.createDom('option', {'value': maximum}, '' + maximum));
+            args.push(goog.dom.createDom('span', {'class': 'com-right-side'},
+                goog.dom.createDom('input', {
+                        'type': 'checkbox', 'name': 'checkbox-' + maximum, 'class': 'input-min maxim-checkbox',
+                        'id': 'checkbox-' + maximum
+                    }
+                )
+            ));
         }
     }
-    var select = goog.dom.createDom.apply(this, args);
-    goog.dom.appendChild(this.componentConfigurationPanel,
-        goog.dom.createDom('div', {'class': 'input-field'},
-            goog.dom.createDom('span', {'class': 'com-left-side'}, app.translation["com-plate-max"]),
-            goog.dom.createDom('span', {'class': 'com-right-side'}, select)
-        )
-    );
+    var maxim = goog.dom.createDom.apply(this, args);
+    goog.dom.appendChild(this.componentConfigurationPanel, maxim);
 
     goog.dom.appendChild(this.componentConfigurationPanel,
         goog.dom.createDom('div', {'class': 'buttons-group'},
@@ -134,16 +143,26 @@ app.HolographicPlateController.prototype.addPanelListeners = function (sceneCont
             sceneController.redrawAll();
         }, true, this);
 
-    goog.events.listen(goog.dom.getElement('com-plate-max-select'), goog.events.EventType.CHANGE,
-        /**
-         * @this {!app.HolographicPlateController}
-         * @param {!goog.events.BrowserEvent} e
-         */
-        function (e) {
-            // TODO remove
-            app.ComponentController.validateIntNoZeroInput(e, this.model.setMaximum, this.model);
-            sceneController.redrawAll();
-        }, true, this);
+
+    var checkboxes = goog.dom.getElementsByClass('maxim-checkbox', goog.dom.getElement('diffraction-maxim'));
+    for (var i = 0; i < checkboxes.length; i++) {
+        goog.events.listen(checkboxes[i], goog.events.EventType.CHANGE,
+            /**
+             * @this {!app.HolographicPlateController}
+             * @param {!goog.events.BrowserEvent} e
+             */
+            function (e) {
+                var maximum = parseInt(e.currentTarget.id.replace('checkbox-', ''), 10);
+                if (!isNaN(maximum)) {
+                    if (e.currentTarget.checked) {
+                        this.model.addMaximum(maximum);
+                    } else {
+                        this.model.removeMaximum(maximum);
+                    }
+                    sceneController.redrawAll();
+                }
+            }, true, this);
+    }
 
     goog.events.listen(goog.dom.getElement('com-record-btn'), goog.events.EventType.CLICK,
         /**
