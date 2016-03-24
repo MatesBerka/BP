@@ -48,6 +48,6 @@ crashlytics-build.properties
 
 # Created by .ignore support plugin (hsz.mobi)
 /nbproject/private/
-www/js-closure/
+
 www/js/app-compiled.js
 notes.txt
