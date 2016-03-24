@@ -160,7 +160,7 @@ app.model.HolographicPlate.prototype.removeMaximum = function (maximum) {
 
 /**
  * Returns array of displayed maxim
- * @return {!Array<number>} maximum
+ * @return {!number} maximum
  * @public
  */
 app.model.HolographicPlate.prototype.getMaxim = function () {
