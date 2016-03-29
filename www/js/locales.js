@@ -77,8 +77,8 @@ app.TRANSLATION = {
         'com-lens-type-title': 'Typ čočky',
         'com-lens-focus-offset': 'Vzdálenost ohniska:',
         'com-light-size': 'A: ',
-        'com-light-beam': 'Bodové',
-        'com-light-circle': 'Kruhové',
+        'com-light-beam': 'Plošné',
+        'com-light-circle': 'Bodové',
         'com-light-type-title': 'Typ světla: ',
         'com-light-rays-count': 'Počet paprsků: ',
         'com-light-radius': 'Rádius: ',
@@ -194,7 +194,7 @@ app.TRANSLATION = {
         'com-lens-focus-offset': 'Focus offset:',
         'com-light-size': 'A: ',
         'com-light-beam': 'Beam',
-        'com-light-circle': 'Circle',
+        'com-light-circle': 'Point',
         'com-light-type-title': 'Light type:',
         'com-light-rays-count': 'Rays count:',
         'com-light-radius': 'Radius: ',
@@ -224,7 +224,7 @@ app.TRANSLATION = {
         'This will generate JSON object of your simulation which you can send to your friends.',
         // components
         'ht-change-cm-title': 'Components',
-        'ht-change-cm-text': 'To create experiment go to Components and pick component you want to add. Each component' +
+        'ht-change-cm-text': 'To create experiment go to Components and pick component you want to add. Each component ' +
         'has own specific settings and you can display them by clicking on added component. Components are bind to a table' +
         ' and can be viewed on views. You can share copy components between tables when you click on copy button in component' +
         'configuration panel.',

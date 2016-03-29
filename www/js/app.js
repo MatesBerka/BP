@@ -51,7 +51,7 @@ app._init = function () {
      * @version 1.1.4
      * @type {!string}
      */
-    app.VERSION = '1.1.5';
+    app.VERSION = '1.1.6';
     /**
      * Simulator default locale
      * @type {!string}
@@ -69,7 +69,7 @@ app._init = function () {
      * @type {!number}
      * @public
      */
-    app.coherence_length = 500;
+    app.coherence_length = 200;
     /**
      * Defines maximum reflections count
      * @type {!number}
