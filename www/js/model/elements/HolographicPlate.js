@@ -200,7 +200,7 @@ app.model.HolographicPlate.prototype.getCollectedLightSources = function () {
 app.model.HolographicPlate.prototype.createRecord = function (refLightID) {
     if (refLightID === 'ALL') {
         this._allRefLights = true;
-        this._refLightID = 0;
+        this._refLightID = '0';
     } else {
         this._allRefLights = false;
         this._refLightID = refLightID;
@@ -338,10 +338,11 @@ app.model.HolographicPlate.prototype._checkRecordedRays = function (rays) {
         groupID = Math.floor(((this.height / 2) + point[1]) / this._groupSize),
         angle = this._getAngle(), raySource, sin, outgoingAngle, dirPoint, group;
 
-    if (this._groups[groupID] !== undefined) {
+    if ((this._groups[groupID] !== undefined) && (this._groups[groupID] !== null)) {
         raySource = this.reverseTransformPoint([this._intersectionRay[0], this._intersectionRay[1]]);
-        // todo tohle nefunguje, kdyz zasviti svetlo ktere neni v seznamu
-        group = (this._allRefLights) ? this._groups[groupID][this._intersectionRay[6]] : this._groups[groupID];
+        // tohle nefunguje, kdyz zasviti svetlo ktere neni v seznamu
+        //group = (this._allRefLights) ? this._groups[groupID][this._intersectionRay[6]] : this._groups[groupID];
+        group = this._groups[groupID];
         this._intersectionRay[0] = this.intersectionPoint[0];
         this._intersectionRay[1] = this.intersectionPoint[1];
         for (var i = 0; i < group.length; i++) {

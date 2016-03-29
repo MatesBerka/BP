@@ -81,6 +81,12 @@ app.LightController.prototype.showComponentControlPanel = function (sceneControl
         }, app.translation['com-light-circle']);
     }
 
+    if (this.model.getLightType() == 'CIRCLE') {
+        if (!goog.dom.classlist.contains(this.componentConfigurationPanel, 'circle-light')) {
+            goog.dom.classlist.add(this.componentConfigurationPanel, 'circle-light');
+        }
+    } else { goog.dom.classlist.remove(this.componentConfigurationPanel, 'circle-light'); }
+
     goog.dom.appendChild(this.componentConfigurationPanel,
         goog.dom.createDom('div', {'class': 'input-field'},
             goog.dom.createDom('span', {
