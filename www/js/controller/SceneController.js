@@ -790,8 +790,10 @@ app.SceneController.prototype._addListeners = function () {
         function (e) {
             if (e.key == 'ok') {
                 var select = goog.dom.getElement('copy-to-table');
-                var tableID = select.options[select.selectedIndex].value;
-                this._tables[tableID].addComponent(this._componentController.getComponentModelCopy());
+                if(select !== null) {
+                    var tableID = select.options[select.selectedIndex].value;
+                    this._tables[tableID].addComponent(this._componentController.getComponentModelCopy());
+                }
             }
         }, false, this);
 };
