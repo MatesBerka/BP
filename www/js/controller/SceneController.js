@@ -449,6 +449,7 @@ app.SceneController.prototype._addViewToGUI = function (viewID, viewName) {
             var pieces = e.currentTarget.id.split('-');
             this._setSelectedView(parseInt(pieces[1], 10), parseInt(pieces[2], 10));
             if (this._isAddNewComponent) { // pridani nove
+                if(this._componentController !== null) this._componentController.removeSelected();
                 this._addComponent(coords);
             } else if (this._isIntersection(coords)) { // vyber komponenty
                 this._componentMoveActive = true;
@@ -458,6 +459,7 @@ app.SceneController.prototype._addViewToGUI = function (viewID, viewName) {
                 this._canvasMoveActive = true;
                 this._VIEW_CONTROLLER.addCanvasMove(view, coords);
             }
+            this.redrawAll();
         }, true, this);
 
     // mouse up events
@@ -472,18 +474,17 @@ app.SceneController.prototype._addViewToGUI = function (viewID, viewName) {
             } else if (this._componentMoveActive && this._componentMoved) {
                 this._componentMoveActive = false;
                 this._componentMoved = false;
-                this._componentController.removeSelected();
                 this.redrawAll();
                 goog.events.unlisten(view, app.MOUSE_MOVE_EVENT, this._componentMove, true, this);
             } else if (this._componentMoveActive && !this._componentMoved) {
                 this._componentMoveActive = false;
-                this._componentController.removeSelected();
                 this._componentController.showComponentControlPanel(this);
                 goog.events.unlisten(view, app.MOUSE_MOVE_EVENT, this._componentMove, true, this);
             } else if (this._canvasMoveActive) {
                 this._canvasMoveActive = false;
                 this._VIEW_CONTROLLER.removeCanvasMove(view);
             }
+            this.redrawAll();
         }, true, this);
 
     return canvas;
@@ -552,15 +553,15 @@ app.SceneController.prototype._renameView = function () {
  */
 app.SceneController.prototype._isIntersection = function (selectedPoint) {
     var point = this._VIEW_CONTROLLER.reverseTransformPoint(selectedPoint),
-        components = this._tables[this._activeTableID].getComponents();
+        components = this._tables[this._activeTableID].getComponents(), selected = false;
 
     for (var i = 0; i < components.length; i++) {
         if (components[i].isSelected(point[0], point[1])) {
             this._setSelectedComponent(components[i], i);
-            return true;
+            selected =  true;
         }
     }
-    return false;
+    return selected;
 };
 
 /**
@@ -892,6 +893,7 @@ app.SceneController.prototype._createComponentModel = function (type, coordX, co
 app.SceneController.prototype._addComponent = function (selectedPoint) {
     var model, modelID, coords = this._VIEW_CONTROLLER.reverseTransformPoint(selectedPoint);
     model = this._createComponentModel(this._newComponentType, coords[0], coords[1]);
+    model.setSelected(true);
     modelID = this._tables[this._activeTableID].addComponent(model);
     this._setSelectedComponent(model, modelID);
     this._componentController.showComponentControlPanel(this);
