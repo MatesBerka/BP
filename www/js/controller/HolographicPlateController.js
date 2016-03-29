@@ -25,9 +25,15 @@ goog.inherits(app.HolographicPlateController, app.ComponentController);
 app.HolographicPlateController.prototype._reportErrors = function (errors, dialog) {
     var rows = [];
     for (var i = 0; i < errors.length; i++) {
-        rows.push(goog.html.SafeHtml.create('span', {'class': 'ref-err-row'},
-            [app.translation['ref-err-sec'], errors[i][0], app.translation['ref-err-src'], errors[i][1], ' vs ', errors[i][2],
-                app.translation['ref-err-ray'], errors[i][3], ' (CM)']))
+        if( errors[i][3] === 'wavelength') {
+            rows.push(goog.html.SafeHtml.create('span', {'class': 'ref-err-row'},
+                [app.translation['ref-err-sec'], errors[i][0], app.translation['wave-err-src'], errors[i][1],
+                    app.translation['wave-err-con'], errors[i][2], app.translation['wave-err-end']]))
+        } else {
+            rows.push(goog.html.SafeHtml.create('span', {'class': 'ref-err-row'},
+                [app.translation['ref-err-sec'], errors[i][0], app.translation['ref-err-src'], errors[i][1], ' vs ', errors[i][2],
+                    app.translation['ref-err-ray'], errors[i][3], ' (cm)']))
+        }
     }
 
     // create dialog

@@ -175,3 +175,12 @@ app.model.RectangleShapeComponent.prototype.setWidth = function(width) {
     this.generateShapePoints();
     this.transformPoints();
 };
+
+/**
+ * @override
+ */
+app.model.RectangleShapeComponent.prototype.importComponentData = function (componentModel) {
+    this.width = componentModel.width;
+    this.height = componentModel.height;
+    app.model.RectangleShapeComponent.base(this, 'importComponentData', componentModel);
+};

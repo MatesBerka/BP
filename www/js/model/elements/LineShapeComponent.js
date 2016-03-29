@@ -18,7 +18,7 @@ app.model.LineShapeComponent = function (coordX, coordY, type) {
      * @type {!number}
      * @protected
      */
-    this.height = 300;
+    this.height = 150;
 
     app.model.LineShapeComponent.base(this, 'constructor', coordX, coordY, type); // call parent constructor
 };
@@ -130,4 +130,12 @@ app.model.LineShapeComponent.prototype.setHeight = function (height) {
     this.height = Math.round(height * app.pixels_on_cm);
     this.generateShapePoints();
     this.transformPoints();
+};
+
+/**
+ * @override
+ */
+app.model.LineShapeComponent.prototype.importComponentData = function (componentModel) {
+    this.height = componentModel.height;
+    app.model.LineShapeComponent.base(this, 'importComponentData', componentModel);
 };

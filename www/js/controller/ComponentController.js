@@ -207,7 +207,7 @@ app.ComponentController.prototype.showComponentControlPanel = function (sceneCon
 
     // component type
     goog.dom.appendChild(this.componentConfigurationPanel,
-        goog.dom.createDom('div', {'id': 'com-type'}, app.translation["com-type"], this._getComponentType())
+        goog.dom.createDom('div', {'id': 'com-type'}, app.translation["com-type"], ' ' + this._getComponentType() + ' ' + this.model.getID())
     );
 
     // input x, y position
@@ -327,8 +327,11 @@ app.ComponentController.prototype.updatePosition = function (diffX, diffY) {
 
 /**
  * Returns copy of selected component model
+ * @return {!app.model.Component}
  * @public
  */
 app.ComponentController.prototype.getComponentModelCopy = function () {
-    return this.model.copy();
+    var copy = this.model.copy();
+    copy.transformPoints();
+    return copy;
 };

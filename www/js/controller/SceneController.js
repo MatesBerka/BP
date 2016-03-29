@@ -994,6 +994,7 @@ app.SceneController.prototype.importData = function (dataModel) {
             var component = this._createComponentModel(tables[i]._components[k].type,
             tables[i]._components[k].appliedTranslationX, tables[i]._components[k].appliedTranslationY);
             component.importComponentData(tables[i]._components[k]);
+            component.transformPoints();
             table.importComponent(component);
         }
     }

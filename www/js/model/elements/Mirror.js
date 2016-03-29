@@ -24,41 +24,23 @@ goog.inherits(app.model.Mirror, app.model.LineShapeComponent);
  * @override
  */
 app.model.Mirror.prototype.intersects = function (rays) {
-    var dVec = [], normVec;
+    var dVec = [], normVec, transformedPoint, ID, rayLength;
     var point = this.reverseTransformPoint([this._intersectionRay[0], this._intersectionRay[1]]);
     var intersectionPoint = this.reverseTransformPoint([this.intersectionPoint[0], this.intersectionPoint[1]]);
+
     point[1] = (-1*point[1]) + (2*intersectionPoint[1]);
-    var k = this.transformPoint(point);
 
-    dVec[0] = k[0] - this.intersectionPoint[0];
-    dVec[1] = k[1] - this.intersectionPoint[1];
-
+    transformedPoint = this.transformPoint(point);
+    dVec[0] = transformedPoint[0] - this.intersectionPoint[0];
+    dVec[1] = transformedPoint[1] - this.intersectionPoint[1];
     normVec = app.model.Component.normalize2DVector(dVec);
 
-    var rayLength = this._intersectionRay[7] + this.newRayLength;
-    rays.push([this.intersectionPoint[0], this.intersectionPoint[1], 0, normVec[0], normVec[1], 0, this._intersectionRay[6], rayLength]);
+    ID = this._intersectionRay[6] + '-M' + this._componentID;
+    rayLength = this._intersectionRay[7] + this.newRayLength;
+    rays.push([this.intersectionPoint[0], this.intersectionPoint[1], 0, normVec[0], normVec[1], 0, ID, rayLength,
+        this._intersectionRay[8]]);
 
     return this.intersectionPoint;
-};
-
-/**
- * @param {!number} height
- * @override
- */
-app.model.Mirror.prototype.copyArguments = function(height) {
-    this.height = height;
-    this.generateShapePoints();
-    this.transformPoints()
-};
-
-/**
- * @param {!Object} componentModel
- * @override
- */
-app.model.Mirror.prototype.importComponentData = function (componentModel) {
-    this.height = componentModel.height;
-    this.generateShapePoints();
-    this.transformPoints()
 };
 
 /**
@@ -66,6 +48,6 @@ app.model.Mirror.prototype.importComponentData = function (componentModel) {
  */
 app.model.Mirror.prototype.copy = function () {
     var copy = new app.model.Mirror(this.appliedTranslationX, this.appliedTranslationY);
-    copy.copyArguments(this.height);
+    copy.importComponentData(this);
     return copy;
 };

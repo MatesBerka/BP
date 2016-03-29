@@ -28,11 +28,11 @@ app.model.Table = function (tableName) {
      */
     this._components = [];
     /**
-     * Used highest light ID.
-     * @type {!number}
+     * Holds used IDs in simulation
+     * @type {!Object}
      * @private
      */
-    this._highestLightID = 0;
+    this._IDsCounter = {};
     /**
      * Number of active views.
      * @type {!number}
@@ -151,6 +151,23 @@ app.model.Table.prototype.getComponents = function () {
     return this._components;
 };
 
+
+/**
+ * Accepts component type and returns new ID for this component.
+ * @param {!string} type
+ * @return {!number}
+ * @private
+ */
+app.model.Table.prototype._getComponentID = function(type) {
+    if(this._IDsCounter.hasOwnProperty(type)) {
+        this._IDsCounter[type]++;
+    } else {
+        this._IDsCounter[type] = 1;
+    }
+
+    return this._IDsCounter[type];
+};
+
 /**
  * Adds new component to the table.
  * @param {!app.model.Component} model
@@ -158,14 +175,8 @@ app.model.Table.prototype.getComponents = function () {
  * @public
  */
 app.model.Table.prototype.addComponent = function (model) {
-    if (model.getType() === 'LIGHT') {
-        this._highestLightID++;
-        /**@suppress {checkTypes}*/model.setLightID(this._highestLightID);
-        this._components.push(model);
-    } else {
-        this._components.push(model);
-    }
-
+    model.setID(this._getComponentID(model.getType()));
+    this._components.push(model);
     return (this._components.length - 1);
 };
 
@@ -202,5 +213,5 @@ app.model.Table.prototype.removeView = function (viewID) {
  * @public
  */
 app.model.Table.prototype.importTable = function(tableModel) {
-    this._highestLightID = tableModel._highestLightID;
+    this._IDsCounter = tableModel._IDsCounter;
 };

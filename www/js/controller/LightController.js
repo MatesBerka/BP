@@ -24,10 +24,6 @@ goog.inherits(app.LightController, app.ComponentController);
 app.LightController.prototype.showComponentControlPanel = function (sceneController) {
     app.LightController.base(this, 'showComponentControlPanel', sceneController);
 
-    // component type
-    var element = goog.dom.getElement('com-type');
-    element.innerText = app.translation["com-type"] + ' ' + this._getComponentType() + ' ' + this.model.getLightID() + ' (ID)';
-
     goog.dom.appendChild(this.componentConfigurationPanel,
         goog.dom.createDom('div', {'class': 'input-field'},
             goog.dom.createDom('span', {
@@ -44,7 +40,7 @@ app.LightController.prototype.showComponentControlPanel = function (sceneControl
     );
 
     goog.dom.appendChild(this.componentConfigurationPanel,
-        goog.dom.createDom('label', {'id': 'com-light'}, app.translation["com-light"], ' ' + this.model.getLightID() + ' (ID)')
+        goog.dom.createDom('label', {'id': 'com-light'}, app.translation["com-light"])
     );
 
     goog.dom.appendChild(this.componentConfigurationPanel,

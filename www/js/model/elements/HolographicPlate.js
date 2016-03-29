@@ -46,10 +46,10 @@ app.model.HolographicPlate = function (coordX, coordY) {
     this._allRefLights = false;
     /**
      * ID of reference Light
-     * @type {!number}
+     * @type {!string}
      * @private
      */
-    this._refLightID = 0;
+    this._refLightID = '';
     /**
      * Array of displayed maxim
      * @type {!Array<number>}
@@ -160,7 +160,7 @@ app.model.HolographicPlate.prototype.removeMaximum = function (maximum) {
 
 /**
  * Returns array of displayed maxim
- * @return {!number} maximum
+ * @return {!Array<number>} maximum
  * @public
  */
 app.model.HolographicPlate.prototype.getMaxim = function () {
@@ -203,7 +203,7 @@ app.model.HolographicPlate.prototype.createRecord = function (refLightID) {
         this._refLightID = 0;
     } else {
         this._allRefLights = false;
-        this._refLightID = parseInt(refLightID, 10);
+        this._refLightID = refLightID;
     }
     return this._createRecord();
 };
@@ -245,31 +245,31 @@ app.model.HolographicPlate.prototype._createRecord = function () {
         rayAngle, f;
 
     if (this._allRefLights) {
-        for (i = 0; i < this._groups.length; i++) {
-            if (this._groups[i] !== undefined) {
-                group = [];
-                for (refRaySourceID in this._groups[i]) {
-                    if (this._groups[i].hasOwnProperty(refRaySourceID)) { // 1) pick ref. light
-                        refRayAngle = this._groups[i][refRaySourceID][0];
-                        refRay = this._groups[i][refRaySourceID][1];
-                        frequencies = [];
-                        for (raySourceID in this._groups[i]) {
-                            if (this._groups[i].hasOwnProperty(raySourceID) && raySourceID !== refRaySourceID) { // 2) collects obj. lights
-                                rayAngle = this._groups[i][raySourceID][0];
-                                ray = this._groups[i][raySourceID][1];
-                                if (ray[8] === refRay[8] && Math.abs(this._lightSources[refRaySourceID] - this._lightSources[raySourceID])
-                                    <= app.coherence_length) {
-                                    f = (Math.sin((rayAngle * (Math.PI / 180))) - Math.sin((refRayAngle * (Math.PI / 180)))) / refRay[8];
-                                    frequencies.push(f);
-                                }
-                            }
-                        }
-                        group.push(frequencies);
-                    }
-                }
-                this._groups[i] = group;
-            }
-        }
+        //for (i = 0; i < this._groups.length; i++) {
+        //    if (this._groups[i] !== undefined) {
+        //        group = [];
+        //        for (refRaySourceID in this._groups[i]) {
+        //            if (this._groups[i].hasOwnProperty(refRaySourceID)) { // 1) pick ref. light
+        //                refRayAngle = this._groups[i][refRaySourceID][0];
+        //                refRay = this._groups[i][refRaySourceID][1];
+        //                frequencies = [];
+        //                for (raySourceID in this._groups[i]) {
+        //                    if (this._groups[i].hasOwnProperty(raySourceID) && raySourceID !== refRaySourceID) { // 2) collects obj. lights
+        //                        rayAngle = this._groups[i][raySourceID][0];
+        //                        ray = this._groups[i][raySourceID][1];
+        //                        if (ray[8] === refRay[8] && Math.abs(this._lightSources[refRaySourceID] - this._lightSources[raySourceID])
+        //                            <= app.coherence_length) {
+        //                            f = (Math.sin((rayAngle * (Math.PI / 180))) - Math.sin((refRayAngle * (Math.PI / 180)))) / refRay[8];
+        //                            frequencies.push(f);
+        //                        }
+        //                    }
+        //                }
+        //                group.push(frequencies);
+        //            }
+        //        }
+        //        this._groups[i] = group;
+        //    }
+        //}
     } else { // single ref. light picked
         for (i = 0; i < this._groups.length; i++) {
             if (this._groups[i] !== undefined) { // 1) group is not empty
@@ -294,6 +294,8 @@ app.model.HolographicPlate.prototype._createRecord = function () {
                                     errors.push([i, raySourceID, this._refLightID, errorDiff]);
                                 }
                                 delete this._groups[i][raySourceID];
+                            } else {
+                                errors.push([i, raySourceID, this._refLightID, 'wavelength']);
                             }
                         }
                     }
@@ -319,11 +321,11 @@ app.model.HolographicPlate.prototype._recordRay = function () {
     this._intersectionRay[0] = point[0];
     this._intersectionRay[1] = point[1];
     if (this._groups[groupID] === undefined) this._groups[groupID] = {};
-    if(this._groups[groupID][this._intersectionRay[6]] === undefined) {
+    if (this._groups[groupID][this._intersectionRay[6]] === undefined) {
         this._groups[groupID][this._intersectionRay[6]] = [angle, this._intersectionRay];
     } else {
-        var newAngle = (angle + this._groups[groupID][this._intersectionRay[6]][0])/2;
-        this._groups[groupID][this._intersectionRay[6]]  = [newAngle, this._intersectionRay];
+        var newAngle = (angle + this._groups[groupID][this._intersectionRay[6]][0]) / 2;
+        this._groups[groupID][this._intersectionRay[6]] = [newAngle, this._intersectionRay];
     }
 };
 
@@ -351,6 +353,7 @@ app.model.HolographicPlate.prototype._checkRecordedRays = function (rays) {
                         this.rotatePoint([1, 0], (outgoingAngle + this.appliedRotation));
                     this._intersectionRay[3] = dirPoint[0];
                     this._intersectionRay[4] = dirPoint[1];
+                    this._intersectionRay[6] += '-H' + this._componentID;
                     rays.push(this._intersectionRay.slice());
                 }
             }
@@ -408,28 +411,9 @@ app.model.HolographicPlate.prototype.draw = function (ctx, callback) {
 };
 
 /**
- * @param {!number} rotation
- * @param {!number} height
- * @param {!number} groupSize
- * @override
- */
-app.model.HolographicPlate.prototype.copyArguments = function (rotation, height, groupSize) {
-    this.appliedRotation = rotation;
-    this.height = height;
-    this._groupSize = groupSize;
-
-    this.generateShapePoints();
-    this._generateGridPoints();
-    this.transformPoints();
-};
-
-/**
- * @param {!Object} componentModel
  * @override
  */
 app.model.HolographicPlate.prototype.importComponentData = function (componentModel) {
-    this.appliedRotation = componentModel.appliedRotation;
-    this.height = componentModel.height;
     this._groupSize = componentModel._groupSize;
     this._makeRecord = componentModel._makeRecord;
     this._showRecord = componentModel._showRecord;
@@ -439,9 +423,8 @@ app.model.HolographicPlate.prototype.importComponentData = function (componentMo
     this._m = componentModel._m;
     this._groups = componentModel._groups;
     this._lightSources = componentModel._lightSources;
-    this.generateShapePoints();
+    app.model.HolographicPlate.base(this, 'importComponentData', componentModel);
     this._generateGridPoints();
-    this.transformPoints();
 };
 
 /**
@@ -449,6 +432,6 @@ app.model.HolographicPlate.prototype.importComponentData = function (componentMo
  */
 app.model.HolographicPlate.prototype.copy = function () {
     var copy = new app.model.HolographicPlate(this.appliedTranslationX, this.appliedTranslationY);
-    copy.copyArguments(this.appliedRotation, this.height, this._groupSize);
+    copy.importComponentData(this);
     return copy;
 };

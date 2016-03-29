@@ -182,6 +182,7 @@ app.model.Lens.prototype.intersects = function (rays) {
     this._intersectionRay[1] = this.intersectionPoint[1];
     this._intersectionRay[3] = normDVec[0];
     this._intersectionRay[4] = normDVec[1];
+    this._intersectionRay[6] +=  '-L' + this._componentID;
     this._intersectionRay[7] +=  this.newRayLength;
     rays.push(this._intersectionRay);
 
@@ -189,34 +190,13 @@ app.model.Lens.prototype.intersects = function (rays) {
 };
 
 /**
- * @param {!number} rotation
- * @param {!number} height
- * @param {!string} focusType
- * @param {!number} focusOffset
- * @override
- */
-app.model.Lens.prototype.copyArguments = function(rotation, height, focusType, focusOffset) {
-    this.appliedRotation = rotation;
-    this.height = height;
-    this._focusType = focusType;
-    this._focusOffset = focusOffset;
-    this.generateShapePoints();
-    this._generateLensPoints();
-    this.transformPoints();
-};
-
-/**
- * @param {!Object} componentModel
  * @override
  */
 app.model.Lens.prototype.importComponentData = function (componentModel) {
-    this.appliedRotation = componentModel.appliedRotation;
-    this.height = componentModel.height;
     this._focusType = componentModel._focusType;
     this._focusOffset = componentModel._focusOffset;
-    this.generateShapePoints();
+    app.model.Lens.base(this, 'importComponentData', componentModel);
     this._generateLensPoints();
-    this.transformPoints();
 };
 
 /**
@@ -224,6 +204,6 @@ app.model.Lens.prototype.importComponentData = function (componentModel) {
  */
 app.model.Lens.prototype.copy = function () {
     var copy = new app.model.Lens(this.appliedTranslationX, this.appliedTranslationY);
-    copy.copyArguments(this.appliedRotation, this.height, this._focusType, this._focusOffset);
+    copy.importComponentData(this);
     return copy;
 };

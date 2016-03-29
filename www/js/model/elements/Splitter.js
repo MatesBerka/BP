@@ -36,34 +36,17 @@ app.model.Splitter.prototype.intersects = function (rays) {
 
     normVec = app.model.Component.normalize2DVector(dVec);
 
-    var rayLength = this._intersectionRay[7] + this.newRayLength;
-    rays.push([this.intersectionPoint[0], this.intersectionPoint[1], 0, normVec[0], normVec[1], 0, this._intersectionRay[6], rayLength]);
-
     this._intersectionRay[0] = this.intersectionPoint[0];
     this._intersectionRay[1] = this.intersectionPoint[1];
-    rays.push(this._intersectionRay);
+    this._intersectionRay[6] += '-S' + this._componentID;
+    this._intersectionRay[7] = (this._intersectionRay[7] + this.newRayLength);
+    rays.push(this._intersectionRay.slice());
+
+    this._intersectionRay[3] = normVec[0];
+    this._intersectionRay[4] = normVec[1];
+    rays.push(this._intersectionRay.slice());
 
     return this.intersectionPoint;
-};
-
-/**
- * @param {!number} height
- * @override
- */
-app.model.Splitter.prototype.copyArguments = function (height) {
-    this.height = height;
-    this.generateShapePoints();
-    this.transformPoints();
-};
-
-/**
- * @param {!Object} componentModel
- * @override
- */
-app.model.Splitter.prototype.importComponentData = function (componentModel) {
-    this.height = componentModel.height;
-    this.generateShapePoints();
-    this.transformPoints();
 };
 
 /**
@@ -71,6 +54,6 @@ app.model.Splitter.prototype.importComponentData = function (componentModel) {
  */
 app.model.Splitter.prototype.copy = function () {
     var copy = new app.model.Splitter(this.appliedTranslationX, this.appliedTranslationY);
-    copy.copyArguments(this.height);
+    copy.importComponentData(this);
     return copy;
 };

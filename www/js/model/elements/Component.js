@@ -12,6 +12,12 @@ goog.provide('app.model.Component');
  */
 app.model.Component = function (coordX, coordY, type) {
     /**
+     * Component ID
+     * @type {(!number)}
+     * @protected
+     */
+    this._componentID = -1;
+    /**
      * Holds component type
      * @type {!string}
      * @protected
@@ -116,23 +122,22 @@ app.model.Component.prototype.isSelected = function (x, y) {
 app.model.Component.prototype.generateShapePoints = goog.abstractMethod;
 
 /**
- * Helper method to  quickly copy component model arguments
- * @protected
- */
-app.model.Component.prototype.copyArguments = goog.abstractMethod;
-
-/**
- * Helper method used to insert imported component data
- * @public
- */
-app.model.Component.prototype.importComponentData = goog.abstractMethod;
-
-/**
  * Returns copy of component model
- * @return {app.model.Component}
+ * @return {!app.model.Component}
  * @public
  */
 app.model.Component.prototype.copy = goog.abstractMethod;
+
+/**
+ * Helper method used to insert imported component data
+ * @param {!Object} componentModel
+ * @public
+ */
+app.model.Component.prototype.importComponentData = function (componentModel) {
+    this._componentID = componentModel._componentID;
+    this.appliedRotation = componentModel.appliedRotation;
+    this.generateShapePoints();
+};
 
 /**
  * Called when currently processed validates intersection.
@@ -141,6 +146,24 @@ app.model.Component.prototype.copy = goog.abstractMethod;
  */
 app.model.Component.prototype.intersects = function (rays) {
     return this.intersectionPoint;
+};
+
+/**
+ * Sets component ID
+ * @param {!number} ID
+ * @public
+ */
+app.model.Component.prototype.setID = function(ID) {
+    this._componentID = ID;
+};
+
+/**
+ * Returns component ID
+ * @return {!number} ID
+ * @public
+ */
+app.model.Component.prototype.getID = function() {
+    return this._componentID;
 };
 
 /**
@@ -212,7 +235,7 @@ app.model.Component.prototype.transformPoint = function (point) {
 
 /**
  * Transforms component origin points
- * @protected
+ * @public
  */
 app.model.Component.prototype.transformPoints = function () {
     var newPoint;

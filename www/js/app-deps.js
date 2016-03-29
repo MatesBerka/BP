@@ -2,7 +2,7 @@
 // Please do not edit.
 goog.addDependency('../../../../www/js/app.js', ['app.start', 'app.utils'], ['app.MenuController', 'app.SceneController', 'app.locales', 'goog.events', 'goog.labs.userAgent.device'], false);
 goog.addDependency('../../../../www/js/controller/ComponentController.js', ['app.ComponentController'], ['goog.dom'], false);
-goog.addDependency('../../../../www/js/controller/HolographicPlateController.js', ['app.HolographicPlateController'], ['app.ComponentController', 'goog.ui.Checkbox'], false);
+goog.addDependency('../../../../www/js/controller/HolographicPlateController.js', ['app.HolographicPlateController'], ['app.ComponentController'], false);
 goog.addDependency('../../../../www/js/controller/LensController.js', ['app.LensController'], ['app.ComponentController'], false);
 goog.addDependency('../../../../www/js/controller/LightController.js', ['app.LightController'], ['app.ComponentController', 'goog.ui.Select'], false);
 goog.addDependency('../../../../www/js/controller/MenuController.js', ['app.MenuController'], ['app.SceneController', 'goog.json', 'goog.labs.userAgent.device', 'goog.ui.Dialog', 'goog.ui.KeyboardShortcutHandler', 'goog.ui.Popup'], false);

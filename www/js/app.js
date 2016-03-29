@@ -75,7 +75,7 @@ app._init = function () {
      * @type {!number}
      * @public
      */
-    app.reflections_count = 4;
+    app.reflections_count = 7;
     /** Checks device type and sets correct event types used to control simulation */
     if (goog.labs.userAgent.device.isDesktop()) {
         /** @type {goog.events.EventType|string} */

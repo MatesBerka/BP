@@ -39,19 +39,13 @@ app.model.Light = function (coordX, coordY) {
      * @type {!number}
      * @private
      */
-    this._generatedRaysCount = 10;
+    this._generatedRaysCount = 5;
     /**
      * Light radius used for CIRCLE light 30 = 60 degrees in summary
      * @type {!number}
      * @private
      */
     this._lightRadius = 30;
-    /**
-     * Light ID
-     * @type {!number}
-     * @private
-     */
-    this._lightID = -1;
     /**
      * Light wave length
      * @type {!number}
@@ -306,7 +300,7 @@ app.model.Light.prototype.draw = function (ctx, callback) {
             vec2 = this.transformPoint([(x + 1), y, 0]);
             dx = vec2[0] - vec1[0];
             dy = vec2[1] - vec1[1];
-            callback([vec1[0], vec1[1], 0, dx, dy, 0, this._lightID, 0, this._lightLength]);
+            callback([vec1[0], vec1[1], 0, dx, dy, 0, '' + this._componentID, 0, this._lightLength]);
         }
     } else {
         this._drawCircle(ctx);
@@ -319,42 +313,20 @@ app.model.Light.prototype.draw = function (ctx, callback) {
             vec2 = this.transformPoint(vec2);
             dx = vec2[0] - vec1[0];
             dy = vec2[1] - vec1[1];
-            callback([vec1[0], vec1[1], 0, dx, dy, 0, this._lightID, 0, this._lightLength]);
+            callback([vec1[0], vec1[1], 0, dx, dy, 0, '' + this._componentID, 0, this._lightLength]);
         }
     }
 };
 
 /**
- * @param {!number} rotation
- * @param {!number} size
- * @param {!string} lightType
- * @param {!number} generatedRaysCount
- * @param {!number} lightRadius
- * @override
- */
-app.model.Light.prototype.copyArguments = function (rotation, size, lightType, generatedRaysCount, lightRadius) {
-    this.appliedRotation = rotation;
-    this._size = size;
-    this._lightType = lightType;
-    this._generatedRaysCount = generatedRaysCount;
-    this._lightRadius = lightRadius;
-    this.generateShapePoints();
-    this.transformPoints();
-};
-
-/**
- * @param {!Object} componentModel
  * @override
  */
 app.model.Light.prototype.importComponentData = function (componentModel) {
-    this.appliedRotation = componentModel.appliedRotation;
     this._size = componentModel._size;
     this._lightType = componentModel._lightType;
     this._generatedRaysCount = componentModel._generatedRaysCount;
     this._lightRadius = componentModel._lightRadius;
-    this._lightID = componentModel._lightID;
-    this.generateShapePoints();
-    this.transformPoints();
+    app.model.Light.base(this, 'importComponentData', componentModel);
 };
 
 /**
@@ -362,7 +334,7 @@ app.model.Light.prototype.importComponentData = function (componentModel) {
  */
 app.model.Light.prototype.copy = function () {
     var copy = new app.model.Light(this.appliedTranslationX, this.appliedTranslationY);
-    copy.copyArguments(this.appliedRotation, this._size, this._lightType, this._generatedRaysCount, this._lightRadius);
+    copy.importComponentData(this);
     return copy;
 };
 
@@ -458,22 +430,4 @@ app.model.Light.prototype.getRadius = function () {
  */
 app.model.Light.prototype.setRadius = function (radius) {
     this._lightRadius = radius;
-};
-
-/**
- * Sets new light ID
- * @param {!number} lightID
- * @public
- */
-app.model.Light.prototype.setLightID = function (lightID) {
-    return this._lightID = lightID;
-};
-
-/**
- * Returns light ID
- * @return {!number}
- * @public
- */
-app.model.Light.prototype.getLightID = function () {
-    return this._lightID;
 };
