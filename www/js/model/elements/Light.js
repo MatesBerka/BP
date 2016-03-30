@@ -158,40 +158,6 @@ app.model.Light.prototype._squareIntersection = function (ray) {
         return rayLength;
 };
 
-/**
- * Checks if ray intersects ring light
- * @see http://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm
- * t2( dx2 + dy2 ) + 2t( exdx + eydy - dxh - dyk ) + ex2 + ey2 - 2exh - 2eyk + h2 + k2 - r2 = 0
- * @param {!Array<number>} ray
- * @return {!number}
- * @private
- */
-app.model.Light.prototype._circleIntersection = function (ray) {
-    var a, b, c, dis, x1, point = [], length = Infinity, imgPointOffset  = 100000,
-    dirX = imgPointOffset * ray[3], dirY = imgPointOffset * ray[4];
-
-    a = Math.pow(dirX, 2) + Math.pow(dirY, 2);
-    b = 2 * (ray[0] * dirX + ray[1] * dirY - dirX * this.transformedPoints[0][0] - dirY * this.transformedPoints[0][1]);
-    c = ray[0] * ray[0] + ray[1] * ray[1] - 2 * ray[0] * this.transformedPoints[0][0] - 2 * ray[1] * this.transformedPoints[0][1] +
-        Math.pow(this.transformedPoints[0][0], 2) + Math.pow(this.transformedPoints[0][1], 2) - Math.pow(this._size, 2);
-
-    dis = b * b - 4 * a * c;
-    if (dis < 0)
-        return length;
-
-    dis = Math.sqrt(dis);
-    x1 = (-b - dis) / (2 * a);
-
-    if (x1 >= 0 && x1 <= 1) {
-        point[0] = ray[0] + dirX * x1;
-        point[1] = ray[1] + dirY * x1;
-        length = Math.sqrt(Math.pow(Math.abs(point[0] - ray[0]), 2) + Math.pow(Math.abs(point[1] - ray[1]), 2));
-        this.intersectionPoint = point;
-        return length;
-    }
-
-    return Infinity;
-};
 
 /**
  * @override
@@ -200,7 +166,7 @@ app.model.Light.prototype.isIntersection = function (ray) {
     if (this._lightType === 'BEAM') {
         return this._squareIntersection(ray);
     } else {
-        return this._circleIntersection(ray);
+        return Infinity;
     }
 };
 
