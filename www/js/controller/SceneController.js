@@ -478,7 +478,6 @@ app.SceneController.prototype._addViewToGUI = function (viewID, viewName) {
                 goog.events.unlisten(view, app.MOUSE_MOVE_EVENT, this._componentMove, true, this);
             } else if (this._componentMoveActive && !this._componentMoved) {
                 this._componentMoveActive = false;
-                this._componentController.showComponentControlPanel(this);
                 goog.events.unlisten(view, app.MOUSE_MOVE_EVENT, this._componentMove, true, this);
             } else if (this._canvasMoveActive) {
                 this._canvasMoveActive = false;
@@ -855,6 +854,7 @@ app.SceneController.prototype._setSelectedComponent = function (componentModel, 
             this._componentController = new app.LightController(/**@type{!app.model.Light}*/(componentModel), componentID);
             break;
     }
+    this._componentController.showComponentControlPanel(this);
 };
 
 /**

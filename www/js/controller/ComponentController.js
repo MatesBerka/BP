@@ -29,6 +29,18 @@ app.ComponentController = function (model, modelID) {
      * @protected
      */
     this.componentConfigurationPanel = goog.dom.getElement('component-configuration');
+    /**
+     * Element which contains x position input
+     * @type {Element}
+     * @protected
+     */
+    this._xPosInput = null;
+    /**
+     * Element which contains y position input
+     * @type {Element}
+     * @protected
+     */
+    this._yPosInput = null;
 };
 
 /**
@@ -265,7 +277,9 @@ app.ComponentController.prototype.showComponentControlPanel = function (sceneCon
  * @protected
  */
 app.ComponentController.prototype.addPanelListeners = function (sceneController) {
-    goog.events.listen(goog.dom.getElement('com-pos-x'), goog.events.EventType.KEYUP,
+
+    this._xPosInput = goog.dom.getElement('com-pos-x');
+    goog.events.listen(this._xPosInput, goog.events.EventType.KEYUP,
         /**
          * @this {!app.ComponentController}
          * @param {goog.events.BrowserEvent} e
@@ -275,7 +289,8 @@ app.ComponentController.prototype.addPanelListeners = function (sceneController)
             sceneController.redrawAll();
         }, true, this);
 
-    goog.events.listen(goog.dom.getElement('com-pos-y'), goog.events.EventType.KEYUP,
+    this._yPosInput = goog.dom.getElement('com-pos-y');
+    goog.events.listen(this._yPosInput, goog.events.EventType.KEYUP,
         /**
          * @this {!app.ComponentController}
          * @param {goog.events.BrowserEvent} e
@@ -304,6 +319,8 @@ app.ComponentController.prototype.removeActiveComponent = function () {
     var modelID = this.modelID;
     this.model = null;
     this.modelID = -1;
+    this._xPosInput = null;
+    this._xPosInput = null;
     return modelID;
 };
 
@@ -323,6 +340,10 @@ app.ComponentController.prototype.removeSelected = function () {
  */
 app.ComponentController.prototype.updatePosition = function (diffX, diffY) {
     this.model.applyTranslation(diffX, diffY);
+    if(this._xPosInput != null && this._yPosInput != null) {
+        this._xPosInput.value = this.model.getPosX();
+        this._yPosInput.value = this.model.getPosY();
+    }
 };
 
 /**
