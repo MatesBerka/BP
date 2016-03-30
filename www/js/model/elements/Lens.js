@@ -148,7 +148,6 @@ app.model.Lens.prototype._getImagePosition = function(focus, obj) {
     var imgDis = (denominator !== 0) ? Math.round(1/denominator) : Number.MAX_VALUE;
     var imgHeight = Math.abs(obj[1])*(-imgDis/ Math.abs(obj[0]));
 
-    imgHeight = (imgHeight !== 0) ? imgHeight : Number.MAX_VALUE;
     imgDis = (obj[0] < 0) ? imgDis : -imgDis;
     imgHeight = (obj[1] < 0) ?  -imgHeight : imgHeight;
 

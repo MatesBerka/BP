@@ -39,12 +39,6 @@ app.model.HolographicPlate = function (coordX, coordY) {
      */
     this._groupsCount = Math.floor(this.height / this._groupSize);
     /**
-     * Flag to check if all lights are reference
-     * @type {boolean}
-     * @private
-     */
-    this._allRefLights = false;
-    /**
      * ID of reference Light
      * @type {!string}
      * @private
@@ -198,13 +192,7 @@ app.model.HolographicPlate.prototype.getCollectedLightSources = function () {
  * @public
  */
 app.model.HolographicPlate.prototype.createRecord = function (refLightID) {
-    if (refLightID === 'ALL') {
-        this._allRefLights = true;
-        this._refLightID = '0';
-    } else {
-        this._allRefLights = false;
-        this._refLightID = refLightID;
-    }
+    this._refLightID = refLightID;
     return this._createRecord();
 };
 
@@ -241,68 +229,40 @@ app.model.HolographicPlate.prototype._getAngle = function () {
  * @private
  */
 app.model.HolographicPlate.prototype._createRecord = function () {
-    var i, refRaySourceID, raySourceID, group = [], frequencies = [], errors = [], errorDiff, refRay, refRayAngle, ray,
+    var i, raySourceID, frequencies = [], errors = [], errorDiff, refRay, refRayAngle, ray,
         rayAngle, f;
 
-    if (this._allRefLights) {
-        //for (i = 0; i < this._groups.length; i++) {
-        //    if (this._groups[i] !== undefined) {
-        //        group = [];
-        //        for (refRaySourceID in this._groups[i]) {
-        //            if (this._groups[i].hasOwnProperty(refRaySourceID)) { // 1) pick ref. light
-        //                refRayAngle = this._groups[i][refRaySourceID][0];
-        //                refRay = this._groups[i][refRaySourceID][1];
-        //                frequencies = [];
-        //                for (raySourceID in this._groups[i]) {
-        //                    if (this._groups[i].hasOwnProperty(raySourceID) && raySourceID !== refRaySourceID) { // 2) collects obj. lights
-        //                        rayAngle = this._groups[i][raySourceID][0];
-        //                        ray = this._groups[i][raySourceID][1];
-        //                        if (ray[8] === refRay[8] && Math.abs(this._lightSources[refRaySourceID] - this._lightSources[raySourceID])
-        //                            <= app.coherence_length) {
-        //                            f = (Math.sin((rayAngle * (Math.PI / 180))) - Math.sin((refRayAngle * (Math.PI / 180)))) / refRay[8];
-        //                            frequencies.push(f);
-        //                        }
-        //                    }
-        //                }
-        //                group.push(frequencies);
-        //            }
-        //        }
-        //        this._groups[i] = group;
-        //    }
-        //}
-    } else { // single ref. light picked
-        for (i = 0; i < this._groups.length; i++) {
-            if (this._groups[i] !== undefined) { // 1) group is not empty
-                if (this._groups[i].hasOwnProperty(this._refLightID)) { // 2) ref. light present
-                    // store and remove ref. ray
-                    refRayAngle = this._groups[i][this._refLightID][0];
-                    refRay = this._groups[i][this._refLightID][1];
-                    delete this._groups[i][this._refLightID];
-                    frequencies = [];
-                    for (raySourceID in this._groups[i]) {
-                        if (this._groups[i].hasOwnProperty(raySourceID)) { // 3) create inter. patterns
-                            rayAngle = this._groups[i][raySourceID][0];
-                            ray = this._groups[i][raySourceID][1];
-                            if (ray[8] === refRay[8]) { // 3.1) Light length is equal
-                                if (Math.abs(this._lightSources[this._refLightID] - this._lightSources[raySourceID])
-                                    <= app.coherence_length) { // count frequency
-                                    f = (Math.sin((rayAngle * (Math.PI / 180))) - Math.sin((refRayAngle * (Math.PI / 180)))) / refRay[8];
-                                    frequencies.push(f);
-                                } else {
-                                    errorDiff = ((Math.abs(this._lightSources[this._refLightID] - this._lightSources[raySourceID])
-                                    - app.coherence_length) / app.pixels_on_cm).toFixed(4);
-                                    errors.push([i, raySourceID, this._refLightID, errorDiff]);
-                                }
-                                delete this._groups[i][raySourceID];
+    for (i = 0; i < this._groups.length; i++) {
+        if (this._groups[i] !== undefined) { // 1) group is not empty
+            if (this._groups[i].hasOwnProperty(this._refLightID)) { // 2) ref. light present
+                // store and remove ref. ray
+                refRayAngle = this._groups[i][this._refLightID][0];
+                refRay = this._groups[i][this._refLightID][1];
+                delete this._groups[i][this._refLightID];
+                frequencies = [];
+                for (raySourceID in this._groups[i]) {
+                    if (this._groups[i].hasOwnProperty(raySourceID)) { // 3) create inter. patterns
+                        rayAngle = this._groups[i][raySourceID][0];
+                        ray = this._groups[i][raySourceID][1];
+                        if (ray[8] === refRay[8]) { // 3.1) Light length is equal
+                            if (Math.abs(this._lightSources[this._refLightID] - this._lightSources[raySourceID])
+                                <= app.coherence_length) { // count frequency
+                                f = (Math.sin((rayAngle * (Math.PI / 180))) - Math.sin((refRayAngle * (Math.PI / 180)))) / refRay[8];
+                                frequencies.push(f);
                             } else {
-                                errors.push([i, raySourceID, this._refLightID, 'wavelength']);
+                                errorDiff = ((Math.abs(this._lightSources[this._refLightID] - this._lightSources[raySourceID])
+                                - app.coherence_length) / app.pixels_on_cm).toFixed(4);
+                                errors.push([i, raySourceID, this._refLightID, errorDiff]);
                             }
+                            delete this._groups[i][raySourceID];
+                        } else {
+                            errors.push([i, raySourceID, this._refLightID, 'wavelength']);
                         }
                     }
-                    this._groups[i] = frequencies;
-                } else {
-                    this._groups[i] = [];
                 }
+                this._groups[i] = frequencies;
+            } else {
+                this._groups[i] = [];
             }
         }
     }
@@ -340,8 +300,6 @@ app.model.HolographicPlate.prototype._checkRecordedRays = function (rays) {
 
     if ((this._groups[groupID] !== undefined) && (this._groups[groupID] !== null)) {
         raySource = this.reverseTransformPoint([this._intersectionRay[0], this._intersectionRay[1]]);
-        // tohle nefunguje, kdyz zasviti svetlo ktere neni v seznamu
-        //group = (this._allRefLights) ? this._groups[groupID][this._intersectionRay[6]] : this._groups[groupID];
         group = this._groups[groupID];
         this._intersectionRay[0] = this.intersectionPoint[0];
         this._intersectionRay[1] = this.intersectionPoint[1];
@@ -419,7 +377,6 @@ app.model.HolographicPlate.prototype.importComponentData = function (componentMo
     this._makeRecord = componentModel._makeRecord;
     this._showRecord = componentModel._showRecord;
     this._groupsCount = componentModel._groupsCount;
-    this._allRefLights = componentModel._allRefLights;
     this._refLightID = componentModel._refLightID;
     this._m = componentModel._m;
     this._groups = componentModel._groups;
