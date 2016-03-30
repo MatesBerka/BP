@@ -293,7 +293,7 @@ app.model.HolographicPlate.prototype._recordRay = function () {
  * When show record is active, then this method is called to check if incoming ray generates some outgoing ray
  * @private
  */
-app.model.HolographicPlate.prototype._checkRecordedRays = function (rays) {
+app.model.HolographicPlate.prototype._checkRecord = function (rays) {
     var point = this.reverseTransformPoint([this.intersectionPoint[0], this.intersectionPoint[1]]),
         groupID = Math.floor(((this.height / 2) + point[1]) / this._groupSize),
         angle = this._getAngle(), raySource, sin, outgoingAngle, dirPoint, group;
@@ -328,7 +328,7 @@ app.model.HolographicPlate.prototype.intersects = function (rays) {
         this._recordRay();
 
     if (this._showRecord)
-        this._checkRecordedRays(rays);
+        this._checkRecord(rays);
 
     this._lightSources[this._intersectionRay[6]] = (this._intersectionRay[7] + this.newRayLength);
 

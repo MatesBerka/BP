@@ -51,7 +51,7 @@ app._init = function () {
      * @version 1.1.4
      * @type {!string}
      */
-    app.VERSION = '1.1.6';
+    app.VERSION = '1.1.7';
     /**
      * Simulator default locale
      * @type {!string}
