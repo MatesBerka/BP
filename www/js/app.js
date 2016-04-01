@@ -87,21 +87,21 @@ app._init = function () {
      */
     app.RAY_DIRECTION_Y = 4;
     /**
-     * Ray direction x coordinate
+     * Ray source ID
      * @const
      * @type {number}
      * @public
      */
     app.RAY_LIGHT_SOURCE_ID = 6;
     /**
-     * Ray direction y coordinate
+     * Ray length in px
      * @const
      * @type {number}
      * @public
      */
     app.RAY_LENGTH = 7;
     /**
-     * Ray direction y coordinate
+     * Ray wave length
      * @const
      * @type {number}
      * @public
