@@ -212,15 +212,15 @@ app.model.HolographicPlate.prototype.showRecord = function () {
 app.model.HolographicPlate.prototype._getAngle = function () {
     var a = [], b = [], cosAlpha, angle;
 
-    a[0] = this._intersectionRay[0] - this.intersectionPoint[0];
-    a[1] = this._intersectionRay[1] - this.intersectionPoint[1];
+    a[0] = this._intersectionRay[app.RAY_ORIGIN_X] - this.intersectionPoint[0];
+    a[1] = this._intersectionRay[app.RAY_ORIGIN_Y] - this.intersectionPoint[1];
     b[0] = this.transformedPoints[0][0] - this.intersectionPoint[0];
     b[1] = this.transformedPoints[0][1] - this.intersectionPoint[1];
 
     cosAlpha = (a[0] * b[0] + a[1] * b[1]) / (Math.sqrt(a[0] * a[0] + a[1] * a[1]) * Math.sqrt(b[0] * b[0] + b[1] * b[1]));
     angle = Math.acos(cosAlpha) * (180 / Math.PI);
     angle = (angle > 90) ? -(angle % 90) : (90 - angle);
-    return Math.round(angle);
+    return angle;
 };
 
 /**
@@ -244,7 +244,7 @@ app.model.HolographicPlate.prototype._createRecord = function () {
                     if (this._groups[i].hasOwnProperty(raySourceID)) { // 3) create inter. patterns
                         rayAngle = this._groups[i][raySourceID][0];
                         ray = this._groups[i][raySourceID][1];
-                        if (ray[8] === refRay[8]) { // 3.1) Light length is equal
+                        if (ray[app.RAY_WAVE_LENGTH] === refRay[app.RAY_WAVE_LENGTH]) { // 3.1) Light lengths is equal
                             if (Math.abs(this._lightSources[this._refLightID] - this._lightSources[raySourceID])
                                 <= app.coherence_length) { // count frequency
                                 f = (Math.sin((rayAngle * (Math.PI / 180))) - Math.sin((refRayAngle * (Math.PI / 180)))) / refRay[8];
@@ -278,14 +278,14 @@ app.model.HolographicPlate.prototype._recordRay = function () {
         groupID = Math.floor(((this.height / 2) + point[1]) / this._groupSize),
         angle = this._getAngle();
 
-    this._intersectionRay[0] = point[0];
-    this._intersectionRay[1] = point[1];
+    this._intersectionRay[app.RAY_ORIGIN_X] = point[0];
+    this._intersectionRay[app.RAY_ORIGIN_Y] = point[1];
     if (this._groups[groupID] === undefined) this._groups[groupID] = {};
-    if (this._groups[groupID][this._intersectionRay[6]] === undefined) {
-        this._groups[groupID][this._intersectionRay[6]] = [angle, this._intersectionRay];
+    if (this._groups[groupID][this._intersectionRay[app.RAY_LIGHT_SOURCE_ID]] === undefined) {
+        this._groups[groupID][this._intersectionRay[app.RAY_LIGHT_SOURCE_ID]] = [angle, this._intersectionRay];
     } else {
-        var newAngle = (angle + this._groups[groupID][this._intersectionRay[6]][0]) / 2;
-        this._groups[groupID][this._intersectionRay[6]] = [newAngle, this._intersectionRay];
+        var newAngle = (angle + this._groups[groupID][this._intersectionRay[app.RAY_LIGHT_SOURCE_ID]][0]) / 2;
+        this._groups[groupID][this._intersectionRay[app.RAY_LIGHT_SOURCE_ID]] = [newAngle, this._intersectionRay];
     }
 };
 
@@ -299,20 +299,20 @@ app.model.HolographicPlate.prototype._checkRecord = function (rays) {
         angle = this._getAngle(), raySource, sin, outgoingAngle, dirPoint, group;
 
     if ((this._groups[groupID] !== undefined) && (this._groups[groupID] !== null)) {
-        raySource = this.reverseTransformPoint([this._intersectionRay[0], this._intersectionRay[1]]);
+        raySource = this.reverseTransformPoint([this._intersectionRay[app.RAY_ORIGIN_X], this._intersectionRay[app.RAY_ORIGIN_Y]]);
         group = this._groups[groupID];
-        this._intersectionRay[0] = this.intersectionPoint[0];
-        this._intersectionRay[1] = this.intersectionPoint[1];
+        this._intersectionRay[app.RAY_ORIGIN_X] = this.intersectionPoint[0];
+        this._intersectionRay[app.RAY_ORIGIN_Y] = this.intersectionPoint[app.RAY_ORIGIN_Y];
         for (var i = 0; i < group.length; i++) {
             for (var k = 0; k < this._m.length; k++) {
-                sin = this._m[k] * this._intersectionRay[8] * group[i] + Math.sin((angle * (Math.PI / 180)));
+                sin = this._m[k] * this._intersectionRay[app.RAY_WAVE_LENGTH] * group[i] + Math.sin((angle * (Math.PI / 180)));
                 if (sin <= 1 && sin >= -1) { // if sin does not crossed maximum add ray
                     outgoingAngle = Math.asin(sin);
                     dirPoint = (raySource[0] > 0) ? this.rotatePoint([-1, 0], (-outgoingAngle + this.appliedRotation)) :
                         this.rotatePoint([1, 0], (outgoingAngle + this.appliedRotation));
-                    this._intersectionRay[3] = dirPoint[0];
-                    this._intersectionRay[4] = dirPoint[1];
-                    this._intersectionRay[6] += '-H' + this._componentID;
+                    this._intersectionRay[app.RAY_DIRECTION_X] = dirPoint[0];
+                    this._intersectionRay[app.RAY_DIRECTION_Y] = dirPoint[1];
+                    this._intersectionRay[app.RAY_LIGHT_SOURCE_ID] += '-H' + this._componentID;
                     rays.push(this._intersectionRay.slice());
                 }
             }
@@ -330,7 +330,7 @@ app.model.HolographicPlate.prototype.intersects = function (rays) {
     if (this._showRecord)
         this._checkRecord(rays);
 
-    this._lightSources[this._intersectionRay[6]] = (this._intersectionRay[7] + this.newRayLength);
+    this._lightSources[this._intersectionRay[app.RAY_LIGHT_SOURCE_ID]] = (this._intersectionRay[app.RAY_LENGTH] + this.newRayLength);
 
     return this.intersectionPoint;
 };

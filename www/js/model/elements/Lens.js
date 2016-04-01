@@ -158,7 +158,7 @@ app.model.Lens.prototype._getImagePosition = function(focus, obj) {
  * @override
  */
 app.model.Lens.prototype.intersects = function (rays) {
-    var point = this.reverseTransformPoint([this._intersectionRay[0], this._intersectionRay[1]]);
+    var point = this.reverseTransformPoint([this._intersectionRay[app.RAY_ORIGIN_X], this._intersectionRay[app.RAY_ORIGIN_Y]]);
     var dVec = [], normDVec, imgPoint;
 
     if(this._focusType == 'CONVERGING') {
@@ -177,12 +177,12 @@ app.model.Lens.prototype.intersects = function (rays) {
     }
     normDVec = app.model.Component.normalize2DVector(dVec);
 
-    this._intersectionRay[0] = this.intersectionPoint[0];
-    this._intersectionRay[1] = this.intersectionPoint[1];
-    this._intersectionRay[3] = normDVec[0];
-    this._intersectionRay[4] = normDVec[1];
-    this._intersectionRay[6] +=  '-L' + this._componentID;
-    this._intersectionRay[7] +=  this.newRayLength;
+    this._intersectionRay[app.RAY_ORIGIN_X] = this.intersectionPoint[0];
+    this._intersectionRay[app.RAY_ORIGIN_Y] = this.intersectionPoint[1];
+    this._intersectionRay[app.RAY_DIRECTION_X] = normDVec[0];
+    this._intersectionRay[app.RAY_DIRECTION_Y] = normDVec[1];
+    this._intersectionRay[app.RAY_LIGHT_SOURCE_ID] +=  '-L' + this._componentID;
+    this._intersectionRay[app.RAY_LENGTH] +=  this.newRayLength;
     rays.push(this._intersectionRay);
 
     return this.intersectionPoint;

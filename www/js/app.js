@@ -48,16 +48,65 @@ app._init = function () {
     /**
      * Simulator version
      * @const
-     * @version 1.1.4
+     * @version 1.1.8
      * @type {!string}
      */
-    app.VERSION = '1.1.7';
+    app.VERSION = '1.1.8';
     /**
      * Simulator default locale
      * @type {!string}
      * @public
      */
     app.locale = 'en_US';
+    /**
+     * Ray origin x coordinate
+     * @const
+     * @type {number}
+     * @public
+     */
+    app.RAY_ORIGIN_X = 0;
+    /**
+     * Ray origin y coordinate
+     * @const
+     * @type {number}
+     * @public
+     */
+    app.RAY_ORIGIN_Y = 1;
+    /**
+     * Ray direction x coordinate
+     * @const
+     * @type {number}
+     * @public
+     */
+    app.RAY_DIRECTION_X = 3;
+    /**
+     * Ray direction y coordinate
+     * @const
+     * @type {number}
+     * @public
+     */
+    app.RAY_DIRECTION_Y = 4;
+    /**
+     * Ray direction x coordinate
+     * @const
+     * @type {number}
+     * @public
+     */
+    app.RAY_LIGHT_SOURCE_ID = 6;
+    /**
+     * Ray direction y coordinate
+     * @const
+     * @type {number}
+     * @public
+     */
+    app.RAY_LENGTH = 7;
+    /**
+     * Ray direction y coordinate
+     * @const
+     * @type {number}
+     * @public
+     */
+    app.RAY_WAVE_LENGTH = 8;
     /**
      * Defines conversion between pixels and centimeters
      * @type {number}

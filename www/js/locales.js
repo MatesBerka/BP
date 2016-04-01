@@ -191,7 +191,7 @@ app.TRANSLATION = {
         'com-lens-type-div': 'Diverging',
         'com-lens-type-con': 'Converging',
         'com-lens-type-title': 'Lens type:',
-        'com-lens-focus-offset': 'Focus offset:',
+        'com-lens-focus-offset': 'Focus length:',
         'com-light-size': 'A: ',
         'com-light-beam': 'Beam',
         'com-light-circle': 'Point',

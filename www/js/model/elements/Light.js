@@ -125,9 +125,9 @@ app.model.Light.prototype._squareIntersection = function (ray) {
         a = this.transformedPoints[aIndex];
         b = this.transformedPoints[bIndex];
 
-        v1 = [ray[0] - a[0], ray[1] - a[1]];
+        v1 = [ray[app.RAY_ORIGIN_X] - a[0], ray[app.RAY_ORIGIN_Y] - a[1]];
         v2 = [b[0] - a[0], b[1] - a[1]];
-        v3 = [-ray[4], ray[3]];
+        v3 = [-ray[app.RAY_DIRECTION_Y], ray[app.RAY_DIRECTION_X]];
 
         numerator = v2[0] * v1[1] - v1[0] * v2[1];
         denominator = v2[0] * v3[0] + v2[1] * v3[1];
@@ -142,10 +142,10 @@ app.model.Light.prototype._squareIntersection = function (ray) {
             continue;
 
         // is intersection
-        ix = ray[0] + ray[3] * t1;
-        iy = ray[1] + ray[4] * t1;
+        ix = ray[app.RAY_ORIGIN_X] + ray[app.RAY_DIRECTION_X] * t1;
+        iy = ray[app.RAY_ORIGIN_Y] + ray[app.RAY_DIRECTION_Y] * t1;
 
-        length = Math.sqrt(Math.pow(Math.abs(ix - ray[0]), 2) + Math.pow(Math.abs(iy - ray[1]), 2));
+        length = Math.sqrt(Math.pow(Math.abs(ix - ray[app.RAY_ORIGIN_X]), 2) + Math.pow(Math.abs(iy - ray[app.RAY_ORIGIN_Y]), 2));
         if (length < rayLength) {
             rayLength = length;
             this.intersectionPoint = [ix, iy];

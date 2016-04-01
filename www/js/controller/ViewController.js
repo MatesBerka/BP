@@ -263,7 +263,7 @@ app.ViewController.prototype.draw = function () {
 
             if (rayLength != Infinity) {
                 endPoint = this._components[/**@type{!number}*/(componentID)].intersects(this._rays);
-                ctx.moveTo(ray[0], ray[1]);
+                ctx.moveTo(ray[app.RAY_ORIGIN_X], ray[app.RAY_ORIGIN_Y]);
                 ctx.lineTo(endPoint[0], endPoint[1]);
             }
         }
