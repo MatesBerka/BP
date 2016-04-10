@@ -48,10 +48,10 @@ app._init = function () {
     /**
      * Simulator version
      * @const
-     * @version 1.1.8
+     * @version 1.1.9
      * @type {!string}
      */
-    app.VERSION = '1.1.8';
+    app.VERSION = '1.1.9';
     /**
      * Simulator default locale
      * @type {!string}
